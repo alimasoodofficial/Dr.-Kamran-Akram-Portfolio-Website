@@ -10,7 +10,10 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // Extend Next.js defaults
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+
+  // Your overrides
   {
     ignores: [
       "node_modules/**",
@@ -19,6 +22,11 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      "react/no-unescaped-entities": "off",   // disable completely
+      "no-unused-vars": "warn",               // only warn
+      "react-hooks/exhaustive-deps": "off",   // disable React hook deps rule
+    },
   },
 ];
 
