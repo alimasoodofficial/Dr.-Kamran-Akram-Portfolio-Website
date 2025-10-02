@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <div>
       <Hero />
-      <h2 className="text-4xl font-bold mt-8">Welcome!</h2>
+      <h2 className="text-4xl font-bold mt-8">I am Kamran Akram!</h2>
       <p>This is the HomePage page of my Next.js website.</p>
       <Button title={"click here"} href="/gallery" />
       
