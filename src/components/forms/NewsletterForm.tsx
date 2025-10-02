@@ -3,17 +3,17 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import Button from "../ui/Button";
 
 export default function NewsletterForm() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string>("");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert(`Subscribed with: ${email}`);
     setEmail("");
-  }
+  };
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mt-4">

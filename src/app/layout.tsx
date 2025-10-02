@@ -1,13 +1,18 @@
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "DR.KAMRAN",
   description: "Personal website built with Next.js",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode; // ✅ typed children
+}) {
   return (
     <html lang="en">
       <body>
