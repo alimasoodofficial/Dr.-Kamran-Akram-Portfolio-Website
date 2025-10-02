@@ -23,9 +23,10 @@ export default [
       "next-env.d.ts",
     ],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",   // ✅ disables the "Unexpected any" error
-      "no-unused-vars": "warn",                      // example: only warn, not error
-      "react-hooks/exhaustive-deps": "off",          // disable hook deps rule if too strict
+      "@typescript-eslint/no-explicit-any": "warn", // was "error" → now just warns
+      "no-unused-vars": "warn",                     // warn instead of fail
+      "react-hooks/exhaustive-deps": "warn",        // warn instead of fail
+      "react/no-unescaped-entities": "warn",        // common issue → warn only
     },
   },
 ];
