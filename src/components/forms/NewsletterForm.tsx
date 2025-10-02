@@ -1,14 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
 import Button from "../ui/Button";
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
 
-  function handleSubmit(e:any) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     alert(`Subscribed with: ${email}`);
     setEmail("");
+  }
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
   }
 
   return (
@@ -17,11 +21,11 @@ export default function NewsletterForm() {
         type="email"
         placeholder="Enter your email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleChange}
         required
         className="border p-2 rounded flex-1"
       />
-      <Button title={"click here"} href="/" />
+      <Button title="click here" href="/" />
     </form>
   );
 }
