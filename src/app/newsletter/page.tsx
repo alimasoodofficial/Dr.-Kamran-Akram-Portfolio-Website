@@ -1,4 +1,6 @@
 import NewsletterForm from "@/components/forms/NewsletterForm";
+import Banner from "@/components/sections/Banner";
+
 
 export default function NewsletterPage() {
   return (

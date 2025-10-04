@@ -1,5 +1,6 @@
 import "../../app/globals.css";
 import Image from "next/image";
+import Breadcrumb from "../ui/Breadcrumb";
 
 interface BannerProps {
   title: string;
@@ -17,16 +18,17 @@ export default function Banner({
   const isExternal = imageSrc.startsWith("http");
 
   return (
-    <section className="w-full bg-gray-50 py-16">
+    <section className="w-full container-bg-color py-16">
       <div className="container mx-auto flex flex-col md:flex-row items-center gap-8 px-4">
         {/* Left side: text */}
         <div className="md:w-1/2">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
-          <p className="text-lg md:text-xl text-gray-700">{description}</p>
+        <Breadcrumb />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 font-heading">{title}</h1>
+          <p className="text-lg md:text-xl text-gray-700 font-body ">{description}</p>
         </div>
 
         {/* Right side: image */}
-        <div className="md:w-1/2">
+        <div className="md:w-1/2">  
           {isExternal ? (
             <img
               src={imageSrc}
