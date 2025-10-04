@@ -1,17 +1,20 @@
-import Link from "next/link";
+import React from "react";
 
-type ButtonProps = {
-  title: string;
-  href: string; // page path
-};
+interface ButtonProps {
+  children: React.ReactNode; 
+  className?: string;        
+  onClick?: () => void;      
+  type?: "button" | "submit" | "reset"; 
+}
 
-
-export default function Button({ title, href }: ButtonProps) {
+export default function Button({children,className = "",onClick,type = "button",}: ButtonProps) {
   return (
-    <Link href={href}>
-      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        {title}
-      </button>
-    </Link>
+    <button
+      type={type}
+      onClick={onClick}
+      className={`px-6 py-2 rounded-3xl font-medium transition ${className}`}
+    >
+      {children}
+    </button>
   );
 }
