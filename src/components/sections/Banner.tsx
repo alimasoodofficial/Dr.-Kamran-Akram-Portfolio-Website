@@ -7,6 +7,7 @@ interface BannerProps {
   description: string;
   imageSrc: string; 
   imageAlt?: string;
+  className?: string;
 } 
 
 export default function Banner({
@@ -14,6 +15,7 @@ export default function Banner({
   description,
   imageSrc,
   imageAlt = "Banner Image",
+  className = "",
 }: BannerProps) {
   const isExternal = imageSrc.startsWith("http");
 
@@ -33,15 +35,17 @@ export default function Banner({
             <img
               src={imageSrc}
               alt={imageAlt}
-              className="rounded-lg object-cover w-full h-auto"
+              width={0}
+              height={0}
+              className={` object-cover  ${className}`}
             />
           ) : (
             <Image
               src={imageSrc}
               alt={imageAlt}
-              width={600}
-              height={400}
-              className="rounded-lg object-cover w-full h-auto"
+              width={0}
+              height={0}
+              className={` object-cover  ${className}`}
             />
           )}
         </div>

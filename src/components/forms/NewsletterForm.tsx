@@ -16,16 +16,22 @@ export default function NewsletterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col sm:flex-row gap-3 mt-4 w-full max-w-lg mx-auto "
+    >
       <input
         type="email"
         placeholder="Enter your email"
         value={email}
         onChange={handleChange}
         required
-        className="border p-2 rounded flex-1"
+        className="border p-3 rounded w-full sm:flex-1 text-base focus:outline-none focus:ring-2 focus:ring-black"
       />
-      <Button type="submit" className="bg-black text-white">
+      <Button
+        type="submit"
+        className="bg-black text-white px-6 py-3 rounded font-medium hover:bg-gray-900 transition w-full sm:w-auto"
+      >
         Subscribe
       </Button>
     </form>

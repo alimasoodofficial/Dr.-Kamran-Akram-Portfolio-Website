@@ -8,6 +8,19 @@
   /* Optional: set defaults for Tailwind utilities */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
 }
 
 /* 🌞 Default Light Theme */
@@ -32,4 +45,13 @@ body {
 /* 🎨 Utility class for custom section background */
 .container-bg-color {
   background-color: #f8f6f3;
+}
+.bouncer {
+  animation: upDown 2s infinite ease-in-out;
+}
+
+@keyframes upDown {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
 }

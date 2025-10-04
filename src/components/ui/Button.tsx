@@ -20,7 +20,8 @@ export default function Button({
     return (
       <Link
         href={href}
-        className={`px-6 py-2 rounded-3xl font-medium transition ${className}`}
+        className={`px-8 py-2 rounded-3xl font-medium  transition duration-400 hover:scale-105   ${className}`}
+        
       >
         {children}
       </Link>

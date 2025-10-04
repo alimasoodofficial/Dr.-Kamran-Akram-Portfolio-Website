@@ -30,8 +30,11 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-    < Button type="button" href="/newsletter" className="hidden lg:block bg-orange-300">
-        Newsletter
+    < Button 
+    type="button"
+     href="/newsletter" 
+      className="hidden lg:block bg-orange-400 hover:bg-orange-300 transition-transform duration-400 hover:scale-105 ">
+        Join 1000+ Subscribers
       </Button>   
 
         {/* Mobile Hamburger */}

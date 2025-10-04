@@ -8,7 +8,7 @@ export default function Hero() {
 
   <div className="flex-1 text-center lg:text-left space-y-6">
     <h1 className="font-heading text-3xl md:text-4xl lg:text-[82px] font-bold leading-tight">
-      Hey Friends 👋
+      Hey Friends <span className="animate-bounce inline-block">👋</span>
     </h1>
     <p className="font-body text-lg md:text-xl lg:text-4xl md:pr-20 text-black">
       I’m Kamran. I’m a Doctor turned Entrepreneur, YouTuber, and the author of the 
