@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <div className="  px-6 lg:px-12">
+    <div className="  ">
     <section className="flex flex-col-reverse lg:flex-row-reverse items-center justify-between  mx-auto px-6 md:px-12 lg:px-24 py-16 lg:py-24 gap-10 container-bg-color">
 
   {/* Left Text Section */}

@@ -3,7 +3,7 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import Button from "../ui/Button";
 
 export default function NewsletterForm() {
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +25,9 @@ export default function NewsletterForm() {
         required
         className="border p-2 rounded flex-1"
       />
-      <Button title="click here" href="/" />
+      <Button type="submit" className="bg-black text-white">
+        Subscribe
+      </Button>
     </form>
   );
 }
