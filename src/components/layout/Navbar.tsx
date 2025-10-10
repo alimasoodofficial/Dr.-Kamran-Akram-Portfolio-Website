@@ -5,37 +5,49 @@ import Link from "next/link";
 import { navLinks } from "@/data/navLinks";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
-
+import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="  pt-1 md:pt-6 container-bg-color rounded-t-2xl  z-50">
+    <nav className="bg-[var(--background)] text-[var(--foreground)] z-50 border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
         {/* Logo */}
-        <Link href="/" className="text-xl font-heading font-bold">
-          DR.KAMRAN
+        <Link
+          href="/"
+          className="text-xl font-heading font-bold flex items-center gap-1"
+        >
+          <span className="text-2xl text-[var(--foreground)]">mk.</span>
+          <span className="text-orange-500">|</span>
+          <span className="font-extralight font-body">Kamran Akram</span>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden  lg:flex  gap-8 text-medium font-body font-medium">
+        <div className="hidden lg:flex gap-8 font-body font-medium">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-gray-600 transition-colors"
+              className="transition-colors hover:text-orange-500"
             >
               {link.label}
             </Link>
           ))}
         </div>
-    < Button 
-    type="button"
-     href="/newsletter" 
-      className="hidden lg:block bg-orange-400 hover:bg-orange-300 transition-transform duration-400 hover:scale-105 ">
-        Join 1000+ Subscribers
-      </Button>   
+
+        {/* Right Side Controls */}
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+
+          <Button
+            type="button"
+            href="/newsletter"
+            className="hidden lg:block bg-orange-500 text-white hover:bg-orange-400 transition-transform duration-300 hover:scale-105"
+          >
+            Join 1000+ Subscribers
+          </Button>
+        </div>
 
         {/* Mobile Hamburger */}
         <button
@@ -49,10 +61,10 @@ export default function Navbar() {
 
       {/* Fullscreen Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center space-y-8 text-lg font-body z-50">
+        <div className="fixed inset-0 bg-[var(--background)] text-[var(--foreground)] flex flex-col items-center justify-center space-y-8 text-lg font-body z-50 transition-colors duration-300">
           {/* Close Button */}
           <button
-            className="absolute top-6 right-6 p-2 "
+            className="absolute top-6 right-6 p-2"
             onClick={() => setIsOpen(false)}
             aria-label="Close Menu"
           >
@@ -64,7 +76,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="hover:text-gray-600 transition-colors text-2xl font-medium"
+              className="transition-colors text-2xl font-medium hover:text-orange-500"
             >
               {link.label}
             </Link>

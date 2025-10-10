@@ -5,10 +5,22 @@
   --font-heading: var(--font-dm-serif), serif;
   --font-body: var(--font-poppins), sans-serif;
 
-  /* Optional: set defaults for Tailwind utilities */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* 🎨 Theme Colors */
+  --color-primary: #172716;
+  --color-secondary: #f59e0b;
+  --color-accent: #10b981;
+  --color-dark: #111827;
+  --color-light: #f3f4f6;
+  --color-container: #f8f6f3;
 
+  /* ✨ Dark Theme Extended Palette */
+  --color-dark-bg: #0b0c12;
+  --color-dark-card: #111319;
+  --color-dark-text: #e6e9f0;
+  --color-dark-muted: #8b93a7;
+  --color-dark-border: rgba(255, 255, 255, 0.08);
+
+  /* 🌈 Animation */
   --animate-float: float 3s ease-in-out infinite;
 
   @keyframes float {
@@ -20,7 +32,6 @@
       transform: translateY(-10px);
     }
   }
-  
 }
 
 /* 🌞 Default Light Theme */
@@ -31,27 +42,61 @@
 
 /* 🌙 Dark Theme */
 .dark {
-  --background: #111111;
-  --foreground: #ffffff;
+  --background: var(--color-dark-bg);
+  --foreground: var(--color-dark-text);
 }
 
-/* ✅ Apply global styles */
+/* ✅ Global Body */
 body {
   @apply font-body antialiased;
   background-color: var(--background);
   color: var(--foreground);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* 🎨 Utility class for custom section background */
+/* 🧱 Container Background */
 .container-bg-color {
-  background-color: #f8f6f3;
+  background-color: var(--color-container);
 }
+.dark .container-bg-color {
+  background: linear-gradient(180deg, #0a0b10 0%, #0b0c12 100%);
+}
+
+/* 🪄 Card Style (for dark + light) */
+.card {
+  @apply rounded-2xl transition-shadow duration-300;
+  /* background-color: var(--color-container); */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+}
+.dark .card {
+  background-color: var(--color-dark-card);
+  border: 1px solid var(--color-dark-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 🖋 Muted text for dark mode */
+.dark .muted {
+  color: var(--color-dark-muted);
+}
+
+/* 🎢 Floating Animation */
 .bouncer {
   animation: upDown 2s infinite ease-in-out;
 }
-
 @keyframes upDown {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }

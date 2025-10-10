@@ -40,7 +40,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSerif.variable} ${poppins.variable}`}>
-      <body className="min-h-screen py-10  antialiased font-body px-6 lg:px-12">
+      <body className="min-h-screen   antialiased font-body ">
         <div className="" >
         <Navbar />
         </div>

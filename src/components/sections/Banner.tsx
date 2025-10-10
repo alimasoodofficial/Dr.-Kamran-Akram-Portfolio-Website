@@ -26,7 +26,7 @@ export default function Banner({
         <div className="md:w-1/2">
         <Breadcrumb />
           <h1 className="text-4xl md:text-5xl font-bold mb-4 font-heading">{title}</h1>
-          <p className="text-lg md:text-xl text-gray-700 font-body ">{description}</p>
+          <p className="text-lg md:text-xl  font-body ">{description}</p>
         </div>
 
         {/* Right side: image */}
