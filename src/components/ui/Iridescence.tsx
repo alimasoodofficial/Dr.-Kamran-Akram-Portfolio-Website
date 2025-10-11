@@ -61,42 +61,37 @@ export default function Iridescence({
     const renderer = new Renderer();
     const gl = renderer.gl;
 
-    // 🌗 Dynamic background based on current theme
+    // 🌗 Apply theme-based background
     const applyThemeColor = () => {
       const isDark = document.documentElement.classList.contains("dark");
       const bg: [number, number, number, number] = isDark
-        ? [0.05, 0.05, 0.08, 1]
-        : [1, 1, 1, 1];
+        ? [0.05, 0.05, 0.08, 1] // dark bluish background
+        : [1, 1, 1, 1]; // light mode background
       gl.clearColor(...bg);
     };
 
-    applyThemeColor(); // apply once on mount
+    applyThemeColor();
 
-    // 🌓 Watch for theme changes dynamically
+    // Watch for theme change
     const observer = new MutationObserver(() => applyThemeColor());
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
 
-    let program: Program;
-
     const resize = () => {
       const scale = 1;
       renderer.setSize(ctn.offsetWidth * scale, ctn.offsetHeight * scale);
-      if (program) {
-        program.uniforms.uResolution.value = new Color(
-          gl.canvas.width,
-          gl.canvas.height,
-          gl.canvas.width / gl.canvas.height
-        );
-      }
+      program.uniforms.uResolution.value = new Color(
+        gl.canvas.width,
+        gl.canvas.height,
+        gl.canvas.width / gl.canvas.height
+      );
     };
     window.addEventListener("resize", resize, false);
-    resize();
 
     const geometry = new Triangle(gl);
-    program = new Program(gl, {
+    const program = new Program(gl, {
       vertex: vertexShader,
       fragment: fragmentShader,
       uniforms: {
@@ -118,8 +113,9 @@ export default function Iridescence({
     });
 
     const mesh = new Mesh(gl, { geometry, program });
-    let animateId: number;
+    resize();
 
+    let animateId: number;
     const update = (t: number) => {
       animateId = requestAnimationFrame(update);
       program.uniforms.uTime.value = t * 0.001;
