@@ -19,9 +19,10 @@ export default function Navbar() {
           className="text-xl font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-[var(--foreground)]">mk.</span>
-<span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">|</span>
+          <span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">
+            |
+          </span>
           <span className="font-extralight font-body hidden md:block">
-            
             Kamran Akram
           </span>
         </Link>
@@ -64,7 +65,7 @@ export default function Navbar() {
 
       {/* Fullscreen Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 bg-[var(--background)] text-[var(--foreground)] flex flex-col items-center justify-center space-y-8 text-lg font-body z-50 transition-colors duration-300">
+        <div className="fixed inset-0  bg-white dark:bg-[linear-gradient(177.6deg,_rgba(20,0,113,1)_15.3%,_rgba(1,0,62,1)_91.3%)] text-[var(--foreground)] flex flex-col items-center justify-center space-y-8 text-lg font-body z-50 transition-colors duration-300">
           {/* Close Button */}
           <button
             className="absolute top-6 right-6 p-2"
