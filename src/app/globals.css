@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* 🌐 Fonts mapped from next/font */
 @theme {
@@ -14,7 +15,7 @@
   --color-container: #f8f6f3;
 
   /* ✨ Dark Theme Extended Palette */
-  --color-dark-bg: #0b0c12;
+  --color-dark-bg: #040010;
   --color-dark-card: #111319;
   --color-dark-text: #e6e9f0;
   --color-dark-muted: #8b93a7;
@@ -65,7 +66,6 @@ body {
 /* 🪄 Card Style (for dark + light) */
 .card {
   @apply rounded-2xl transition-shadow duration-300;
-  /* background-color: var(--color-container); */
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
   transition-property: color, background-color, border-color,
     text-decoration-color, fill, stroke;
@@ -86,6 +86,19 @@ body {
 .dark .muted {
   color: var(--color-dark-muted);
 }
+
+.btn-gradient {
+  background-image: linear-gradient(to right, #4776E6 0%, #41089d 51%, #5b20d2 100%);
+  background-size: 200% auto;
+  transition: background-position 0.5s ease-in-out;
+}
+
+.btn-gradient:hover {
+  background-position: right center;
+}
+
+
+
 
 /* 🎢 Floating Animation */
 .bouncer {

@@ -22,7 +22,7 @@ export default function Cards({
     <div
       className={`group bg-container
   transition-colors
-  duration-1000  
+  duration-700  
      flex flex-col items-start gap-4 px-6 py-10 rounded-lg shadow-sm hover:shadow-md    ${className}`}
     >
       {/* SVG/Icon */}

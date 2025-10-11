@@ -19,12 +19,15 @@ export default function Navbar() {
           className="text-xl font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-[var(--foreground)]">mk.</span>
-          <span className="text-orange-500">|</span>
-          <span className="font-extralight font-body">Kamran Akram</span>
+<span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">|</span>
+          <span className="font-extralight font-body hidden md:block">
+            
+            Kamran Akram
+          </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden lg:flex gap-8 font-body font-medium">
+        {/* Centered Desktop Nav */}
+        <div className="hidden lg:flex gap-8 font-body font-medium ml-auto mr-8">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -36,27 +39,27 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right Side Controls */}
-        <div className="flex items-center gap-4">
+        {/* Right Side Controls (Always aligned right) */}
+        <div className="flex items-center gap-4 ml-auto">
           <ThemeToggle />
 
           <Button
             type="button"
             href="/newsletter"
-            className="hidden lg:block bg-orange-500 text-white hover:bg-orange-400 transition-transform duration-300 hover:scale-105"
+            className="hidden lg:block btn-gradient text-white   font-medium transition-transform duration-700 hover:scale-105"
           >
             Join 1000+ Subscribers
           </Button>
-        </div>
 
-        {/* Mobile Hamburger */}
-        <button
-          className="lg:hidden p-2"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open Menu"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+          {/* Mobile Hamburger */}
+          <button
+            className="lg:hidden p-2"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
       </div>
 
       {/* Fullscreen Mobile Menu */}
