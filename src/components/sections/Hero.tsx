@@ -1,17 +1,20 @@
 "use client";
 import "../../app/globals.css";
+import Silk from "../Silk";
 import Iridescence from "../ui/Iridescence";
 
 export default function Hero() {
   return (
-    <section className="relative  flex flex-col items-center justify-center max-w-screen min-h-screen overflow-x-hidden py-20">
+    <section className="relative  flex flex-col items-center justify-center max-w-screen min-h-screen overflow-x-hidden py-20 z-0">
       {/* 🌈 Background Canvas (Iridescence) */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        <Iridescence
-          color={[0.5, 0.5, 1]} // soft bluish tint
-          mouseReact={false}
-          amplitude={0.1}
-          speed={2}
+        
+        <Silk
+          speed={20}
+          scale={1}
+          color="#0a84ff"
+          noiseIntensity={0}
+          rotation={0}
         />
       </div>
 
@@ -24,11 +27,13 @@ export default function Hero() {
 
         <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-white">
           I’m <span className="font-semibold">Kamran</span> — a Doctor turned
-          Entrepreneur, YouTuber, and the author of the New York Times bestseller,
+          Entrepreneur, YouTuber, and the author of the New York Times
+          bestseller,
           <span className="font-semibold text-purple-300">
             {" "}
             Feel-Good Productivity
-          </span>.
+          </span>
+          .
         </p>
       </div>
     </section>

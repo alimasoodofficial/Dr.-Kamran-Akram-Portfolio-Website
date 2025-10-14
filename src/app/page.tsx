@@ -12,7 +12,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-5 duration-300">
 
         <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
-          How Can <br /> <span>I Help You?</span> 
+          How Can <br /> <span className="text-purple-600">I Help You?</span> 
         </h2>
           <Cards
             title="Consulting"
