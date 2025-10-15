@@ -3,7 +3,9 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import type { Metadata } from "next";
 
+
 import { DM_Serif_Display, Poppins } from "next/font/google";
+
 
 // Define fonts
 const dmSerif = DM_Serif_Display({
@@ -45,6 +47,7 @@ export default function RootLayout({
         <Navbar />
         </div>
         <main className="  ">
+    
           {children}
         </main>
         <Footer />

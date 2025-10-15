@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { navLinks } from "@/data/navLinks";
+import { freeResources } from "@/data/freeResourcesMenu";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
 import ThemeToggle from "../ui/ThemeToggle";
@@ -41,20 +42,81 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden lg:flex gap-8 font-body font-medium ml-auto mr-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="transition-colors hover:text-orange-500"
+        {/* 🌐 Desktop Navigation */}
+        <div className="hidden lg:flex gap-8 font-body font-medium ml-auto mr-8 items-center relative">
+          {/* Free Resources Dropdown */}
+          <div className="group relative">
+            <button className="flex items-center gap-1 transition-colors hover:text-orange-500">
+              Free Resources
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mt-0.5 transition-transform group-hover:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            <div
+              className="invisible opacity-0 group-hover:visible group-hover:opacity-100
+              transition-all duration-300 ease-in-out
+              absolute top-full left-0 mt-4 w-80
+              bg-white dark:bg-[#0b0c12]/90 border border-gray-200 dark:border-gray-700 
+              rounded-2xl shadow-xl backdrop-blur-lg p-4 z-50"
             >
-              {link.label}
-            </Link>
-          ))}
+              <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
+                Explore Free Resources
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                {freeResources.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-start gap-3 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                  >
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-6 h-6 opacity-80"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                        {item.title}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Other Links */}
+          {navLinks
+            .filter((link) => link.label !== "Free Resources")
+            .map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-orange-500"
+              >
+                {link.label}
+              </Link>
+            ))}
         </div>
 
-        {/* Right Controls */}
+        {/* 🎛 Right Controls */}
         <div className="flex items-center gap-4 ml-auto">
           <ThemeToggle />
 
@@ -66,18 +128,18 @@ export default function Navbar() {
             Join 1000+ Subscribers
           </Button>
 
-          {/* Mobile Menu Button */}
+          {/* 🍔 Mobile Menu Button */}
           <button
             className="lg:hidden p-2"
             onClick={() => setIsOpen(true)}
             aria-label="Open Menu"
           >
-            <Menu className="h-6 w-6 " />
+            <Menu className="h-6 w-6" />
           </button>
         </div>
       </div>
 
-      {/* ✅ Fullscreen Mobile Menu */}
+      {/* 📱 Mobile Menu */}
       {isOpen && (
         <div
           className="
@@ -102,7 +164,6 @@ export default function Navbar() {
           >
             <X className="h-7 w-7" />
           </button>
-         
 
           {/* Navigation Links */}
           <div className="flex flex-col items-center space-y-6">
@@ -122,7 +183,7 @@ export default function Navbar() {
           <Button
             href="/newsletter"
             onClick={() => setIsOpen(false)}
-            className=" btn-gradient text-white text-sm px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            className="btn-gradient text-white text-sm px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
           >
             Join 1000+ Subscribers
           </Button>

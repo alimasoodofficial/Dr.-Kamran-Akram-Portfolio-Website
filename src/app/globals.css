@@ -17,7 +17,7 @@
   /* ✨ Dark Theme Extended Palette */
   --color-dark-bg: #040010;
   --color-dark-card: #111319;
-  --color-dark-text: #e6e9f0;
+  --color-dark-text: #e7e7e7;
   --color-dark-muted: #8b93a7;
   --color-dark-border: rgba(255, 255, 255, 0.08);
 
@@ -140,4 +140,23 @@ canvas {
 
 .animate-fadeIn {
   animation: fadeIn 0.4s ease-out;
+}
+
+/* 🌈 Animated gradient background (works like Tailwind keyframes) */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 🌀 Create a reusable utility */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s linear infinite;
 }

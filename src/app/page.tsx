@@ -1,19 +1,45 @@
+import GradientText from "@/components/GradientText";
 import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Cards from "@/components/ui/Cards";
+import Spline from "@/components/ui/Spline";
 
 export default function HomePage() {
   return (
     <>
-      <Hero />
-
+      <div className="overflow-hidden relative">
+        <Hero />
+        <Spline
+          className="
+      absolute 
+      md:right-0 
+      -translate-y-1/2 
+      md:translate-x-1/4 
+      md:h-[800px]
+      md:w-[800px] 
+      w-9/12
+      h-9/12
+      md:-mt-70
+      -mt-40
+      overflow-hidden
+    "
+        />
+      </div>
       <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
-
         <div className="flex flex-col gap-5 duration-300">
-
-        <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
-          How Can <br /> <span className="text-purple-600">I Help You?</span> 
-        </h2>
+          <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
+            How Can <br />{" "}
+            <span>
+              <GradientText
+                
+                colors={["#ff8800", "#8a2be2", "#007aff"]}
+                animationSpeed={6}
+                className=" "
+              >
+                I Help You?
+              </GradientText>
+            </span>
+          </h2>
           <Cards
             title="Consulting"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
@@ -22,15 +48,13 @@ export default function HomePage() {
             className="card hover:shadow-lg  hover:bg-orange-300 
  "
           />
-             <Cards
+          <Cards
             title="Consulting"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
             svgSrc="/icons/cog.svg"
             link="/consulting"
             className="card hover:shadow-lg hover:bg-green-300 "
           />
-
-
         </div>
 
         <div className="flex flex-col gap-5 duration-300">
@@ -56,11 +80,7 @@ export default function HomePage() {
             className="card hover:shadow-lg hover:bg-yellow-300 "
             buttonText="Subscribe"
           />
-
         </div>
-
-        
-
       </section>
     </>
   );
