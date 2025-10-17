@@ -1,5 +1,6 @@
 "use client";
 import "../../app/globals.css";
+import NewsletterForm from "../forms/NewsletterForm";
 import Silk from "../Silk";
 // import Iridescence from "../ui/Iridescence";
 
@@ -7,7 +8,7 @@ export default function Hero() {
   return (
     <section className="relative  flex flex-col items-center justify-center max-w-screen min-h-screen overflow-x-hidden py-20 z-0">
       {/* 🌈 Background Canvas (Iridescence) */}
-      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+      <div className=" absolute  inset-0 z-0 w-full h-full overflow-hidden">
         <Silk
           speed={20}
           scale={1}
@@ -19,6 +20,19 @@ export default function Hero() {
 
       {/* 💬 Content (on top of background) */}
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl px-6 text-center">
+        <span
+          className="font-body backdrop-blur-xl backdrop-saturate-150
+  bg-white/10 border border-white/10 text-white
+  rounded-full shadow-[0_0_20px_rgba(0,0,0,0.25)]
+  px-4 py-1 mb-2 text-sm md:text-base flex items-center gap-2"
+        >
+          {/* Glowing green dot */}
+          <span className="relative flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+          An Expert Data Analyst
+        </span>
         <h1 className="font-heading text-3xl md:text-6xl pb-3 font-black text-white leading-tight tracking-wider">
           Turbocharge your brand. <br />
           Reach millions online
@@ -32,8 +46,11 @@ export default function Hero() {
             {" "}
             Feel-Good Productivity
           </span>
-          .
+        
         </p>
+        <div className="py-3">
+         <NewsletterForm /> 
+        </div>
       </div>
     </section>
   );

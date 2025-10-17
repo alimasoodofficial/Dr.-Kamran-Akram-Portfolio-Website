@@ -26,13 +26,21 @@ export default function NewsletterForm() {
         value={email}
         onChange={handleChange}
         required
-        className="border p-3 rounded w-full sm:flex-1 text-base focus:outline-none focus:ring-2 focus:ring-black"
+        className=" px-12   w-full sm:flex-1 text-base focus:outline-none focus:ring-2 focus:ring-black-200
+        backdrop-blur-xl backdrop-saturate-150
+      bg-white/10 dark:bg-[#0b0c12]/40
+      border border-white/10
+      text-white
+      rounded-full
+      shadow-[0_0_20px_rgba(0,0,0,0.25)]
+      transition-all duration-500
+        "
       />
       <Button
         type="submit"
-        className="bg-black text-white px-6 py-3 rounded font-medium hover:bg-gray-900 transition w-full sm:w-auto"
+        className="btn-gradient text-white px-8 py-3 rounded font-medium  transition w-full sm:w-auto"
       >
-        Subscribe
+        Grow with Me!
       </Button>
     </form>
   );

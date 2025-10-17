@@ -6,7 +6,7 @@ type Props = {
 export default function SplineVector({ className }: Props) {
   return (
     <>
-      <div className={`${className}  `}>
+      <div className={`${className} invisible lg:visible `}>
         <Spline scene="https://prod.spline.design/9hXnegEUuDhD3v0P/scene.splinecode" />
       </div>
     </>

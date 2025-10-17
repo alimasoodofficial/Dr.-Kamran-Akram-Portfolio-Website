@@ -20,7 +20,7 @@ export default function Banner({
   const isExternal = imageSrc.startsWith("http");
 
   return (
-    <section className="w-full container-bg-color py-16">
+    <section className="w-full container-bg-color pt-28 pb-16 ">
       <div className="container mx-auto flex flex-col md:flex-row items-center gap-8 px-4">
         {/* Left side: text */}
         <div className="md:w-1/2">

@@ -27,7 +27,7 @@ export default function Navbar() {
       -mb-20
     "
     >
-      <div className="flex items-center justify-between px-5 py-3 md:py-4">
+      <div className="flex items-center justify-between px-5 py-3 md:py-4 ">
         {/* Logo */}
         <Link
           href="/"
@@ -76,12 +76,12 @@ export default function Navbar() {
                 Explore Free Resources
               </h3>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 ">
                 {freeResources.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-start gap-3 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                    className="flex items-start gap-3 p-2 rounded-xl  hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                   >
                     <img
                       src={item.icon}
@@ -109,7 +109,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="transition-colors hover:text-orange-500"
+                className="transition-colors hover:text-orange-500 "
               >
                 {link.label}
               </Link>

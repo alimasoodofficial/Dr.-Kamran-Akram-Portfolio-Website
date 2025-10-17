@@ -12,15 +12,13 @@ export default function HomePage() {
         <Spline
           className="
       absolute 
-      md:right-0 
+      right-0 
       -translate-y-1/2 
-      md:translate-x-1/4 
-      md:h-[800px]
-      md:w-[800px] 
+      translate-x-1/4 
+      pl-60
       w-9/12
       h-9/12
-      md:-mt-70
-      -mt-40
+      -mt-60
       overflow-hidden
     "
         />
