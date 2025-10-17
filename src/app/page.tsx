@@ -29,7 +29,6 @@ export default function HomePage() {
             How Can <br />{" "}
             <span>
               <GradientText
-                
                 colors={["#ff8800", "#8a2be2", "#007aff"]}
                 animationSpeed={6}
                 className=" "
@@ -56,6 +55,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col gap-5 duration-300">
+         
           <Cards
             title="YouTube"
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
