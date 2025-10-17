@@ -26,7 +26,7 @@ export default function NewsletterForm() {
         value={email}
         onChange={handleChange}
         required
-        className=" px-12   w-full sm:flex-1 text-base focus:outline-none focus:ring-2 focus:ring-black-200
+        className=" px-12 py-4    w-full sm:flex-1 text-base focus:outline-none focus:ring-2 focus:ring-black-200
         backdrop-blur-xl backdrop-saturate-150
       bg-white/10 dark:bg-[#0b0c12]/40
       border border-white/10
