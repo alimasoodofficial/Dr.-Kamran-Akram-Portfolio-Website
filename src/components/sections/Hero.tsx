@@ -1,4 +1,3 @@
-"use client";
 import "../../app/globals.css";
 import NewsletterForm from "../forms/NewsletterForm";
 import Silk from "../Silk";
@@ -7,7 +6,6 @@ import Silk from "../Silk";
 export default function Hero() {
   return (
     <section className="relative  flex flex-col items-center justify-center max-w-screen min-h-screen overflow-x-hidden py-20 z-0">
-      {/* 🌈 Background Canvas (Iridescence) */}
       <div className=" absolute  inset-0 z-0 w-full h-full overflow-hidden">
         <Silk
           speed={20}

@@ -1,4 +1,4 @@
-import GradientText from "@/components/GradientText";
+import GradientText from "@/components/ui/GradientText";
 import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Cards from "@/components/ui/Cards";

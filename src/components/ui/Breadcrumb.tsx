@@ -8,7 +8,7 @@ export default function Breadcrumb() {
   const segments = pathname.split("/").filter(Boolean);
 
   return (
-    <nav className="text-sm  mb-4">
+    <nav className="text-sm mb-4">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link href="/" className="hover:underline text-blue-600">
@@ -21,9 +21,9 @@ export default function Breadcrumb() {
 
           return (
             <li key={href} className="flex items-center gap-2">
-              <span className="">/</span>
+              <span>/</span>
               {isLast ? (
-                <span className="font-medium  capitalize">
+                <span className="font-medium capitalize">
                   {segment.replace(/-/g, " ")}
                 </span>
               ) : (
