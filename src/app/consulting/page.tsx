@@ -1,3 +1,4 @@
+import ConsultancyForm from "@/components/forms/ConsultancyForm";
 import Banner from "@/components/sections/Banner";
 
 export default function ConsultingPage() {
@@ -13,6 +14,10 @@ export default function ConsultingPage() {
         showImage={false}
         showBreadcrumb={true}
       />
+      <div>
+        <ConsultancyForm />
+      </div>
+
     </>
   );
 }

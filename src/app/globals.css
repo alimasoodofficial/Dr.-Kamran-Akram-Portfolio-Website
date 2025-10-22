@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+@import "react-datepicker/dist/react-datepicker.css";
 
 /* 🌐 Fonts mapped from next/font */
 @theme {
