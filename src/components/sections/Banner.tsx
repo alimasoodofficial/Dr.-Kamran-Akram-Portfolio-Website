@@ -56,10 +56,7 @@ if (!mounted) return null;
 
 const gradientSettings = {
   colors:
-    gradientColors ||
-    (theme === "dark"
-      ? ["#00c3ff", "#ffff1c"]
-      : ["#97ABFF", "#123597"]),
+    gradientColors || ["#97ABFF", "#123597"],
   animationSpeed: animationSpeed || 6,
 };
 
