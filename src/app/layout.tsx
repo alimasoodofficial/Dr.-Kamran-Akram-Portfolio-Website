@@ -1,11 +1,11 @@
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ThemeProviderWrapper from "@/components/providers/ThemeProviderWrapper";
+
 import type { Metadata } from "next";
 
-
 import { DM_Serif_Display, Poppins } from "next/font/google";
-
 
 // Define fonts
 const dmSerif = DM_Serif_Display({
@@ -16,24 +16,13 @@ const dmSerif = DM_Serif_Display({
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: [
-    "100",
-    "200",
-    "300",
-    "400",
-    "500",
-    "600",
-    "700",
-    "800",
-    "900",
-  ],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
-  title: "DR.KAMRAN",
-  description: "Personal website built with Next.js",
-};
+  title: "DR.Muhammad Kamran",
+  description: "Personal Portfolio of Dr.Muhammad Kamran",};
 
 export default function RootLayout({
   children,
@@ -41,15 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dmSerif.variable} ${poppins.variable}`}>
-      <body className="min-h-screen   antialiased font-body ">
-        <div className="" >
+    <html suppressHydrationWarning lang="en" className={`${dmSerif.variable} ${poppins.variable}`}>
+      <body className="min-h-screen antialiased  font-body ">
         <Navbar />
-        </div>
-        <main className="  ">
-    
-          {children}
-        </main>
+      
+
+        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+            
         <Footer />
       </body>
     </html>

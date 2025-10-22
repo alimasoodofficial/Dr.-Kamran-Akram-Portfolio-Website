@@ -1,7 +1,6 @@
 import "../../app/globals.css";
 import NewsletterForm from "../forms/NewsletterForm";
-import Silk from "../Silk";
-// import Iridescence from "../ui/Iridescence";
+import Silk from "../ui/Silk";
 
 export default function Hero() {
   return (
