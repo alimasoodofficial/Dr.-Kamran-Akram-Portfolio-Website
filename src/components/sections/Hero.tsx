@@ -1,6 +1,8 @@
 import "../../app/globals.css";
 import NewsletterForm from "../forms/NewsletterForm";
+import LogoLoop from "../ui/LogoLoop";
 import Silk from "../ui/Silk";
+import {techLogos} from "./LogoLoopDetails";
 
 export default function Hero() {
   return (
@@ -49,6 +51,8 @@ export default function Hero() {
          <NewsletterForm /> 
         </div>
       </div>
+
+      
     </section>
   );
 }

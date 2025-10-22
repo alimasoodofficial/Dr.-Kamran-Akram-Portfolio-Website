@@ -3,6 +3,8 @@ import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Cards from "@/components/ui/Cards";
 import Spline from "@/components/ui/Spline";
+import { techLogos } from "@/components/sections/LogoLoopDetails";
+import LogoLoop from "@/components/ui/LogoLoop";
 
 export default function HomePage() {
   return (
@@ -23,6 +25,23 @@ export default function HomePage() {
     "
         />
       </div>
+
+      <div className="relative overflow-hidden py-20 transition-all"
+      >
+        <LogoLoop
+          logos={techLogos}
+          speed={120}
+          direction="left"
+          logoHeight={60}
+          gap={40}
+          pauseOnHover
+          scaleOnHover
+          fadeOut
+          // fadeOutColor="#000000"
+          ariaLabel="Technology partners"
+        />
+      </div>
+
       <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
         <div className="flex flex-col gap-5 duration-300">
           <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
@@ -55,7 +74,6 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col gap-5 duration-300">
-         
           <Cards
             title="YouTube"
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
