@@ -1,34 +1,60 @@
-import { NextResponse } from "next/server";
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
+import { NextResponse } from "next/server";
+
+// ✅ Ensure Windows & Mac paths both work
+const dataDir = path.join(process.cwd(), "data");
+const filePath = path.join(dataDir, "bookings.json");
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
-    const filePath = path.join(process.cwd(), "data", "bookings.json");
+    const body = await req.json();
+    console.log("📩 Received booking data:", body);
 
-    // Ensure folder exists
-    if (!fs.existsSync(path.dirname(filePath))) {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const { name, email, phone, date, time, message } = body;
+
+    // ✅ Validate required fields
+    if (!name || !email || !date || !time) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
-    // Read existing bookings
-    let existing = [];
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, "utf-8");
-      existing = JSON.parse(fileData || "[]");
+    // ✅ Make sure /data folder exists
+    await fs.mkdir(dataDir, { recursive: true });
+
+    // ✅ Read old data (or initialize)
+    let existing: any[] = [];
+    try {
+      const raw = await fs.readFile(filePath, "utf-8");
+      existing = JSON.parse(raw);
+    } catch (err) {
+      console.warn("⚠️ No existing file, creating new one");
+      existing = [];
     }
 
-    // Add new booking
-    const newBooking = { ...data, id: Date.now() };
+    // ✅ Create new booking
+    const newBooking = {
+      id: Date.now(),
+      name,
+      email,
+      phone,
+      message,
+      date: new Date(date).toISOString(),
+      time,
+      createdAt: new Date().toISOString(),
+    };
+
     existing.push(newBooking);
 
-    // Save back to file
-    fs.writeFileSync(filePath, JSON.stringify(existing, null, 2));
+    // ✅ Write to file safely
+    await fs.writeFile(filePath, JSON.stringify(existing, null, 2), "utf-8");
 
-    return NextResponse.json({ success: true, message: "Booking saved!" });
-  } catch (error) {
-    console.error("Error saving booking:", error);
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    console.log("✅ Booking saved successfully!");
+    return NextResponse.json({ success: true, booking: newBooking });
+  } catch (err) {
+    console.error("❌ Error saving booking:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

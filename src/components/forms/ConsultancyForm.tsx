@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,20 +23,9 @@ export default function ConsultancyForm() {
   } = useForm<FormInputs>();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  // Define available time slots
-  const availableTimes = [
-    "09:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "02:00 PM",
-    "03:00 PM",
-    "04:00 PM",
-    "05:00 PM",
-  ];
 
   // Disable weekends
   const isDateAvailable = (date: Date) => {
@@ -44,17 +33,36 @@ export default function ConsultancyForm() {
     return day !== 0 && day !== 6;
   };
 
+  // 🗓️ Fetch available slots when date changes
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      if (!selectedDate) return;
+
+      const formattedDate = selectedDate.toISOString().split("T")[0];
+      const res = await fetch(`/api/availability?date=${formattedDate}`);
+      const data = await res.json();
+
+      setAvailableTimes(data.availableTimes || []);
+    };
+
+    fetchAvailability();
+  }, [selectedDate]);
+
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setLoading(true);
     setSuccess(false);
 
+    const payload = {
+      ...data,
+      date: selectedDate ? selectedDate.toISOString() : null,
+    };
+
+    console.log("📤 Sending to API:", payload);
+
     const response = await fetch("/api/book-consultation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...data,
-        date: selectedDate,
-      }),
+      body: JSON.stringify(payload),
     });
 
     setLoading(false);
@@ -64,7 +72,8 @@ export default function ConsultancyForm() {
       reset();
       setSelectedDate(null);
     } else {
-      alert("Something went wrong. Please try again.");
+      const error = await response.json();
+      alert(`❌ Error: ${error.error || "Failed to book"}`);
     }
   };
 
@@ -103,13 +112,17 @@ export default function ConsultancyForm() {
               className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-medium mb-1">Phone Number</label>
+            <label className="block text-sm font-medium mb-1">
+              Phone Number
+            </label>
             <input
               {...register("phone", {
                 required: "Phone number is required",
@@ -120,13 +133,17 @@ export default function ConsultancyForm() {
               className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
             />
             {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.phone.message}
+              </p>
             )}
           </div>
 
           {/* Date Picker */}
           <div>
-            <label className="block text-sm font-medium mb-1">Select Date</label>
+            <label className="block text-sm font-medium mb-1">
+              Select Date
+            </label>
             <DatePicker
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
@@ -135,20 +152,24 @@ export default function ConsultancyForm() {
               className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
               minDate={new Date()}
               dateFormat="MMMM d, yyyy"
-              showPopperArrow={false}
             />
           </div>
 
           {/* Time Dropdown */}
           <div>
-            <label className="block text-sm font-medium mb-1">Select Time</label>
+            <label className="block text-sm font-medium mb-1">
+              Select Time
+            </label>
             <select
               {...register("time", { required: "Please select a time" })}
-              className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+              disabled={!availableTimes.length}
+              className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none disabled:opacity-50"
               defaultValue=""
             >
               <option value="" disabled>
-                Choose a time slot
+                {availableTimes.length
+                  ? "Choose a time slot"
+                  : "No available slots for this day"}
               </option>
               {availableTimes.map((time) => (
                 <option key={time} value={time}>
