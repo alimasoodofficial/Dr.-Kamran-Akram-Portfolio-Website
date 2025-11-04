@@ -6,6 +6,7 @@ import Spline from "@/components/ui/Spline";
 import { techLogos } from "@/components/sections/LogoLoopDetails";
 import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
+import ThemeBackground from "@/components/ui/ThemeBackground";
 
 export default function HomePage() {
   return (
@@ -27,6 +28,7 @@ export default function HomePage() {
         />
       </div>
 
+        <ThemeBackground >
       <div className="relative overflow-hidden py-20 transition-all">
         <LogoLoop
           logos={techLogos}
@@ -41,154 +43,156 @@ export default function HomePage() {
           ariaLabel="Technology partners"
         />
       </div>
+        <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
+          <div className="flex flex-col gap-5 duration-300">
+            <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
+              How Can <br />{" "}
+              <span>
+                <GradientText
+                  colors={["#ff8800", "#8a2be2", "#007aff"]}
+                  animationSpeed={6}
+                  className=" "
+                >
+                  I Help You?
+                </GradientText>
+              </span>
+            </h2>
+            <Cards
+              title="Consulting"
+              description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
+              svgSrc="/icons/cog.svg"
+              link="/consulting"
+              className="card hover:shadow-lg  hover:bg-orange-300 
+ "
+            />
+            <Cards
+              title="Consulting"
+              description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
+              svgSrc="/icons/cog.svg"
+              link="/consulting"
+              className="card hover:shadow-lg hover:bg-green-300 "
+            />
+          </div>
 
-      <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
-        <div className="flex flex-col gap-5 duration-300">
-          <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
-            How Can <br />{" "}
-            <span>
+          <div className="flex flex-col gap-5 duration-300">
+            <Cards
+              title="YouTube"
+              description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
+              svgSrc="/icons/cog.svg"
+              link="#"
+              className="card hover:shadow-lg hover:bg-red-300 "
+            />
+
+            <Cards
+              title="Courses"
+              description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
+              svgSrc="/icons/cog.svg"
+              link="/academy"
+              className="card hover:shadow-lg hover:bg-purple-300 "
+            />
+            <Cards
+              title="....and more!"
+              svgSrc="/icons/cog.svg"
+              link="/newsletter"
+              className="card hover:shadow-lg hover:bg-yellow-300 "
+              buttonText="Subscribe"
+            />
+          </div>
+        </section>
+
+        {/* About Me Section */}
+        <section className="flex flex-col items-center justify-center mx-5 rounded-2xl  pt-10 md:pt-20 pb-20 px-6 md:px-16 lg:px-24">
+          {/* Main content container */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-16 lg:gap-32 max-w-7xl mx-auto">
+            {/* 🧠 Left Side: Text */}
+            <div className="flex-1 text-center md:text-left ">
               <GradientText
                 colors={["#ff8800", "#8a2be2", "#007aff"]}
                 animationSpeed={6}
-                className=" "
+                className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6"
               >
-                I Help You?
+                About Me
               </GradientText>
-            </span>
-          </h2>
-          <Cards
-            title="Consulting"
-            description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            svgSrc="/icons/cog.svg"
-            link="/consulting"
-            className="card hover:shadow-lg  hover:bg-orange-300 
- "
-          />
-          <Cards
-            title="Consulting"
-            description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            svgSrc="/icons/cog.svg"
-            link="/consulting"
-            className="card hover:shadow-lg hover:bg-green-300 "
-          />
-        </div>
 
-        <div className="flex flex-col gap-5 duration-300">
-          <Cards
-            title="YouTube"
-            description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
-            svgSrc="/icons/cog.svg"
-            link="#"
-            className="card hover:shadow-lg hover:bg-red-300 "
-          />
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)]  mx-auto pt-5 md:mx-0">
+                I am Dr Muhammad Kamran, a scientist, data storyteller, and
+                dreamer who believes that meaningful change begins with
+                curiosity. My journey started in a small village in Pakistan
+                where simple questions about animals and nature slowly turned
+                into a lifelong fascination with science and technology. That
+                curiosity carried me across cities, continents, and disciplines
+                until I found myself in Brisbane, exploring how data can reveal
+                the invisible patterns that shape life, health, and
+                sustainability.
+                <br />
+                <br />
+                At the University of Queensland I completed my PhD in Animal
+                Sciences, studying how cattle and buffalo interact with
+                parasitic flies and how technology can help farmers protect
+                animal welfare. Now I work as a Data Analyst at Neogen
+                Australasia, turning complex genetic datasets into insights that
+                guide smarter agricultural decisions. At the same time I serve
+                as a Red Meat Industry Ambassador with Meat & Livestock
+                Australia, helping bridge science and community through
+                education, innovation, and storytelling.
+                <br />
+                <br />
+                Beyond research I build ventures that connect people, knowledge,
+                and opportunity. Through <strong>Data Experts 360</strong> I
+                mentor future data leaders and design tools that bring research
+                closer to real-world problems. <strong>Agri Experts 360</strong>{" "}
+                extends this vision into agritech learning and gamified
+                education, while <strong>Triisum</strong>, my eco-tourism
+                startup, explores how nature and entrepreneurship can coexist to
+                inspire purposeful living. Together these initiatives reflect
+                who I am — a scientist who creates, a creator who cares, and a
+                lifelong learner who believes that impact grows when science
+                meets humanity.
+              </p>
+            </div>
 
-          <Cards
-            title="Courses"
-            description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
-            svgSrc="/icons/cog.svg"
-            link="/academy"
-            className="card hover:shadow-lg hover:bg-purple-300 "
-          />
-          <Cards
-            title="....and more!"
-            svgSrc="/icons/cog.svg"
-            link="/newsletter"
-            className="card hover:shadow-lg hover:bg-yellow-300 "
-            buttonText="Subscribe"
-          />
-        </div>
-      </section>
+            {/* 🖼️ Right Side: Images */}
+            <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
+              <Image
+                src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
+                alt="Dr Kamran Akram"
+                width={500}
+                height={100}
+                className="object-contain rounded-tl-[80px] rounded-br-[20px] shadow-lg w-full "
+              />
+              <Image
+                src="https://imkamran.com/wp-content/uploads/2023/10/8016967c-b9d1-45ad-833e-439fb291c783.jpg"
+                alt="Dr Kamran Working"
+                width={400}
+                height={100}
+                className="object-contain rounded-bl-[80px] rounded-tr-[20px] shadow-lg w-full "
+              />
+            </div>
+          </div>
 
-      {/* About Me Section */}
-      <section className="flex flex-col items-center justify-center mx-5 rounded-2xl card  bg-container pt-10 md:pt-20 pb-20 px-6 md:px-16 lg:px-24">
-        {/* Main content container */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-16 lg:gap-32 max-w-7xl mx-auto">
-          {/* 🧠 Left Side: Text */}
-          <div className="flex-1 text-center md:text-left ">
-            <GradientText
-              colors={["#ff8800", "#8a2be2", "#007aff"]}
-              animationSpeed={6}
-              className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6"
+          {/* 🌐 CTA Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mt-12">
+            <Button
+              href="/newsletter"
+              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
             >
-              About Me
-            </GradientText>
-
-            <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)]  mx-auto pt-5 md:mx-0">
-              I am Dr Muhammad Kamran, a scientist, data storyteller, and
-              dreamer who believes that meaningful change begins with curiosity.
-              My journey started in a small village in Pakistan where simple
-              questions about animals and nature slowly turned into a lifelong
-              fascination with science and technology. That curiosity carried me
-              across cities, continents, and disciplines until I found myself in
-              Brisbane, exploring how data can reveal the invisible patterns
-              that shape life, health, and sustainability.
-              <br />
-              <br />
-              At the University of Queensland I completed my PhD in Animal
-              Sciences, studying how cattle and buffalo interact with parasitic
-              flies and how technology can help farmers protect animal welfare.
-              Now I work as a Data Analyst at Neogen Australasia, turning
-              complex genetic datasets into insights that guide smarter
-              agricultural decisions. At the same time I serve as a Red Meat
-              Industry Ambassador with Meat & Livestock Australia, helping
-              bridge science and community through education, innovation, and
-              storytelling.
-              <br />
-              <br />
-              Beyond research I build ventures that connect people, knowledge,
-              and opportunity. Through <strong>Data Experts 360</strong> I
-              mentor future data leaders and design tools that bring research
-              closer to real-world problems. <strong>Agri Experts 360</strong>{" "}
-              extends this vision into agritech learning and gamified education,
-              while <strong>Triisum</strong>, my eco-tourism startup, explores
-              how nature and entrepreneurship can coexist to inspire purposeful
-              living. Together these initiatives reflect who I am — a scientist
-              who creates, a creator who cares, and a lifelong learner who
-              believes that impact grows when science meets humanity.
-            </p>
+              Join My Newsletter
+            </Button>
+            <Button
+              href="/academy"
+              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            >
+              Join My Academy
+            </Button>
+            <Button
+              href="/consulting"
+              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            >
+              Work With Me
+            </Button>
           </div>
-
-          {/* 🖼️ Right Side: Images */}
-          <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
-            <Image
-              src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
-              alt="Dr Kamran Akram"
-              width={500}
-              height={100}
-              className="object-contain rounded-tl-[80px] rounded-br-[20px] shadow-lg w-full "
-            />
-            <Image
-              src="https://imkamran.com/wp-content/uploads/2023/10/8016967c-b9d1-45ad-833e-439fb291c783.jpg"
-              alt="Dr Kamran Working"
-              width={400}
-              height={100}
-              className="object-contain rounded-bl-[80px] rounded-tr-[20px] shadow-lg w-full "
-            />
-          </div>
-        </div>
-
-        {/* 🌐 CTA Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mt-12">
-          <Button
-            href="/newsletter"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-          >
-            Join My Newsletter
-          </Button>
-          <Button
-            href="/academy"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-          >
-            Join My Academy
-          </Button>
-          <Button
-            href="/consulting"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-          >
-            Work With Me
-          </Button>
-        </div>
-      </section>
+        </section>
+      </ThemeBackground>
     </>
   );
 }
