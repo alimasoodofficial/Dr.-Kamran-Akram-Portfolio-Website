@@ -105,7 +105,7 @@ export default function HomePage() {
           {/* Main content container */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-16 lg:gap-32 max-w-7xl mx-auto">
             {/* 🧠 Left Side: Text */}
-            <div className="flex-1 text-center md:text-left ">
+            <div className="flex-1 text-center card bg-container py-10 px-5 md:text-left ">
               <GradientText
                 colors={["#ff8800", "#8a2be2", "#007aff"]}
                 animationSpeed={6}
