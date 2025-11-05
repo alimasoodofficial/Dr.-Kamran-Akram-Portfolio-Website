@@ -5,7 +5,7 @@ import ThemeProviderWrapper from "@/components/providers/ThemeProviderWrapper";
 
 import type { Metadata } from "next";
 
-import { DM_Serif_Display, Poppins } from "@next/font/google";
+import { DM_Serif_Display, Poppins } from "next/font/google";
 
 // Define fonts
 const dmSerif = DM_Serif_Display({
