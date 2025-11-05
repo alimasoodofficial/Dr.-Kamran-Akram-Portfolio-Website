@@ -1,4 +1,6 @@
 import ConsultancyForm from "@/components/forms/ConsultancyForm";
+import CalendlyEmbed from "@/components/forms/Calendly";
+
 import Banner from "@/components/sections/Banner";
 
 export default function ConsultingPage() {
@@ -14,10 +16,13 @@ export default function ConsultingPage() {
         showImage={false}
         showBreadcrumb={true}
       />
-      <div>
-        <ConsultancyForm />
+      <div className="py-20">
+        <CalendlyEmbed
+          url="https://calendly.com/dataexperts360/30min"
+          height={750}
+          className="w-full max-w-4xl  mx-auto rounded-2xl overflow-hidden "
+        />
       </div>
-
     </>
   );
 }
