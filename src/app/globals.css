@@ -39,7 +39,7 @@
 /* 🌞 Default Light Theme */
 :root {
   --background: #ffffff;
-  --foreground: #111111;
+  --foreground: #0b1020;
 }
 
 /* 🌙 Dark Theme */
@@ -48,7 +48,7 @@
   180deg,
   #0b0c10 0%,
   #111319 50%,
-  #0e1015 100%
+  #0b1020 100%
 );
 
 
@@ -161,3 +161,7 @@ canvas {
   background-size: 200% 200%;
   animation: gradient 8s linear infinite;
 }
+
+/* a.VJL48qbQzWENTFAh1Knk {
+  display: none;
+} */
