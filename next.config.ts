@@ -4,11 +4,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "imkamran.com", // 👈 allow your domain
+        hostname: "imkamran.com",
       },
       {
         protocol: "https",
         hostname: "rqrnzfuvgmnjkjqaahve.supabase.co",
+        port: "",
         pathname: "/storage/v1/object/public/**",
       },
     ],

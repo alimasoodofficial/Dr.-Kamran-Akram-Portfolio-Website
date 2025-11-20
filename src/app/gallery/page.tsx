@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
@@ -6,7 +8,6 @@ const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
 
 export default async function GalleryPage() {
-  // ✅ Initialize server Supabase client
   const supabase = createSupabaseServerClient();
 
   // ✅ Fetch from Supabase

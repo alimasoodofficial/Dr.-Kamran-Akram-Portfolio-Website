@@ -84,7 +84,7 @@ const gradientSettings = {
           <GradientText
             colors={gradientSettings.colors}
             animationSpeed={gradientSettings.animationSpeed}
-            className="text-4xl md:text-5xl font-bold mb-4 font-heading"
+            className="text-4xl md:text-5xl font-black pb-4 font-heading"
           >
             {title}
           </GradientText>
