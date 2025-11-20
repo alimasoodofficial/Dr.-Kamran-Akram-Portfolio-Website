@@ -1,22 +1,25 @@
-// /app/api/gallery/route.ts
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabaseServer";
-
+import { createSupabaseServerClient } from "@/lib/supabaseServer";
 export async function GET() {
-  const { data, error } = await supabaseServer
-    .from("gallery")
-    .select("*")
-    .order("date", { ascending: false });
+  try {
+    const supabase = createSupabaseServerClient();
 
-  if (error) return NextResponse.json({ error }, { status: 500 });
-  return NextResponse.json(data);
+    const { data, error } = await supabase
+      .from("gallery")
+      .select("*")
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.error("Supabase error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
+  } catch (err: any) {
+    console.error("API Error:", err.message);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  const { data, error } = await supabaseServer.from("gallery").insert([body]);
-  if (error) return NextResponse.json({ error }, { status: 500 });
-  return NextResponse.json(data, { status: 201 });
-}
-
-// Implement PUT/DELETE similarly using request url or body.id

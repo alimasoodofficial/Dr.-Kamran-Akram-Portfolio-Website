@@ -84,7 +84,7 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
             <div className="p-4">
               <div className="text-xs text-gray-500">{card.category}</div>
               <h3 className="font-semibold mt-1">{card.title}</h3>
-              <p className="text-sm mt-2 text-gray-600 line-clamp-3">
+              <p className="text-sm mt-2  line-clamp-3">
                 {card.description}
               </p>
               <div className="text-xs text-gray-400 mt-3">
@@ -94,7 +94,7 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
                 {card.tags?.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-2 py-1 bg-gray-100 rounded-full"
+                    className="text-xs px-2 py-1 card rounded-full"
                   >
                     #{t}
                   </span>

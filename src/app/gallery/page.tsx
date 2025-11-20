@@ -1,29 +1,35 @@
-// /app/gallery/page.tsx  (server component)
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
-import { supabaseServer } from "@/lib/supabaseServer";
+import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
 
 export default async function GalleryPage() {
-  // server-side fetch
-  const { data, error } = await supabaseServer
+  // ✅ Initialize server Supabase client
+  const supabase = createSupabaseServerClient();
+
+  // ✅ Fetch from Supabase
+  const { data, error } = await supabase
     .from("gallery")
-    .select("id, title, description, image_url, date, location, category, tags")
+    .select(
+      "id, title, description, image_url, date, location, category, tags"
+    )
     .order("date", { ascending: false });
 
+  // ✅ Apply default image if none exists
   const items = (data || []).map((row: any) => ({
     ...row,
     image_url:
       row.image_url && row.image_url.trim() ? row.image_url : DEFAULT_IMAGE,
   }));
 
+
   return (
     <main >
       <Banner
         title="Gallery"
-        description="lorem."
+        description="We provide amazing services and solutions for your business.."
         showLottie={true}
         lottieSrc="/lotties/business.lottie"
         showBreadcrumb={true}
