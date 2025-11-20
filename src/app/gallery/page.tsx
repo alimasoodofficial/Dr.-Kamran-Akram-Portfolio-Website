@@ -3,9 +3,8 @@ import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-const DEFAULT_IMAGE ="https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
-
-  
+const DEFAULT_IMAGE =
+  "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
 
 export default async function GalleryPage() {
   // server-side fetch
@@ -16,20 +15,24 @@ export default async function GalleryPage() {
 
   const items = (data || []).map((row: any) => ({
     ...row,
-    image_url: row.image_url && row.image_url.trim() ? row.image_url : DEFAULT_IMAGE,
+    image_url:
+      row.image_url && row.image_url.trim() ? row.image_url : DEFAULT_IMAGE,
   }));
 
   return (
-    <main className="py-20 px-6 max-w-7xl mx-auto">
+    <main >
       <Banner
         title="Gallery"
-        description="A visual journey..."
-        imageSrc="/images/dummy.webp"
-        showImage={true}
+        description="lorem."
+        showLottie={true}
+        lottieSrc="/lotties/business.lottie"
+        showBreadcrumb={true}
       />
 
-      {/* GalleryGridClient is a client component that receives items as prop */}
+      <div className="py-20 px-6 max-w-7xl mx-auto">
       <GalleryGridClient items={items} />
+
+      </div>
     </main>
   );
 }

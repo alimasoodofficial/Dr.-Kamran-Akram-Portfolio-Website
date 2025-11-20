@@ -19,8 +19,11 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const categories = useMemo(() => {
-    const set = new Set(items.map((i) => i.category).filter(Boolean));
-    return ["All", ...Array.from(set)];
+    const cats = items
+      .map((i) => i.category)
+      .filter((c): c is string => typeof c === "string" && c.trim() !== "");
+
+    return ["All", ...new Set(cats)];
   }, [items]);
 
   const filtered = useMemo(() => {

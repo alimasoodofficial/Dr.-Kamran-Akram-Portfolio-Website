@@ -20,4 +20,3 @@ export async function POST(request: Request) {
 }
 
 // Implement PUT/DELETE similarly using request url or body.id
-  
