@@ -9,15 +9,12 @@ import Button from "@/components/ui/Button";
 export default function ConsultingPage() {
   return (
     <>
-      <Banner
-        title="Looking For Guidance"
-        description="If you are looking for masters or PhD scholarship guidance or job search in Australia then feel free to book a meeting with me."
-        imageSrc="https://aliabdaal.com/wp-content/uploads/2025/08/ali-abdaal-journalling-prompts-notion-template.png"
-        imageAlt="Illustration"
-        className="w-auto h-100px  "
-        bannerClass="py-20 "
-        showImage={false}
-        showBreadcrumb={true}
+     <Banner
+        title="One-on-One Consultation Calls with Dr Muhammad Kamran"
+        description="Get tailored guidance for your research, career, or move abroad. Learn from real-world experience in academia, data analytics, and life in Australia."
+        showLottie={true}
+        lottieSrc="/lotties/business.lottie"
+        showBreadcrumb={true}  
       />
 
       {/* ✳️ What You Can Ask */}
@@ -126,7 +123,7 @@ export default function ConsultingPage() {
 
       {/* 📅 Embedded Calendly Widget */}
       <section className="bg-gray-50 dark:bg-[#0b0c12]    ">
-        <h2 className="text-3xl font-heading font-bold text-center ">
+        <h2 className="text-3xl py-5 font-heading font-bold text-center ">
           Ready to Start?
         </h2>
         <CalendlyEmbed url="https://calendly.com/dataexperts360/30min" />
