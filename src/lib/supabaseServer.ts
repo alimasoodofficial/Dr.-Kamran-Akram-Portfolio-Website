@@ -1,7 +1,6 @@
 // /lib/supabaseServer.ts
 import { createClient } from "@supabase/supabase-js";
 
-
 export function createSupabaseServerClient() {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_ANON_KEY;
