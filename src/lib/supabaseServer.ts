@@ -1,5 +1,8 @@
 // /lib/supabaseServer.ts
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
 
 export function createSupabaseServerClient() {
   const url = process.env.SUPABASE_URL;
