@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseService } from "@/lib/supabaseService";
+import { getSupabaseService } from "@/lib/supabaseService";
 
 type AdminValidationResult =
   | { ok: true; userId: string }
@@ -11,6 +11,7 @@ const forbidden = NextResponse.json({ error: "Forbidden" }, { status: 403 });
 export async function validateAdminRequest(
   req: Request
 ): Promise<AdminValidationResult> {
+  const supabaseService = getSupabaseService();
   const authHeader = req.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     return { ok: false, response: unauthorized };

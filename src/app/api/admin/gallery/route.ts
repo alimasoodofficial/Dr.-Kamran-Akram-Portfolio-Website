@@ -1,13 +1,13 @@
 // /app/api/admin/gallery/route.ts
 import { NextResponse } from "next/server";
-import { supabaseService } from "@/lib/supabaseService";
+import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
 export async function GET(request: Request) {
   const validation = await validateAdminRequest(request);
   if (!validation.ok) return validation.response;
 
-  const { data, error } = await supabaseService
+  const { data, error } = await getSupabaseService()
     .from("gallery")
     .select("*")
     .order("created_at", { ascending: false });
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json(); // expect { title, description, image_url, category, date, location, tags }
-    const { data, error } = await supabaseService
+    const { data, error } = await getSupabaseService()
       .from("gallery")
       .insert([body])
       .select()

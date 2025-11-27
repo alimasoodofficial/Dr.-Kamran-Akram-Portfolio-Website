@@ -1,8 +1,9 @@
 // /app/api/admin/check/route.ts
 import { NextResponse } from "next/server";
-import { supabaseService } from "@/lib/supabaseService";
+import { getSupabaseService } from "@/lib/supabaseService";
 
 export async function POST(req: Request) {
+  const supabaseService = getSupabaseService();
   const { accessToken } = await req.json();
   if (!accessToken) return NextResponse.json({ ok: false }, { status: 401 });
 

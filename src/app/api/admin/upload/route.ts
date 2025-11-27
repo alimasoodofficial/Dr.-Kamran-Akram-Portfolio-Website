@@ -1,6 +1,6 @@
 // /app/api/admin/upload/route.ts
 import { NextResponse } from "next/server";
-import { supabaseService } from "@/lib/supabaseService";
+import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
 export const config = { api: { bodyParser: false } };
@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   if (!validation.ok) return validation.response;
 
   try {
+    const supabaseService = getSupabaseService();
     const form = await req.formData();
     const file = form.get("file") as unknown as File;
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });

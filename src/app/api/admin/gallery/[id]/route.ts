@@ -1,6 +1,6 @@
 // /app/api/admin/gallery/[id]/route.ts
 import { NextResponse } from "next/server";
-import { supabaseService } from "@/lib/supabaseService";
+import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
 export async function GET(req: Request, context: any) {
@@ -9,7 +9,7 @@ export async function GET(req: Request, context: any) {
 
   try {
     const id = context.params.id;
-    const { data, error } = await supabaseService
+    const { data, error } = await getSupabaseService()
       .from("gallery")
       .select("*")
       .eq("id", id)
@@ -31,7 +31,7 @@ export async function PUT(req: Request, context: any) {
     const id = context.params.id;
     const body = await req.json();
 
-    const { data, error } = await supabaseService
+    const { data, error } = await getSupabaseService()
       .from("gallery")
       .update(body)
       .eq("id", id)
@@ -53,7 +53,7 @@ export async function DELETE(req: Request, context: any) {
   try {
     const id = context.params.id;
 
-    const { error } = await supabaseService.from("gallery").delete().eq("id", id);
+    const { error } = await getSupabaseService().from("gallery").delete().eq("id", id);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
