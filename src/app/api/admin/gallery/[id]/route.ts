@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 import { supabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
-type Params = { params: { id: string } };
-
-export async function GET(req: Request, { params }: Params) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
@@ -19,7 +20,10 @@ export async function GET(req: Request, { params }: Params) {
   }
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
@@ -34,7 +38,10 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
