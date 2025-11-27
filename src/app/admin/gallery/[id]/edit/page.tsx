@@ -9,6 +9,7 @@ export default function EditGalleryItem() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
+  const [checking, setChecking] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -22,8 +23,36 @@ export default function EditGalleryItem() {
     tags: "",
   });
 
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      try {
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const token = sessionData.session?.access_token;
+        if (!token) throw new Error("No token");
+
+        const validation = await fetch("/api/admin/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken: token }),
+        });
+
+        if (!validation.ok) throw new Error("Unauthorized");
+      } catch {
+        await supabaseClient.auth.signOut();
+        router.replace("/admin/login");
+        return;
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    verifyAdmin();
+  }, [router]);
+
   // Fetch existing data
   useEffect(() => {
+    if (checking) return;
+
     const fetchItem = async () => {
       try {
         const { data, error } = await supabaseClient
@@ -58,7 +87,7 @@ export default function EditGalleryItem() {
     };
 
     fetchItem();
-  }, [id, router]);
+  }, [checking, id, router]);
 
   // Handle input changes
   const handleChange = (field: string, value: string) => {
@@ -121,7 +150,7 @@ export default function EditGalleryItem() {
     }
   };
 
-  if (loading) {
+  if (checking || loading) {
     return <p className="p-10 text-center">Loading...</p>;
   }
 

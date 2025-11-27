@@ -14,25 +14,48 @@ type Item = {
 export default function AdminGallery() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const checkAndLoad = async () => {
+      setLoading(true);
       try {
         const { data: sessionData } = await supabaseClient.auth.getSession();
         const token = sessionData.session?.access_token;
-        if (!token) return router.push("/admin/login");
+        if (!token) {
+          setLoading(false);
+          router.replace("/admin/login");
+          return;
+        }
 
-        const list = await fetch("/api/admin/gallery");
+        const validation = await fetch("/api/admin/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken: token }),
+        });
+
+        if (!validation.ok) {
+          await supabaseClient.auth.signOut();
+          setLoading(false);
+          router.replace("/admin/login");
+          return;
+        }
+
+        setToken(token);
+
+        const list = await fetch("/api/admin/gallery", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!list.ok) {
           throw new Error("Failed to load gallery items");
         }
         const json = await list.json();
         setItems(json || []);
-        setLoading(false);
       } catch (err: any) {
         console.error("Error loading gallery:", err);
         alert(err.message || "Error loading gallery items");
+      } finally {
         setLoading(false);
       }
     };
@@ -42,8 +65,15 @@ export default function AdminGallery() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this item?")) return;
+    if (!token) {
+      router.replace("/admin/login");
+      return;
+    }
     try {
-      const res = await fetch(`/api/admin/gallery/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/gallery/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.error || "Failed to delete item");

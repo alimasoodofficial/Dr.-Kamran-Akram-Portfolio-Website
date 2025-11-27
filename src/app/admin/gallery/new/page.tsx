@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 export default function NewGalleryItem() {
   const [title, setTitle] = useState("");
@@ -8,13 +9,49 @@ export default function NewGalleryItem() {
   const [category, setCategory] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      try {
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const sessionToken = sessionData.session?.access_token;
+        if (!sessionToken) throw new Error("No token");
+
+        const validation = await fetch("/api/admin/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken: sessionToken }),
+        });
+
+        if (!validation.ok) {
+          throw new Error("Unauthorized");
+        }
+
+        setToken(sessionToken);
+      } catch {
+        await supabaseClient.auth.signOut();
+        router.replace("/admin/login");
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    verifyAdmin();
+  }, [router]);
 
   const handleUpload = async (): Promise<string | null> => {
     if (!file) return null;
+    if (!token) throw new Error("Unauthorized");
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || "Upload failed");
     return json.url;
@@ -26,9 +63,13 @@ export default function NewGalleryItem() {
     try {
       const image_url = await handleUpload();
       const body = { title, description, category, image_url };
+      if (!token) throw new Error("Unauthorized");
       const res = await fetch("/api/admin/gallery", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error("Create failed");
@@ -39,6 +80,10 @@ export default function NewGalleryItem() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return <div className="p-8 text-center">Checking access...</div>;
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-8">
