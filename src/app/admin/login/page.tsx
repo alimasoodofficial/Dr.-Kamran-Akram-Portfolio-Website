@@ -1,86 +1,67 @@
 "use client";
-
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
 
-const notify = () => toast("Here is your toast.");
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export default function AdminLoginPage() {
-  const router = useRouter();
+export default function AdminLogin() {
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+  const router = useRouter();
 
-  const login = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    setError("");
-
-    // 1) Login user
-    const { data: auth, error: authError } = await supabase.auth.signInWithPassword({
+    setErr("");
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
-      password: pass,
+      password,
+    });
+    if (error) return setErr(error.message);
+
+    const token = data.session?.access_token;
+    if (!token) return setErr("No session token");
+
+    // server verify admin role to keep anon key privileges minimal
+    const res = await fetch("/api/admin/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accessToken: token }),
     });
 
-    if (authError) {
-      setError("Invalid email or password");
+    if (!res.ok) {
+      setErr("Not authorized as admin");
+      await supabaseClient.auth.signOut();
       return;
     }
 
-    // 2) Check is_admin
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", auth.user.id)
-      .single();
-
-    if (!profile?.is_admin) {
-      setError("You are not authorized to access admin panel.");
-      return;
-    }
-
-    // 3) Redirect to admin panel
     router.push("/admin/gallery");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <div className="min-h-screen flex items-center justify-center p-6">
       <form
-        onSubmit={login}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm"
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow"
       >
-        <h1 className="text-xl mb-4 font-bold">Admin Login</h1>
-
+        <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
+        {err && <div className="text-red-500 mb-3">{err}</div>}
         <input
-          type="email"
-          className="w-full p-3 border rounded mb-3"
-          placeholder="Admin email"
+          className="w-full mb-3 p-3 border rounded"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <input
-          type="password"
-          className="w-full p-3 border rounded mb-4"
+          className="w-full mb-4 p-3 border rounded"
           placeholder="Password"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
-        <button className="w-full py-3 bg-blue-600 text-white rounded-lg">
-          Login
+        <button className="w-full bg-blue-600 text-white py-3 rounded">
+          Sign in
         </button>
       </form>
-      <Toaster />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// /app/admin/gallery/new/page.tsx
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,7 +29,7 @@ export default function NewGalleryItem() {
       const res = await fetch("/api/admin/gallery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error("Create failed");
       router.push("/admin/gallery");
@@ -45,15 +44,48 @@ export default function NewGalleryItem() {
     <div className="max-w-3xl mx-auto p-8">
       <h2 className="text-xl font-bold mb-4">Create Gallery Item</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="w-full p-3 border rounded" />
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="w-full p-3 border rounded" />
-        <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Category" className="w-full p-3 border rounded" />
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+        <input
+          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
+          className="w-full p-3 border rounded"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+          className="w-full p-3 border rounded"
+        />
+        <input
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="Category"
+          className="w-full p-3 border rounded"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        />
         <div className="flex gap-2">
-          <button disabled={loading} type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">{loading ? "Saving..." : "Save"}</button>
-          <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded">Cancel</button>
+          <button
+            disabled={loading}
+            type="submit"
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="px-4 py-2 border rounded"
+          >
+            Cancel
+          </button>
         </div>
       </form>
     </div>
   );
 }
+
