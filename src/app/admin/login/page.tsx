@@ -29,7 +29,13 @@ export default function AdminLogin() {
     });
 
     if (!res.ok) {
-      setErr("Not authorized as admin");
+      // try to decode server message so user sees the real reason
+      try {
+        const body = await res.json();
+        setErr(body?.error || `Not authorized as admin (${res.status})`);
+      } catch (e) {
+        setErr(`Not authorized as admin (${res.status})`);
+      }
       await supabaseClient.auth.signOut();
       return;
     }

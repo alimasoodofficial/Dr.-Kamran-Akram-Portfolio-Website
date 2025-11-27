@@ -36,6 +36,18 @@ export default function AdminGallery() {
         });
 
         if (!validation.ok) {
+          // read server message where possible to help debugging (e.g. RLS or missing service key)
+          try {
+            const body = await validation.json();
+            console.error(
+              "admin/check failed:",
+              body?.error || validation.status
+            );
+            alert(body?.error || "Not authorized as admin");
+          } catch (e) {
+            console.error("admin/check failed with status", validation.status);
+            alert("Not authorized as admin");
+          }
           await supabaseClient.auth.signOut();
           setLoading(false);
           router.replace("/admin/login");
