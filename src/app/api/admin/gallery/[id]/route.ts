@@ -6,13 +6,13 @@ import { validateAdminRequest } from "@/lib/adminAuth";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = await params;
+    const { id } = params;
     const { data, error } = await supabaseService.from("gallery").select("*").eq("id", id).single();
     if (error) return NextResponse.json({ error: error.message }, { status: 404 });
     return NextResponse.json(data);
@@ -23,13 +23,13 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await req.json();
     const { data, error } = await supabaseService.from("gallery").update(body).eq("id", id).select().single();
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
@@ -41,13 +41,13 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = await params;
+    const { id } = params;
     const { error } = await supabaseService.from("gallery").delete().eq("id", id);
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
     return NextResponse.json({ success: true });
