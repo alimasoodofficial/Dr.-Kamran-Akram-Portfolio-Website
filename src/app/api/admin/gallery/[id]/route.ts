@@ -1,17 +1,17 @@
 // /app/api/admin/gallery/[id]/route.ts
+import type { NextRequest, RouteHandlerContext } from "next/server";
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+type Context = RouteHandlerContext<{ id: string }>;
+
+export async function GET(req: NextRequest, context: Context) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = params;
+    const { id } = context.params;
     const { data, error } = await supabaseService.from("gallery").select("*").eq("id", id).single();
     if (error) return NextResponse.json({ error: error.message }, { status: 404 });
     return NextResponse.json(data);
@@ -20,15 +20,12 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: Context) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = params;
+    const { id } = context.params;
     const body = await req.json();
     const { data, error } = await supabaseService.from("gallery").update(body).eq("id", id).select().single();
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
@@ -38,15 +35,12 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: Context) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const { id } = params;
+    const { id } = context.params;
     const { error } = await supabaseService.from("gallery").delete().eq("id", id);
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
     return NextResponse.json({ success: true });
