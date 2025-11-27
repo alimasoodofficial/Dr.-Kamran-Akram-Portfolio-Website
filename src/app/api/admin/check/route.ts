@@ -4,6 +4,14 @@ import { getSupabaseService } from "@/lib/supabaseService";
 
 export async function POST(req: Request) {
   try {
+    // Ensure we have the service role key available in the deployment.
+    // If absent we'll see RLS / permission problems when reading profiles.
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("[admin/check] SUPABASE_SERVICE_ROLE_KEY not set in environment. Admin checks require server-side service key.");
+      // Return 500: tell the deployer to configure the server-side key.
+      return NextResponse.json({ ok: false, error: "Server missing SUPABASE_SERVICE_ROLE_KEY" }, { status: 500 });
+    }
+
     const supabaseService = getSupabaseService();
     const { accessToken } = await req.json();
     if (!accessToken) return NextResponse.json({ ok: false }, { status: 401 });
