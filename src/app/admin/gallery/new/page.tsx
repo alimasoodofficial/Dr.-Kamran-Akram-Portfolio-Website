@@ -7,6 +7,9 @@ export default function NewGalleryItem() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+  const [location, setLocation] = useState("");
+  const [tags, setTags] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
@@ -62,7 +65,28 @@ export default function NewGalleryItem() {
     setLoading(true);
     try {
       const image_url = await handleUpload();
-      const body = { title, description, category, image_url };
+
+      // If no date provided, default to today's date (ISO date string)
+      const finalDate =
+        date && date.trim()
+          ? new Date(date).toISOString()
+          : new Date().toISOString();
+
+      // Normalize tags -> array of trimmed strings
+      const parsedTags = tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      const body = {
+        title,
+        description,
+        category,
+        image_url,
+        date: finalDate,
+        location,
+        tags: parsedTags,
+      };
       if (!token) throw new Error("Unauthorized");
       const res = await fetch("/api/admin/gallery", {
         method: "POST",
@@ -86,28 +110,51 @@ export default function NewGalleryItem() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8">
-      <h2 className="text-xl font-bold mb-4">Create Gallery Item</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-3xl mx-auto p-8 pt-40 ">
+      <h2 className="text-4xl font-bold font-heading mb-4">Create Gallery Item</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 ">
         <input
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
-          className="w-full p-3 border rounded"
+          className="w-full p-3 border rounded placeholder-blue-300   text-xs  "
         />
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description"
-          className="w-full p-3 border rounded"
+          className="w-full p-3 border rounded placeholder-blue-300   text-xs"
         />
         <input
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           placeholder="Category"
-          className="w-full p-3 border rounded"
+          className="w-full font-body p-3 border rounded placeholder-blue-300   text-xs"
         />
+        <div className="grid sm:grid-cols-3 gap-3">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="p-3 border rounded placeholder-blue-300  text-xs"
+            aria-label="Date"
+          />
+
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Location"
+            className="p-3 border rounded placeholder-blue-300  text-xs"
+          />
+
+          <input
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="Tags (comma-separated)"
+            className="p-3 border rounded placeholder-blue-300  text-xs"
+          />
+        </div>
         <input
           type="file"
           accept="image/*"
@@ -133,4 +180,3 @@ export default function NewGalleryItem() {
     </div>
   );
 }
-

@@ -27,7 +27,10 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.path}`;
+    // data.path is the path *inside* the bucket (e.g. "gallery-123.png").
+    // Build a public URL that includes the bucket name.
+    const bucket = "gallery-images";
+    const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${data.path}`;
     return NextResponse.json({ url: publicUrl });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

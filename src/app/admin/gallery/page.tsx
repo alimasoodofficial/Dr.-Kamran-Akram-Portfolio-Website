@@ -9,6 +9,9 @@ type Item = {
   description?: string;
   image_url?: string;
   category?: string;
+  date?: string;
+  location?: string;
+  tags?: string[];
 };
 
 export default function AdminGallery() {
@@ -122,11 +125,11 @@ export default function AdminGallery() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid  md:grid-cols-3 gap-6">
           {items.map((it) => (
             <div
               key={it.id}
-              className="bg-white dark:bg-gray-900 p-4 rounded shadow"
+              className="card p-4 rounded shadow"
             >
               {it.image_url ? (
                 <img
@@ -139,6 +142,20 @@ export default function AdminGallery() {
               )}
               <h3 className="font-semibold">{it.title}</h3>
               <p className="text-sm text-gray-500">{it.category}</p>
+              <div className="text-xs text-gray-400 mt-2">
+                {it.date ? new Date(it.date).toLocaleDateString() : ""}
+                {it.location ? ` • ${it.location}` : ""}
+              </div>
+              <div className="flex gap-2 flex-wrap mt-2">
+                {it.tags?.map((t) => (
+                  <span
+                    key={t}
+                    className="text-xs card px-2 py-1 bg-gray-100 rounded-full"
+                  >
+                    #{t}
+                  </span>
+                ))}
+              </div>
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={() => router.push(`/admin/gallery/${it.id}/edit`)}

@@ -68,7 +68,8 @@ export default function EditGalleryItem() {
           title: data.title || "",
           description: data.description || "",
           category: data.category || "",
-          date: data.date || "",
+          // normalize date to YYYY-MM-DD for date input
+          date: data.date ? new Date(data.date).toISOString().slice(0, 10) : "",
           location: data.location || "",
           image_url: data.image_url || "",
           tags: data.tags
@@ -101,6 +102,8 @@ export default function EditGalleryItem() {
     try {
       const updatePayload = {
         ...form,
+        // convert date from YYYY-MM-DD to ISO when saving
+        date: form.date ? new Date(form.date).toISOString() : undefined,
         tags: form.tags
           .split(",")
           .map((t) => t.trim())
@@ -166,7 +169,7 @@ export default function EditGalleryItem() {
             </label>
 
             <input
-              type="text"
+              type={field === "date" ? "date" : "text"}
               value={value}
               onChange={(e) => handleChange(field, e.target.value)}
               className="w-full p-3 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
@@ -195,5 +198,3 @@ export default function EditGalleryItem() {
     </main>
   );
 }
-
-
