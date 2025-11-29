@@ -8,8 +8,17 @@ import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
 import ThemeBackground from "@/components/ui/ThemeBackground";
 import ElectricBorder from "@/components/ElectricBorder";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
 
 export default function HomePage() {
+  const stats = {
+    counters: [
+      { value: 1200, label: "Patients Treated", suffix: "+" },
+      { value: 15, label: "Years Experience", suffix: "+" },
+      { value: 50, label: "Countries Reached", suffix: "+" },
+      { value: 200, label: "Publications", suffix: "+" },
+    ],
+  };
   return (
     <>
       <div className="overflow-hidden relative">
@@ -170,25 +179,23 @@ export default function HomePage() {
           {/* 🖼️ Right Side: Images */}
 
           <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
-              <ElectricBorder
-        color="#7df9ff"
-        speed={10}
-        chaos={1}
-        thickness={20}
-        style={{ borderRadius: 20 }}
-      >
-        <div>
-          <Image
-              src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
-              alt="Dr Kamran Akram"
-              width={500}
-              height={100}
-              className="object-contain rounded-2xl shadow-lg w-full "
-            />
-        </div>
-
-      </ElectricBorder>
-            
+            <ElectricBorder
+              color="#7df9ff"
+              speed={10}
+              chaos={1}
+              thickness={20}
+              style={{ borderRadius: 20 }}
+            >
+              <div>
+                <Image
+                  src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
+                  alt="Dr Kamran Akram"
+                  width={500}
+                  height={100}
+                  className="object-contain rounded-2xl shadow-lg w-full "
+                />
+              </div>
+            </ElectricBorder>
           </div>
         </div>
 
@@ -212,6 +219,12 @@ export default function HomePage() {
           >
             Work With Me
           </Button>
+        </div>
+      </section>
+      <section className="py-16 bg-gradient-to-r from-background/50 to-transparent">
+        <div className="max-w-7xl mx-auto px-5">
+          {/* pass the array inside an object and render the AnimatedCounter grid */}
+          <AnimatedCounter counters={stats.counters} />
         </div>
       </section>
     </>
