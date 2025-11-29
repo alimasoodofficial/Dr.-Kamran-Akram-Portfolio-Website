@@ -9,6 +9,7 @@ import Image from "next/image";
 import ThemeBackground from "@/components/ui/ThemeBackground";
 import ElectricBorder from "@/components/ElectricBorder";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
+import { GlowingEffect } from "@/components/ui/glowing-effect";
 
 export default function HomePage() {
   const stats = {
@@ -123,16 +124,16 @@ export default function HomePage() {
             </GradientText>
           </h2>
           <div className="flex flex-col md:flex-row justify-evenly gap-2.5 items-start md:items-center">
-            <div className=" rounded-2xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
+            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
               Entrepreneur
             </div>
-            <div className=" rounded-2xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
+            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
               Veterinarian
             </div>
-            <div className=" rounded-2xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
+            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
               Science Communicator
             </div>
-            <div className=" rounded-2xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
+            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
               Researcher
             </div>
           </div>
@@ -221,10 +222,11 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className="py-16 bg-gradient-to-r from-background/50 to-transparent">
+      <section className=" bg-gradient-to-r from-background/50 to-transparent">
         <div className="max-w-7xl mx-auto px-5">
           {/* pass the array inside an object and render the AnimatedCounter grid */}
           <AnimatedCounter counters={stats.counters} />
+          
         </div>
       </section>
     </>

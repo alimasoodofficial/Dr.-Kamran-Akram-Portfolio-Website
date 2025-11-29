@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import GradientText from "./GradientText";
 
 interface AnimatedCounterProps {
   value: number;
@@ -58,7 +59,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
         transition={{ duration: 0.5, delay: delay }}
         className="text-center"
       >
-        <div className="text-6xl font-bold  mb-2">
+        <div className="text-5xl font-bold  mb-2">
           {prefix}
           {displayValue}
           {suffix}
@@ -87,7 +88,7 @@ const ProjectCounterGrid: React.FC<ProjectCounterGridProps> = ({
   ],
 }) => {
   return (
-    <div className="w-full min-h-screen bg-background flex items-center justify-center p-8">
+    <div className="w-full  bg-background flex items-center justify-center p-8">
       <div className="max-w-6xl w-full">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -95,10 +96,16 @@ const ProjectCounterGrid: React.FC<ProjectCounterGridProps> = ({
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Our Achievements
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+           <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
+                      <GradientText
+                        colors={["#97ABFF", "#123597"]}
+                        animationSpeed={6}
+                        className=""
+                      >
+                        My Achievements
+                      </GradientText>
+                    </h2>
+          <p className=" text-muted-foreground max-w-2xl mx-auto font-body">
             Numbers that speak for themselves. We're proud of what we've accomplished together.
           </p>
         </motion.div>
