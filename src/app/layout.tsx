@@ -6,6 +6,7 @@ import ThemeProviderWrapper from "@/components/providers/ThemeProviderWrapper";
 import type { Metadata } from "next";
 
 import { DM_Serif_Display, Poppins } from "next/font/google";
+import BackgroundGrid from "@/components/ui/BackgroundGrid";
 
 // Define fonts
 const dmSerif = DM_Serif_Display({
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className="min-h-screen antialiased  font-body ">
         <Navbar />
       
+       <BackgroundGrid className="dark:opacity-5"/>
 
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
             
