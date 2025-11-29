@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import GradientText from "@/components/ui/GradientText";
 
 type Item = {
   id: string;
@@ -100,13 +101,21 @@ export default function AdminGallery() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Gallery Admin</h1>
-        <div className="flex gap-2">
+    <div className="pt-40 max-w-6xl mx-auto">
+      <div className="flex flex-col gap-4 items-center justify-between mb-6">
+        <h1 className="text-4xl font-bold font-heading">
+          <GradientText
+            colors={["#97ABFF", "#123597"]}
+            animationSpeed={6}
+            className=""
+          >
+            Gallery Admin
+          </GradientText>
+        </h1>
+        <div className="flex  gap-2">
           <button
             onClick={() => router.push("/admin/gallery/new")}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer"
           >
             Create
           </button>
@@ -115,7 +124,7 @@ export default function AdminGallery() {
               supabaseClient.auth.signOut();
               router.push("/admin/login");
             }}
-            className="px-3 py-2 border rounded"
+            className="px-3 py-2 border rounded cursor-pointer"
           >
             Sign out
           </button>
@@ -123,14 +132,11 @@ export default function AdminGallery() {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="font-heading">Loading...</p>
       ) : (
         <div className="grid  md:grid-cols-3 gap-6">
           {items.map((it) => (
-            <div
-              key={it.id}
-              className="card p-4 rounded shadow"
-            >
+            <div key={it.id} className="card p-4 bg-gray-50  rounded shadow">
               {it.image_url ? (
                 <img
                   src={it.image_url}
@@ -156,16 +162,16 @@ export default function AdminGallery() {
                   </span>
                 ))}
               </div>
-              <div className="mt-3 flex gap-2">
+              <div className=" mt-3 flex gap-2">
                 <button
                   onClick={() => router.push(`/admin/gallery/${it.id}/edit`)}
-                  className="px-3 py-1 border rounded"
+                  className="px-3 py-1 border rounded cursor-pointer"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(it.id)}
-                  className="px-3 py-1 bg-red-600 text-white rounded"
+                  className="px-3 py-1 bg-red-600 text-white rounded cursor-pointer"
                 >
                   Delete
                 </button>
