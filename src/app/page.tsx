@@ -7,7 +7,7 @@ import { techLogos } from "@/components/sections/LogoLoopDetails";
 import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
 import ThemeBackground from "@/components/ui/ThemeBackground";
-import ElectricBorder from "@/components/ElectricBorder";
+import ElectricBorder from "@/components/ui/ElectricBorder";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 
@@ -142,6 +142,7 @@ export default function HomePage() {
           {/* 🧠 Left Side: Text */}
           <div className="flex-1 text-center   py-10 px-5 md:text-left ">
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify  mx-auto pt-5 md:mx-0">
+              
               I am Dr Muhammad Kamran, a scientist, data storyteller, and
               dreamer who believes that meaningful change begins with curiosity.
               My journey started in a small village in Pakistan where simple
@@ -150,30 +151,7 @@ export default function HomePage() {
               across cities, continents, and disciplines until I found myself in
               Brisbane, exploring how data can reveal the invisible patterns
               that shape life, health, and sustainability.
-              {/* <br />
-                <br />
-                At the University of Queensland I completed my PhD in Animal
-                Sciences, studying how cattle and buffalo interact with
-                parasitic flies and how technology can help farmers protect
-                animal welfare. Now I work as a Data Analyst at Neogen
-                Australasia, turning complex genetic datasets into insights that
-                guide smarter agricultural decisions. At the same time I serve
-                as a Red Meat Industry Ambassador with Meat & Livestock
-                Australia, helping bridge science and community through
-                education, innovation, and storytelling.
-                <br />
-                <br />
-                Beyond research I build ventures that connect people, knowledge,
-                and opportunity. Through <strong>Data Experts 360</strong> I
-                mentor future data leaders and design tools that bring research
-                closer to real-world problems. <strong>Agri Experts 360</strong>{" "}
-                extends this vision into agritech learning and gamified
-                education, while <strong>Triisum</strong>, my eco-tourism
-                startup, explores how nature and entrepreneurship can coexist to
-                inspire purposeful living. Together these initiatives reflect
-                who I am — a scientist who creates, a creator who cares, and a
-                lifelong learner who believes that impact grows when science
-                meets humanity. */}
+            
             </p>
           </div>
 
@@ -182,9 +160,9 @@ export default function HomePage() {
           <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
             <ElectricBorder
               color="#7df9ff"
-              speed={10}
-              chaos={1}
-              thickness={20}
+              speed={2}
+              chaos={0.1}
+              thickness={5}
               style={{ borderRadius: 20 }}
             >
               <div>
@@ -226,7 +204,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5">
           {/* pass the array inside an object and render the AnimatedCounter grid */}
           <AnimatedCounter counters={stats.counters} />
-          
         </div>
       </section>
     </>

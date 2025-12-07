@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import GradientText from "@/components/ui/GradientText";
-import ElectricBorder from "@/components/ElectricBorder";
+import ElectricBorder from "@/components/ui/ElectricBorder";
 import { toast } from "react-hot-toast";
 
 export default function AdminLogin() {
@@ -50,45 +50,44 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <ElectricBorder
-              color="orange"
-              speed={100}
-              chaos={2}
-              thickness={20}
-              style={{ borderRadius: 20 }}
-            >
-
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow"
+        color="orange"
+        speed={100}
+        chaos={2}
+        thickness={20}
+        style={{ borderRadius: 20 }}
       >
-         <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
-                    <GradientText
-                      colors={["#97ABFF", "#123597"]}
-                      animationSpeed={6}
-                      className="text-5xl"
-                    >
-                      Admin Login
-                    </GradientText>
-                  </h2>
-        {err && <div className="text-red-500 mb-3">{err}</div>}
-        <input
-          className="w-full mb-3 p-3 border border-gray-200 rounded placeholder:text-gray-600"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="w-full mb-4 p-3 border rounded border-gray-200 placeholder:text-gray-600"
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="w-full bg-blue-600 text-white py-3 rounded">
-          Sign in
-        </button>
-      </form>
-            </ElectricBorder>
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow"
+        >
+          <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
+            <GradientText
+              colors={["#97ABFF", "#123597"]}
+              animationSpeed={6}
+              className="text-5xl"
+            >
+              Admin Login
+            </GradientText>
+          </h2>
+          {err && <div className="text-red-500 mb-3">{err}</div>}
+          <input
+            className="w-full mb-3 p-3 border border-gray-200 rounded placeholder:text-gray-600"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            className="w-full mb-4 p-3 border rounded border-gray-200 placeholder:text-gray-600"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className="w-full bg-blue-600 text-white py-3 rounded">
+            Sign in
+          </button>
+        </form>
+      </ElectricBorder>
     </div>
   );
 }

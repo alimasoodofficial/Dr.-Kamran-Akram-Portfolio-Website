@@ -1,4 +1,4 @@
-import ElectricBorder from "@/components/ElectricBorder";
+import ElectricBorder from "@/components/ui/ElectricBorder";
 import Banner from "@/components/sections/Banner";
 import { GlowingEffectDemo } from "@/components/sections/GlowingEffectDemo";
 import { CreativePricingDemo } from "@/components/ui/PricingPlan";
@@ -17,52 +17,50 @@ export default function ProjectsPage() {
       <GlowingEffectDemo />
 
       <div className="flex items-center justify-evenly py-20 ">
-      <ElectricBorder
-        color="#7df9ff"
-        speed={1}
-        chaos={0.5}
-        thickness={2}
-        style={{ borderRadius: 16 }}
-      >
-        <div>
-          <h1>Main Heading</h1>
-          <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
-            A glowing, animated border wrapper.
-          </p>
-        </div>
+        <ElectricBorder
+          color="#7df9ff"
+          speed={1}
+          chaos={0.5}
+          thickness={2}
+          style={{ borderRadius: 16 }}
+        >
+          <div>
+            <h1>Main Heading</h1>
+            <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
+              A glowing, animated border wrapper.
+            </p>
+          </div>
+        </ElectricBorder>
 
-      </ElectricBorder>
+        <ElectricBorder
+          color="#7df9ff"
+          speed={1}
+          chaos={0.5}
+          thickness={2}
+          style={{ borderRadius: 16 }}
+        >
+          <div>
+            <h1>Main Heading</h1>
+            <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
+              A glowing, animated border wrapper.
+            </p>
+          </div>
+        </ElectricBorder>
 
-      <ElectricBorder
-        color="#7df9ff"
-        speed={1}
-        chaos={0.5}
-        thickness={2}
-        style={{ borderRadius: 16 }}
-      >
-        <div>
-          <h1>Main Heading</h1>
-          <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
-            A glowing, animated border wrapper.
-          </p>
-        </div>
-      </ElectricBorder>
-
-      <ElectricBorder
-        color="#7df9ff"
-        speed={1}
-        chaos={0.5}
-        thickness={2}
-        style={{ borderRadius: 16 }}
-      >
-        <div>
-          <h1>Main Heading</h1>
-          <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
-            A glowing, animated border wrapper.
-          </p>
-        </div>
-      </ElectricBorder>
-
+        <ElectricBorder
+          color="#7df9ff"
+          speed={1}
+          chaos={0.5}
+          thickness={2}
+          style={{ borderRadius: 16 }}
+        >
+          <div>
+            <h1>Main Heading</h1>
+            <p style={{ margin: "6px 0 0", opacity: 0.8 }}>
+              A glowing, animated border wrapper.
+            </p>
+          </div>
+        </ElectricBorder>
       </div>
 
       <div>
