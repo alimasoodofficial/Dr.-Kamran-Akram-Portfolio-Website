@@ -5,6 +5,8 @@ import { packages } from "@/data/consultancyPackages";
 
 import Banner from "@/components/sections/Banner";
 import Button from "@/components/ui/Button";
+import { CreativePricing } from "@/components/ui/creative-pricing";
+import { CreativePricingDemo } from "@/components/ui/PricingPlan";
 
 export default function ConsultingPage() {
   return (
@@ -79,46 +81,10 @@ export default function ConsultingPage() {
         </div>
       </section>
 
-      {/* 🎯 Consultation Packages */}
-      <section className="py-20 px-6 max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-heading font-bold mb-10 text-gray-900 dark:text-white">
-          Consultation Packages
-        </h2>
+    
 
-        <div className="grid md:grid-cols-3 gap-10 ">
-          {packages.map((pkg) => (
-            <div
-              key={pkg.id}
-              className="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow"
-            >
-              <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
-                {pkg.title}
-              </h3>
-
-              <p className="text-sm md:text-lg text-gray-600 dark:text-gray-300 mb-2">
-                {pkg.duration}
-              </p>
-
-              <p className="text-3xl font-semibold mb-4 text-blue-500">
-                {pkg.price}
-              </p>
-
-              <ul className="text-left list-disc list-inside mb-6  space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                {pkg.features.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-
-           
-              <Button
-                href={pkg.calendly}
-                className="btn-gradient text-white text-sm px-6 py-2 rounded-2xl font-medium transition-transform hover:scale-105 hover:opacity-90"
-              >
-                Join 1000+ Subscribers
-              </Button>
-            </div>
-          ))}
-        </div>
+      <section>
+        <CreativePricingDemo />
       </section>
 
       {/* 📅 Embedded Calendly Widget */}

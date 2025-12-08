@@ -3,7 +3,7 @@ import Banner from "@/components/sections/Banner";
 import { GlowingEffectDemo } from "@/components/sections/GlowingEffectDemo";
 import { CreativePricingDemo } from "@/components/ui/PricingPlan";
 import { Timeline } from "@/components/ui/Timeline";
-
+import ProjectPage from "../../components/ui/ProjectPage";
 export default function ProjectsPage() {
   return (
     <>
@@ -15,12 +15,11 @@ export default function ProjectsPage() {
         className="w-auto h-100px"
       />
 
-<div className="flex justify-center">
-
+      <div className="flex justify-center">
         <GlowingEffectDemo />
-</div>
+      </div>
 
-      <div className="flex items-center justify-evenly py-20 ">
+      {/* <div className="flex items-center justify-evenly py-20 ">
         <ElectricBorder
           color="#7df9ff"
           speed={1}
@@ -65,10 +64,14 @@ export default function ProjectsPage() {
             </p>
           </div>
         </ElectricBorder>
+      </div> */}
+
+      <div>
+        <Timeline />
       </div>
 
       <div>
-      <Timeline />
+        <ProjectPage/>
       </div>
     </>
   );
