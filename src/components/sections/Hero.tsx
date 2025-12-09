@@ -13,7 +13,7 @@ export default function Hero() {
           scale={1}
           color="#0a84ff"
           noiseIntensity={0}
-          rotation={0}
+          rotation={45}
         />
       </div>
 
