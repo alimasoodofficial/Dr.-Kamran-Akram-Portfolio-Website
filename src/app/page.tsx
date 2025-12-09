@@ -24,7 +24,7 @@ export default function HomePage() {
     <>
       <div className="overflow-hidden relative">
         <Hero />
-        <Spline
+        {/* <Spline
           className="
       absolute 
       right-0 
@@ -36,7 +36,7 @@ export default function HomePage() {
       -mt-60
       overflow-hidden
     "
-        />
+        /> */}
       </div>
 
       <div className="relative overflow-hidden py-20 transition-all">

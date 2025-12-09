@@ -25,7 +25,7 @@ export default function ProjectsPage() {
       </div>
 
       <div>
-        {/* <ProjectPage/> */}
+        <ProjectPage/>
       </div>
     </>
   );
