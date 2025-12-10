@@ -10,6 +10,7 @@ import ThemeBackground from "@/components/ui/ThemeBackground";
 import ElectricBorder from "@/components/ui/ElectricBorder";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
+import CircularGallery from "@/components/ui/CircularGallery";
 
 export default function HomePage() {
   const stats = {
@@ -140,9 +141,8 @@ export default function HomePage() {
         </div>
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-16 lg:gap-x-32 max-w-7xl mx-auto">
           {/* 🧠 Left Side: Text */}
-          <div className="flex-1 text-center   py-10 px-5 md:text-left ">
+          <div className="flex-1 text-center   md:py-10 md:px-5 md:text-left ">
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify  mx-auto pt-5 md:mx-0">
-              
               I am Dr Muhammad Kamran, a scientist, data storyteller, and
               dreamer who believes that meaningful change begins with curiosity.
               My journey started in a small village in Pakistan where simple
@@ -151,7 +151,6 @@ export default function HomePage() {
               across cities, continents, and disciplines until I found myself in
               Brisbane, exploring how data can reveal the invisible patterns
               that shape life, health, and sustainability.
-            
             </p>
           </div>
 
@@ -204,6 +203,28 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5">
           {/* pass the array inside an object and render the AnimatedCounter grid */}
           <AnimatedCounter counters={stats.counters} />
+        </div>
+      </section>
+
+      <section className="py-10">
+        <div>
+          <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
+            <GradientText
+              colors={["#97ABFF", "#123597"]}
+              animationSpeed={6}
+              className=""
+            > My Snapshot Story
+            </GradientText>
+          </h2>
+        </div>
+        <div style={{ height: "600px", position: "relative" }}>
+          <CircularGallery
+            bend={8}
+            textColor="#ffffff"
+            borderRadius={0.05}
+            scrollEase={0.02}
+            scrollSpeed={4}
+          />
         </div>
       </section>
     </>
