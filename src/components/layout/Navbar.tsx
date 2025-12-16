@@ -6,6 +6,7 @@ import { navLinks } from "@/data/navLinks";
 import { freeResources } from "@/data/freeResourcesMenu";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
+import "../../app/globals.css";
 import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
@@ -123,7 +124,7 @@ export default function Navbar() {
           <Button
             type="button"
             href="/newsletter"
-            className="hidden lg:block btn-gradient text-white font-medium transition-transform duration-700 hover:scale-105"
+            className="hidden lg:block comic-button "
           >
             Join 1000+ Subscribers
           </Button>
@@ -183,7 +184,7 @@ export default function Navbar() {
           <Button
             href="/newsletter"
             onClick={() => setIsOpen(false)}
-            className="btn-gradient text-white text-sm px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            className="comic-button"
           >
             Join 1000+ Subscribers
           </Button>

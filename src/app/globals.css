@@ -164,6 +164,32 @@ canvas {
   animation: gradient 8s linear infinite;
 }
 
-/* a.VJL48qbQzWENTFAh1Knk {
-  display: none;
-} */
+/* 📅 cosmic button */
+/* From Uiverse.io by Gautammsharma */ 
+.comic-button {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #281d7b;
+  border: 2px solid #000;
+  border-radius: 10px;
+  box-shadow: 5px 5px 0px #000;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.comic-button:hover {
+  background-color: #fff;
+  color: #1b0ead;
+  border: 2px solid #2c0f96;
+  box-shadow: 5px 5px 0px #041eaf;
+}
+
+.comic-button:active {
+  background-color: #fcf414;
+  box-shadow: none;
+  transform: translateY(4px);
+}
