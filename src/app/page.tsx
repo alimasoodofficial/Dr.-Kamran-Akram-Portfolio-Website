@@ -54,7 +54,7 @@ export default function HomePage() {
           ariaLabel="Technology partners"
         />
       </div>
-      <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
+      <section className="  flex flex-col md:flex-row align-center justify-center px-5  py-20 mx-auto gap-10 ">
         <div className="flex flex-col gap-5 duration-300">
           <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
             How Can <br />{" "}
@@ -112,7 +112,7 @@ export default function HomePage() {
       </section>
 
       {/* About Me Section */}
-      <section className="flex flex-col items-center justify-center mx-5 rounded-2xl  pt-10 md:pt-20 pb-20 px-6 md:px-16 lg:px-24">
+      <section className="flex flex-col items-center justify-center  rounded-2xl  pt-10 md:pt-20 pb-20  ">
         {/* Main content container */}
         <div className="pb-20">
           <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">

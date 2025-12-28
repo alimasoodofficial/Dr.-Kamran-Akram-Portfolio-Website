@@ -10,26 +10,32 @@ export const freeResources: FreeResourceItem[] = [
   {
     title: "YouTube Channel",
     description: "Videos on productivity, business & tech.",
-    href: "/resources/youtube",
+    href: "#",
     icon: "/icons/cog.svg",
   },
   {
     title: "Newsletter",
     description: "Weekly insights to boost your learning.",
-    href: "/resources/newsletter",
+    href: "#",
+    icon: "/icons/cog.svg",
+  },
+  {
+    title: "Research Articles",
+    description: "Weekly insights to boost your learning.",
+    href: "/free-resources/articles",
     icon: "/icons/cog.svg",
   },
   {
     title: "Podcast",
     description: "Inspiring chats with creators & experts.",
-    href: "/resources/podcast",
+    href: "#",
     icon: "/icons/cog.svg",
     
   },
   {
     title: "Blog",
     description: "Deep dives into creativity & entrepreneurship.",
-    href: "/resources/blog",
+    href: "#",
     icon: "/icons/cog.svg",
   },
 ];
