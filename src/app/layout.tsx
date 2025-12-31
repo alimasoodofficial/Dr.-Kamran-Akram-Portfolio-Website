@@ -23,7 +23,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "DR.Muhammad Kamran",
-  description: "Personal Portfolio of Dr.Muhammad Kamran",};
+  description: "Personal Portfolio of Dr.Muhammad Kamran",
+};
 
 export default function RootLayout({
   children,
@@ -31,14 +32,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en" className={`${dmSerif.variable} ${poppins.variable}`}>
+    <html
+      suppressHydrationWarning
+      lang="en"
+      className={`${dmSerif.variable} ${poppins.variable}`}
+    >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+      </head>
       <body className="min-h-screen antialiased  font-body ">
         <Navbar />
-      
-       <BackgroundGrid className="dark:opacity-5"/>
+
+        <BackgroundGrid className="dark:opacity-5" />
 
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
-            
+
         <Footer />
       </body>
     </html>

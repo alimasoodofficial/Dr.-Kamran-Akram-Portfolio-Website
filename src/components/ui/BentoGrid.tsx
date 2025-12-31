@@ -1,0 +1,62 @@
+import { InfoCard, StripCard, ImageCard, CenterStatCard } from "./HeroCard";
+
+export default function BentoGrid() {
+  return (
+    <div className="w-full max-w-[1400px] px-6 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+      {/* --- Column 1 --- */}
+      <div className="flex flex-col gap-6">
+        <InfoCard
+          title="Ph.D"
+          subtitle="Animal Sciences"
+          desc="Translating complex research into practical knowledge for farmers, students, and communities."
+          btnText="View Publications"
+          bgClass="bg-blue-600"
+        />
+        <StripCard
+          icon="fa-solid fa-microphone-lines"
+          text="Science Communicator"
+          bgClass="bg-yellow-600 "
+        />
+      </div>
+
+      {/* --- Column 2 --- */}
+      <div className="flex flex-col gap-6 h-full">
+        <ImageCard
+          category="Health"
+          title="Transform Lives Through Health & Care Sponsorship"
+          bgImage="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
+          overlayColor="rgba(5, 0, 148, 0.75) 0%, rgba(5, 5, 240, 0.5) 35%, rgba(0, 133, 235, 1) 100%"
+        />
+      </div>
+
+      {/* --- Column 3 --- */}
+      <div className="flex flex-col gap-6">
+        <CenterStatCard />
+        <ImageCard
+          category="Education"
+          title="Support Poor Kids with School Fees & Supplies"
+          bgImage="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop"
+          overlayColor="rgba(153, 108, 29, 0.5) 0%, rgba(253, 187, 45, 1) 100%"
+          heightClass="h-[240px]"
+        />
+      </div>
+
+      {/* --- Column 4 --- */}
+      <div className="flex flex-col gap-6">
+        <InfoCard
+          title=""
+          subtitle="Free Resources"
+          desc="Access my collection of eBooks, courses, and free guides for students and professionals."
+          btnText="Download eBooks"
+          bgClass="bg-yellow-600" // Custom brown
+          href="free-resources/ebooks"
+        />
+        <StripCard
+          icon="fa-solid fa-award"
+          text="MLA Red Meat Industry Ambassador"
+          bgClass="bg-blue-600"
+        />
+      </div>
+    </div>
+  );
+}

@@ -157,13 +157,7 @@ export default function HomePage() {
           {/* 🖼️ Right Side: Images */}
 
           <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
-            <ElectricBorder
-              color="#7df9ff"
-              speed={2}
-              chaos={0.1}
-              thickness={5}
-              style={{ borderRadius: 20 }}
-            >
+           
               <div>
                 <Image
                   src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
@@ -173,7 +167,6 @@ export default function HomePage() {
                   className="object-contain rounded-2xl shadow-lg w-full "
                 />
               </div>
-            </ElectricBorder>
           </div>
         </div>
 
