@@ -11,6 +11,7 @@ import ElectricBorder from "@/components/ui/ElectricBorder";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 import CircularGallery from "@/components/ui/CircularGallery";
+import CursorReveal from "@/components/ui/CursorReveal";
 
 export default function HomePage() {
   const stats = {
@@ -159,13 +160,15 @@ export default function HomePage() {
           <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
            
               <div>
-                <Image
+                {/* <Image
                   src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
                   alt="Dr Kamran Akram"
                   width={500}
                   height={100}
                   className="object-contain rounded-2xl shadow-lg w-full "
-                />
+                /> */}
+  
+                <CursorReveal />
               </div>
           </div>
         </div>

@@ -13,10 +13,8 @@
   --color-accent: #10b981;
   --color-dark: #111827;
   --color-light: #f3f4f6;
-  --color-blue-primary:linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --color-blue-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   --color-container: #f4f6f7;
-;
-
   /* ✨ Dark Theme Extended Palette */
   --color-dark-bg: #040010;
   --color-dark-card: #111319;
@@ -46,14 +44,7 @@
 
 /* 🌙 Dark Theme */
 .dark {
---background: linear-gradient(
-  180deg,
-  #0b0c10 0%,
-  #111319 50%,
-  #0b1020 100%
-);
-
-
+  --background: linear-gradient(180deg, #0b0c10 0%, #111319 50%, #0b1020 100%);
 
   --foreground: var(--color-dark-text);
 }
@@ -165,7 +156,7 @@ canvas {
 }
 
 /* 📅 cosmic button */
-/* From Uiverse.io by Gautammsharma */ 
+/* From Uiverse.io by Gautammsharma */
 .comic-button {
   padding: 10px 20px;
   font-size: 15px;
@@ -192,4 +183,23 @@ canvas {
   background-color: #fcf414;
   box-shadow: none;
   transform: translateY(4px);
+}
+
+.mask-effect {
+  --x: 50%;
+  --y: 50%;
+  --size: 0px;
+
+  mask-image: radial-gradient(
+    circle var(--size) at var(--x) var(--y),
+    transparent 0%,
+    transparent 60%,
+    black 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--size) at var(--x) var(--y),
+    transparent 0%,
+    transparent 60%,
+    black 100%
+  );
 }
