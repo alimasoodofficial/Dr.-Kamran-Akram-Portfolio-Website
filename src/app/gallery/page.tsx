@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
+import GlowingInput from "@/components/ui/GlowingInput";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 const DEFAULT_IMAGE =
@@ -13,9 +14,7 @@ export default async function GalleryPage() {
   // ✅ Fetch from Supabase
   const { data, error } = await supabase
     .from("gallery")
-    .select(
-      "id, title, description, image_url, date, location, category, tags"
-    )
+    .select("id, title, description, image_url, date, location, category, tags")
     .order("date", { ascending: false });
 
   // ✅ Apply default image if none exists
@@ -25,9 +24,8 @@ export default async function GalleryPage() {
       row.image_url && row.image_url.trim() ? row.image_url : DEFAULT_IMAGE,
   }));
 
-
   return (
-    <main >
+    <main>
       <Banner
         title="Gallery"
         description="We provide amazing services and solutions for your business.."
@@ -35,10 +33,12 @@ export default async function GalleryPage() {
         lottieSrc="/lotties/business.lottie"
         showBreadcrumb={true}
       />
+      <GlowingInput
+        // placeholder="search"
+      />
 
       <div className="py-20 px-6 max-w-7xl mx-auto">
-      <GalleryGridClient items={items} />
-
+        <GalleryGridClient items={items} />
       </div>
     </main>
   );

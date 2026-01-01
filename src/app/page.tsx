@@ -159,7 +159,9 @@ export default function HomePage() {
 
           <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
            
-              <div>
+              <div 
+              className=""
+              >
                 {/* <Image
                   src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
                   alt="Dr Kamran Akram"

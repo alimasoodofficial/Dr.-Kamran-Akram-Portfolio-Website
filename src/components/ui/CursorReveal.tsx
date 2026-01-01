@@ -36,7 +36,7 @@ const CursorReveal = () => {
       <img
         src="/images/wordcloud.png"
         alt="Word Cloud"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-10"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-10 Scard"
       />
 
       {/* Top image (masked) */}
@@ -44,7 +44,7 @@ const CursorReveal = () => {
         ref={topImageRef}
         src="/images/original.jpg"
         alt="Original"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-20 mask-effect"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-20 mask-effect Scard"
       />
     </div>
   );
