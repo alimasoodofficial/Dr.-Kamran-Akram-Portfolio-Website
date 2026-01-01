@@ -106,9 +106,9 @@ export const ImageCard = ({
 export const CenterStatCard = () => (
   <CardWrapper className="bg-blue-600 flex flex-col justify-center items-center text-center text-white">
     <h2 className="text-4xl font-bold mb-1">10+</h2>
-    <p className="font-medium mb-6">Donations Changing Lives</p>
+    <p className="font-medium mb-6">Years of Experience</p>
     <div className="bg-black/10 w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
-      <i className="fa-solid fa-hand-holding-dollar"></i> Donate for Life
+      <i className="fa-solid fa-hand-holding-dollar"></i> Hire for Consulting
     </div>
   </CardWrapper>
 );

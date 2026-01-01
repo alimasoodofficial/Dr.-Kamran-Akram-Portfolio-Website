@@ -22,9 +22,9 @@ export default function BentoGrid() {
       {/* --- Column 2 --- */}
       <div className="flex flex-col gap-6 h-full">
         <ImageCard
-          category="Health"
-          title="Transform Lives Through Health & Care Sponsorship"
-          bgImage="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
+          category="Specialization"
+          title="Advancing Veterinary Science & Agriculture Projects"
+          bgImage="https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"
           overlayColor="rgba(5, 0, 148, 0.75) 0%, rgba(5, 5, 240, 0.5) 35%, rgba(0, 133, 235, 1) 100%"
         />
       </div>
@@ -33,9 +33,9 @@ export default function BentoGrid() {
       <div className="flex flex-col gap-6">
         <CenterStatCard />
         <ImageCard
-          category="Education"
-          title="Support Poor Kids with School Fees & Supplies"
-          bgImage="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop"
+          category="Research"
+          title="MPhil Microbiology & Data Analysis"
+          bgImage="https://images.unsplash.com/photo-1587355760421-b9de3226a046?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0MDZ8MHwxfHNlYXJjaHwyMnx8cmVzZWFyY2h8ZW58MHx8fHwxNzY3Mjk4OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080"
           overlayColor="rgba(153, 108, 29, 0.5) 0%, rgba(253, 187, 45, 1) 100%"
           heightClass="h-[240px]"
         />
