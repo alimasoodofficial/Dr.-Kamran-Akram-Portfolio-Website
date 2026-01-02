@@ -3,7 +3,6 @@ import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Cards from "@/components/ui/Cards";
 import Spline from "@/components/ui/Spline";
-import { techLogos } from "@/components/sections/LogoLoopDetails";
 import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
 import ThemeBackground from "@/components/ui/ThemeBackground";
@@ -12,6 +11,7 @@ import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 import CircularGallery from "@/components/ui/CircularGallery";
 import CursorReveal from "@/components/ui/CursorReveal";
+import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
 
 export default function HomePage() {
   const stats = {
@@ -42,18 +42,12 @@ export default function HomePage() {
       </div>
 
       <div className="relative overflow-hidden py-20 transition-all">
-        <LogoLoop
-          logos={techLogos}
-          speed={120}
-          direction="left"
-          logoHeight={60}
-          gap={40}
-          pauseOnHover
-          scaleOnHover
-          fadeOut
-          // fadeOutColor="#000000"
-          ariaLabel="Technology partners"
-        />
+        {/* <LogoLoop 
+        logos={techLogos} 
+        speed={30} 
+        gap={60} 
+      /> */}
+      <LogoLoopDetails/>
       </div>
       <section className="  flex flex-col md:flex-row align-center justify-center px-5  py-20 mx-auto gap-10 ">
         <div className="flex flex-col gap-5 duration-300">
@@ -199,6 +193,14 @@ export default function HomePage() {
       </section>
       <section className=" bg-gradient-to-r from-background/50 to-transparent">
         <div className="max-w-7xl mx-auto px-5">
+          <GlowingEffect
+                      spread={50}
+                      glow={true}
+                      disabled={false}
+                      proximity={64}
+                      inactiveZone={0.01}
+                      borderWidth={3}
+                    />
           {/* pass the array inside an object and render the AnimatedCounter grid */}
           <AnimatedCounter counters={stats.counters} />
         </div>

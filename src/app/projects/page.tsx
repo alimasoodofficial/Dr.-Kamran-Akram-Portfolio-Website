@@ -15,9 +15,9 @@ export default function ProjectsPage() {
         className="w-auto h-100px"
       />
 
-      <div className="flex justify-center">
+      {/* <div className="flex justify-center">
         <GlowingEffectDemo />
-      </div>
+      </div> */}
 
 
       <div>

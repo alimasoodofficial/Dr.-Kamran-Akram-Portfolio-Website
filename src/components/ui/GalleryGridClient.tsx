@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useMemo, useState } from "react";
+import GlowingInput from "./GlowingInput";
 
 type Item = {
   id: number;
@@ -41,11 +42,11 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
   return (
     <section>
       <div className="mb-6">
-        <input
+        <GlowingInput
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
           placeholder="Search..."
-          className="w-full p-3 rounded-xl border"
+          className="w-full p-0"
         />
       </div>
 
@@ -84,18 +85,13 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
             <div className="p-4">
               <div className="text-xs text-gray-500">{card.category}</div>
               <h3 className="font-semibold mt-1">{card.title}</h3>
-              <p className="text-sm mt-2  line-clamp-3">
-                {card.description}
-              </p>
+              <p className="text-sm mt-2  line-clamp-3">{card.description}</p>
               <div className="text-xs text-gray-400 mt-3">
                 {new Date(card.date).toLocaleDateString()} • {card.location}
               </div>
               <div className="flex gap-2 flex-wrap mt-3">
                 {card.tags?.map((t) => (
-                  <span
-                    key={t}
-                    className="text-xs px-2 py-1 card rounded-full"
-                  >
+                  <span key={t} className="text-xs px-2 py-1 card rounded-full">
                     #{t}
                   </span>
                 ))}

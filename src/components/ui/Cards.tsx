@@ -19,7 +19,7 @@ export default function Cards({
   buttonText = "Learn more",
 }: CardProps) {
   return (
-    <div
+    <div 
       className={`group bg-container
   transition-colors
   duration-700  

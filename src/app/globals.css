@@ -216,3 +216,41 @@ canvas {
   /* border: 6px solid #bc8700; */
   box-shadow: 20px 20px 0 #bc8700;
 }
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Adjust based on the number of copies */
+  }
+}
+
+.animate-infinite-scroll {
+  display: flex;
+  width: max-content;
+  animation: scroll 40s linear infinite;
+}
+
+/* Optional: Pause on hover */
+.animate-infinite-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-scroll-left {
+  animation: scrollLeft linear infinite;
+}
+
+.animate-scroll-right {
+  animation: scrollRight linear infinite;
+}

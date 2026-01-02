@@ -27,14 +27,11 @@ export default async function GalleryPage() {
   return (
     <main>
       <Banner
-        title="Gallery"
-        description="We provide amazing services and solutions for your business.."
+        title="Captured Moments"
+        description="A visual diary of my journey. This gallery features the people, places, and perspectives that catch my eye and keep me inspired."
         showLottie={true}
-        lottieSrc="/lotties/business.lottie"
+        lottieSrc="/lotties/gallery.lottie"
         showBreadcrumb={true}
-      />
-      <GlowingInput
-        // placeholder="search"
       />
 
       <div className="py-20 px-6 max-w-7xl mx-auto">

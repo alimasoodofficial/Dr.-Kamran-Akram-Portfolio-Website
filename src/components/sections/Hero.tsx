@@ -3,7 +3,7 @@ import NewsletterForm from "../forms/NewsletterForm";
 import BentoGrid from "../ui/BentoGrid";
 import LogoLoop from "../ui/LogoLoop";
 import Silk from "../ui/Silk";
-import { techLogos } from "./LogoLoopDetails";
+import LogoLoopDetails from "./LogoLoopDetails";
 
 export default function Hero() {
   return (

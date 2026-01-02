@@ -1,15 +1,23 @@
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from "react-icons/si";
+import { educationLogos, professionalLogos } from "@/data/companyLinks";
+import LogoCarousel from "@/components/ui/LogoCarousel";
+export default function LogoLoopDetails() {
+  return (
+    <div>
+      {/* For Universities - Slower and larger */}
+      <LogoCarousel
+        items={educationLogos}
+        speed={60}
+        size={80}
+        direction="right"
+      />
 
-export const techLogos = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
-  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-];
-
-// Alternative with image sources
-export const imageLogos = [
-  { src: "/logos/company1.png", alt: "Company 1", href: "https://company1.com" },
-  { src: "/logos/company2.png", alt: "Company 2", href: "https://company2.com" },
-  { src: "/logos/company3.png", alt: "Company 3", href: "https://company3.com" },
-];
+      {/* For Startups - Faster and standard size */}
+      <LogoCarousel
+        items={professionalLogos}
+        speed={30}
+        size={60}
+        direction="left"
+      />
+    </div>
+  );
+}
