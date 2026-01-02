@@ -62,8 +62,9 @@ body {
   background-color: var(--color-container);
 }
 .dark .container-bg-color {
-  background: linear-gradient(180deg, #0a0b10 0%, #0b0c12 100%);
+  background: linear-gradient(180deg, #012944 0%, #03141c 100%);
 }
+
 
 /* 🪄 Card Style (for dark + light) */
 .card {

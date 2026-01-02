@@ -46,7 +46,7 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
           value={query}
           onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
           placeholder="Search..."
-          className="w-full p-0"
+          className="w-9/12 p-0"
         />
       </div>
 
