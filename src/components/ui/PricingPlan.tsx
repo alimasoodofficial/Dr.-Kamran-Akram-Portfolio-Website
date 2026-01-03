@@ -46,6 +46,20 @@ const sampleTiers: PricingTier[] = [
             "Engagement Analytics",
         ],
     },
+     {
+        name: "Influencer",
+        icon: <Star className="w-6 h-6" />,
+        price: 79,
+        description: "For serious content creators",
+        color: "blue",
+        features: [
+            "3-minute Video Export",
+            "Voice Effects & Filters",
+            "Trending Sound Library",
+            "Auto Captions & Subtitles",
+        ],
+        popular: true,
+    }
 ];
 
 

@@ -29,15 +29,10 @@ function CreativePricing({
                 <div className="font-handwritten text-xl text-blue-500 rotate-[-1deg]">
                     {tag}
                 </div>
-                <div className="relative">
-                    <h2 className="text-4xl md:text-5xl font-bold font-handwritten text-zinc-900 dark:text-white rotate-[-1deg]">
+                <div className="relative ">
+                    <h2 className="text-4xl font-heading md:text-5xl font-bold font-handwritten text-zinc-900 dark:text-white rotate-[-1deg]">
                         {title}
-                        <div className="absolute -right-12 top-0 text-amber-500 rotate-12">
-                            ✨
-                        </div>
-                        <div className="absolute -left-8 bottom-0 text-blue-500 -rotate-12">
-                            ⭐️
-                        </div>
+                      
                     </h2>
                     <div
                         className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-44 h-3 bg-blue-500/20 
@@ -49,16 +44,14 @@ function CreativePricing({
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {tiers.map((tier, index) => (
                     <div
                         key={tier.name}
                         className={cn(
                             "relative group",
                             "transition-all duration-300",
-                            index === 0 && "rotate-[-1deg]",
-                            index === 1 && "rotate-[1deg]",
-                            index === 2 && "rotate-[-2deg]"
+                           
                         )}
                     >
                         <div
@@ -161,14 +154,7 @@ function CreativePricing({
                     </div>
                 ))}
             </div>
-            <div className="absolute -z-10 inset-0 overflow-hidden">
-                <div className="absolute top-40 left-20 text-4xl rotate-12">
-                    ✎
-                </div>
-                <div className="absolute bottom-40 right-20 text-4xl -rotate-12">
-                    ✏️
-                </div>
-            </div>
+            
         </div>
     );
 }

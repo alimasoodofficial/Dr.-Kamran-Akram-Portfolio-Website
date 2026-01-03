@@ -15,13 +15,13 @@ export default function ConsultingPage() {
         title="One-on-One Consultation Calls with Dr Muhammad Kamran"
         description="Get tailored guidance for your research, career, or move abroad. Learn from real-world experience in academia, data analytics, and life in Australia."
         showLottie={true}
-        lottieSrc="/lotties/business.lottie"
+        lottieSrc="/lotties/meeting.lottie"
         showBreadcrumb={true}  
       />
 
       {/* ✳️ What You Can Ask */}
       <section className="py-16 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-heading font-bold mb-8">
+        <h2 className="text-4xl font-heading font-bold mb-8">
           What You Can Ask
         </h2>
         <div className="grid md:grid-cols-2 gap-6 text-left font-body">
@@ -41,7 +41,7 @@ export default function ConsultingPage() {
 
       {/* 💬 How It Works */}
       <section className="bg-gray-50 dark:bg-[#0b0c12] py-16 px-6 text-center">
-        <h2 className="text-3xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
+        <h2 className="text-4xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
           How It Works
         </h2>
 
@@ -88,8 +88,8 @@ export default function ConsultingPage() {
       </section>
 
       {/* 📅 Embedded Calendly Widget */}
-      <section className="bg-gray-50 dark:bg-[#0b0c12]    ">
-        <h2 className="text-3xl py-5 font-heading font-bold text-center ">
+      <section className="pt-20 dark:bg-[#0b0c12]    ">
+        <h2 className="text-4xl py-5 font-heading font-bold text-center ">
           Ready to Start?
         </h2>
         <CalendlyEmbed url="https://calendly.com/dataexperts360/30min" />
