@@ -1,124 +1,177 @@
 import Link from "next/link";
 import Image from "next/image";
 
+const SocialIcon = ({ path }: { path: string }) => (
+  <svg
+    className="w-5 h-5 text-white hover:text-[#d4f238] transition-colors cursor-pointer"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d={path} />
+  </svg>
+);
+
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 dark:border-gray-800 bg-[var(--background)] text-[var(--foreground)] mt-20 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-12">
-        {/* Logo + copyright */}
-        <div className="flex flex-col items-start md:col-span-1">
-          <div className="flex items-center gap-2">
-            <Image
-              src="https://imkamran.com/wp-content/uploads/2023/09/cropped-Kamran-Akram-logo.png"
-              alt="Logo"
-              width={40}
-              height={40}
-              className="rounded-md"
-            />
-            <span className="font-heading text-lg font-bold text-[var(--foreground)]">
-              DR.KAMRAN
-            </span>
+    <footer className="bg-[#1a3028] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
+      {/* Optional: Background gradient effect or overlay if needed */}
+
+      <div className="w-full mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-12 mb-16">
+        {/* --- Column 1: Brand, Bio, & Newsletter (Span 5 columns) --- */}
+        <div className="lg:col-span-5 sm:col-span-2 flex flex-col items-start gap-6">
+          {/* Logo Section */}
+          <div className="flex items-center gap-2 mb-2">
+            {/* Using a placeholder for the specific logo in the image, replacing your old logo */}
+            <div className="flex flex-col leading-tight">
+              <span className="text-xl md:text-2xl font-black tracking-wide text-white">
+                MUHAMMAD
+              </span>
+              <span className="text-xl md:text-2xl font-black tracking-wide text-white">
+                KAMRAN
+              </span>
+            </div>
           </div>
 
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-            © {new Date().getFullYear()} DR.KAMRAN. All rights reserved.
+          <p className="text-gray-300 leading-relaxed md:pr-8 font-body text-sm md:text-base">
+            A multilingual agricultural scientist and data analyst dedicated to
+            clear, impactful science communication and extension across
+            agriculture and animal sciences. With experience as an MLA Red Meat
+            Industry Ambassador and Young Science Ambassador, focused on
+            translating complex research into practical knowledge for farmers,
+            students, and communities.
           </p>
 
-          {/* (Optional) Social Icons */}
-          {/* You can add icons here later if needed */}
+          {/* Newsletter Section */}
+          <div className="w-full mt-2">
+            <h4 className="font-bold text-lg mb-3">
+              Subscribe to My Newsletter
+            </h4>
+            <div className="flex flex-col sm:flex-row gap-2 max-w-md min-w-0">
+              <input
+                type="email"
+                aria-label="Email address"
+                placeholder="Your Email Address*"
+                className="flex-1 bg-white text-gray-800 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d4f238] w-full sm:w-auto min-w-0"
+              />
+              <button className="bg-[#d4f238] text-[#1a3028] font-bold px-8 py-3 rounded-full hover:opacity-90 transition-opacity w-full sm:w-auto">
+                Subscribe
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Column 1 */}
-        <div>
-          <h4 className="font-semibold mb-4 text-[var(--foreground)]">More</h4>
-          <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-            <li>
-              <Link href="/about" className="hover:text-orange-500 transition-colors">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/jobs" className="hover:text-orange-500 transition-colors">
-                Jobs
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="hover:text-orange-500 transition-colors">
-                Contact
-              </Link>
-            </li>
-            <li>
-              <Link href="/account" className="hover:text-orange-500 transition-colors">
-                My Account
-              </Link>
-            </li>
+        {/* --- Column 2: Quick Links (Span 2 columns) --- */}
+        <div className="lg:col-span-2">
+          <h4 className="font-bold text-lg mb-6">Quick Links</h4>
+          <ul className="space-y-3 text-gray-300">
+            {[
+              "Home",
+              "About Kamran",
+              "Upcoming Masterclasses",
+              "Recorded Masterclasses",
+              "Books",
+              "Blogs",
+              "Contact Me",
+              "Feedback",
+              "Reviews",
+            ].map((item) => (
+              <li key={item}>
+                <Link
+                  href="/"
+                  className="hover:text-[#d4f238] transition-colors"
+                >
+                  {item}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Column 2 */}
-        <div>
-          <h4 className="font-semibold mb-4 text-[var(--foreground)]">Free Content</h4>
-          <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-            <li>
-              <Link href="/newsletter" className="hover:text-orange-500 transition-colors">
-                Newsletter
-              </Link>
-            </li>
-            <li>
-              <Link href="/articles" className="hover:text-orange-500 transition-colors">
-                Articles & Guides
-              </Link>
-            </li>
-            <li>
-              <Link href="/podcast" className="hover:text-orange-500 transition-colors">
-                Podcast
-              </Link>
-            </li>
-            <li>
-              <Link href="/videos" className="hover:text-orange-500 transition-colors">
-                Videos
-              </Link>
-            </li>
-            <li>
-              <Link href="/book-notes" className="hover:text-orange-500 transition-colors">
-                Book Notes
-              </Link>
-            </li>
+        {/* --- Column 3: Work With Me (Span 2 columns) --- */}
+        <div className="lg:col-span-2">
+          <h4 className="font-bold text-lg mb-6">Work With Me</h4>
+          <ul className="space-y-3 text-gray-300">
+            {["Hire Me", "E-Meeting", "Contact Me", "Invite Me"].map((item) => (
+              <li key={item}>
+                <Link
+                  href="/"
+                  className="hover:text-[#d4f238] transition-colors"
+                >
+                  {item}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Column 3 */}
-        <div>
-          <h4 className="font-semibold mb-4 text-[var(--foreground)]">Products</h4>
-          <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-            <li>
-              <Link href="/book" className="hover:text-orange-500 transition-colors">
-                My Book
-              </Link>
-            </li>
-            <li>
-              <Link href="/academy" className="hover:text-orange-500 transition-colors">
-                YouTube Academy
-              </Link>
-            </li>
-            <li>
-              <Link href="/lifeos" className="hover:text-orange-500 transition-colors">
-                LifeOS
-              </Link>
-            </li>
-          </ul>
+        {/* --- Column 4: Contact Info (Span 3 columns) --- */}
+        <div className="lg:col-span-3 sm:col-span-2">
+          <h4 className="font-bold text-lg mb-6">Contact Info</h4>
+          <div className="space-y-4 text-gray-300">
+            {/* Email */}
+            <div className="flex items-center gap-3">
+              <span className="text-[#d4f238] text-lg">✉</span>
+              <a
+                href="mailto:connect@Kamranusmani.com"
+                className="hover:text-[#d4f238] transition-colors"
+              >
+                hi@imkamran.com
+              </a>
+            </div>
+
+            {/* Address */}
+            <div className="flex items-start gap-3">
+              <span className="text-[#d4f238] text-lg mt-0.5">📍</span>
+              <span>Brisbane, Australia </span>
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex gap-4 mt-6 flex-wrap items-center">
+              {/* Facebook */}
+              <SocialIcon path="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              {/* YouTube */}
+              <SocialIcon path="M21.58 7.24a2.95 2.95 0 00-2.08-2.09C17.67 4.5 12 4.5 12 4.5s-5.67 0-7.5.65a2.95 2.95 0 00-2.09 2.09A31.14 31.14 0 002 12.24a31.14 31.14 0 00.41 5.25 2.95 2.95 0 002.09 2.09C6.33 20 12 20 12 20s5.67 0 7.5-.65a2.95 2.95 0 002.09-2.09 31.14 31.14 0 00.41-5.25 31.14 31.14 0 00-.41-5zM9.75 15.02V8.98l5.25 3.02z" />
+              {/* Twitter/X */}
+              <SocialIcon path="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              {/* LinkedIn */}
+              <SocialIcon path="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-2 2 2 2 0 012-2z" />
+              {/* TikTok */}
+              <SocialIcon path="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-gray-200 dark:border-gray-800 py-4 text-center text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">
-        <Link href="/privacy" className="hover:text-orange-500 transition-colors">
-          Privacy Policy
-        </Link>
-        {" / "}
-        <Link href="/cookies" className="hover:text-orange-500 transition-colors">
-          Cookie Policy
-        </Link>
+      {/* --- Bottom Bar --- */}
+      <div className="border-t border-gray-700 max-w-7xl mx-auto px-6 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
+        {/* Left: Copyright */}
+        <div className="text-center md:text-left text-sm">
+          © {new Date().getFullYear()} Dr Muhammad Kamran | Developed by{" "}
+          <span className="font-bold text-white">DATA EXPERTS 360</span>
+        </div>
+
+        {/* Right: Policies */}
+        <div className="flex gap-6 flex-wrap justify-center md:justify-end">
+          <Link
+            href="/privacy"
+            className="hover:text-[#d4f238] transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            href="/terms"
+            className="hover:text-[#d4f238] transition-colors"
+          >
+            Terms & Conditions
+          </Link>
+          <Link
+            href="/refund"
+            className="hover:text-[#d4f238] transition-colors"
+          >
+            Refund Policy
+          </Link>
+        </div>
       </div>
     </footer>
   );
