@@ -50,7 +50,7 @@ export default function Hero() {
         {/* <div className="py-3">
           <NewsletterForm />
         </div> */}
-        <div className="hidden md:flex mx-0 px-0">
+        <div className=" mx-0 px-0">
           <BentoGrid />
         </div>
       </div>

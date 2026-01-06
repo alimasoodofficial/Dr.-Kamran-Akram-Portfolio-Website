@@ -124,7 +124,7 @@ export default function Navbar() {
           <Button
             type="button"
             href="/newsletter"
-            className="hidden lg:block comic-button "
+            className="hidden  lg:block comic-button "
           >
             Join 1000+ Subscribers
           </Button>

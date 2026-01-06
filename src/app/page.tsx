@@ -47,10 +47,10 @@ export default function HomePage() {
         speed={30} 
         gap={60} 
       /> */}
-      <LogoLoopDetails/>
+        <LogoLoopDetails />
       </div>
       <section className="   flex flex-col md:flex-row align-center justify-center w-11/12  py-20 mx-auto gap-10 ">
-        <div className="flex flex-col gap-5 duration-300">
+        <div className="flex flex-col gap-5 duration-500">
           <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
             How Can <br />{" "}
             <span>
@@ -66,17 +66,17 @@ export default function HomePage() {
           <Cards
             title="Consulting"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            svgSrc="/icons/cog.svg"
+            iconClassName="fa-solid fa-chalkboard-user"
             link="/consulting"
-            className="card hover:shadow-lg  hover:bg-orange-300 
+            className="card hover:shadow-lg  hover:bg-orange-400 
  "
           />
           <Cards
             title="Projects"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            svgSrc="/icons/cog.svg"
+            iconClassName="fa-solid fa-diagram-project"
             link="/projects"
-            className="card hover:shadow-lg hover:bg-green-300 "
+            className="card hover:shadow-lg hover:bg-green-400 "
           />
         </div>
 
@@ -84,23 +84,23 @@ export default function HomePage() {
           <Cards
             title="Free Resources"
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
-            svgSrc="/icons/cog.svg"
+            iconClassName="fa-solid fa-play"
             link="free-resources"
-            className="card hover:shadow-lg hover:bg-red-300 "
+            className="card hover:shadow-lg hover:bg-red-400 "
           />
 
           <Cards
             title="Courses / Academy "
             description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
-            svgSrc="/icons/cog.svg"
+            iconClassName="fa-solid fa-graduation-cap"
             link="#"
-            className="card hover:shadow-lg hover:bg-purple-300 "
+            className="card hover:shadow-lg hover:bg-purple-400 "
           />
           <Cards
             title="Website Newsletter"
-            svgSrc="/icons/cog.svg"
+            iconClassName="fa-solid fa-envelope"
             link="/newsletter"
-            className="card hover:shadow-lg hover:bg-yellow-300 "
+            className="card hover:shadow-lg hover:bg-yellow-400 "
             buttonText="Subscribe"
           />
         </div>
@@ -134,38 +134,33 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-16 lg:gap-x-32 max-w-7xl mx-auto">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
           {/* 🧠 Left Side: Text */}
-          <div className="flex-1 text-center   md:py-10 md:px-5 md:text-left ">
-            <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify  mx-auto pt-5 md:mx-0">
-              I am Dr Muhammad Kamran, a scientist, data storyteller, and
-              dreamer who believes that meaningful change begins with curiosity.
-              My journey started in a small village in Pakistan where simple
-              questions about animals and nature slowly turned into a lifelong
-              fascination with science and technology. That curiosity carried me
-              across cities, continents, and disciplines until I found myself in
-              Brisbane, exploring how data can reveal the invisible patterns
-              that shape life, health, and sustainability.
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-[var(--foreground)]">
+              About Me
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify md:text-left">
+              I am <span className="font-semibold">Dr Muhammad Kamran</span>, a
+              scientist, data storyteller, and dreamer who believes that
+              meaningful change begins with curiosity. My journey started in a
+              small village in Pakistan where simple questions about animals and
+              nature slowly turned into a lifelong fascination with science and
+              technology. That curiosity carried me across cities, continents,
+              and disciplines until I found myself in Brisbane, exploring how
+              data can reveal the invisible patterns that shape life, health,
+              and sustainability.
             </p>
           </div>
 
-          {/* 🖼️ Right Side: Images */}
-
-          <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
-           
-              <div 
-              className=""
-              >
-                {/* <Image
-                  src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
-                  alt="Dr Kamran Akram"
-                  width={500}
-                  height={100}
-                  className="object-contain rounded-2xl shadow-lg w-full "
-                /> */}
-  
-                <CursorReveal />
-              </div>
+          {/* 🖼️ Right Side: Visual Content */}
+          <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm md:max-w-none">
+            <div className="w-full h-auto flex justify-center items-center">
+              {/* Ensure CursorReveal is designed to be responsive 
+         internally or wrapped in a container with a fixed aspect ratio 
+      */}
+              <CursorReveal />
+            </div>
           </div>
         </div>
 
@@ -191,20 +186,8 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className=" bg-gradient-to-r from-background/50 to-transparent">
-        <div className="max-w-7xl mx-auto px-5">
-          <GlowingEffect
-                      spread={50}
-                      glow={true}
-                      disabled={false}
-                      proximity={64}
-                      inactiveZone={0.01}
-                      borderWidth={3}
-                    />
-          {/* pass the array inside an object and render the AnimatedCounter grid */}
-          <AnimatedCounter counters={stats.counters} />
-        </div>
-      </section>
+     
+     
 
       <section className="py-10">
         <div>
@@ -213,7 +196,9 @@ export default function HomePage() {
               colors={["#97ABFF", "#123597"]}
               animationSpeed={6}
               className=""
-            > My Snapshot Story
+            >
+              {" "}
+              My Snapshot Story
             </GradientText>
           </h2>
         </div>
