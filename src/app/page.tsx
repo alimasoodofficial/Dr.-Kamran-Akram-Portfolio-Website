@@ -12,6 +12,7 @@ import { GlowingEffect } from "@/components/ui/glowing-effect";
 import CircularGallery from "@/components/ui/CircularGallery";
 import CursorReveal from "@/components/ui/CursorReveal";
 import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
+import TrueFocus from "@/components/ui/TrueFocus";
 
 export default function HomePage() {
   const stats = {
@@ -137,8 +138,15 @@ export default function HomePage() {
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
           {/* 🧠 Left Side: Text */}
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-[var(--foreground)]">
-              About Me
+            <h2 className="text-2xl  md:text-3xl font-bold mb-4 text-[var(--foreground)]"> 
+              <TrueFocus
+                sentence="About Me"
+                manualMode={false}
+                blurAmount={5}
+                borderColor="blue"
+                animationDuration={1}
+                pauseBetweenAnimations={1}
+              />
             </h2>
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify md:text-left">
               I am <span className="font-semibold">Dr Muhammad Kamran</span>, a
@@ -155,10 +163,7 @@ export default function HomePage() {
 
           {/* 🖼️ Right Side: Visual Content */}
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm md:max-w-none">
-            <div className="w-full h-auto flex justify-center items-center">
-              {/* Ensure CursorReveal is designed to be responsive 
-         internally or wrapped in a container with a fixed aspect ratio 
-      */}
+            <div className="w-full  flex justify-center items-center">
               <CursorReveal />
             </div>
           </div>
@@ -186,8 +191,6 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-     
-     
 
       <section className="py-10">
         <div>

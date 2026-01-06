@@ -14,7 +14,7 @@ const SocialIcon = ({ path }: { path: string }) => (
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1a3028] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
+    <footer className="bg-[#111320] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
       {/* Optional: Background gradient effect or overlay if needed */}
 
       <div className="w-full mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-12 mb-16">
@@ -54,7 +54,7 @@ export default function Footer() {
                 placeholder="Your Email Address*"
                 className="flex-1 bg-white text-gray-800 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d4f238] w-full sm:w-auto min-w-0"
               />
-              <button className="bg-[#d4f238] text-[#1a3028] font-bold px-8 py-3 rounded-full hover:opacity-90 transition-opacity w-full sm:w-auto">
+              <button className="bg-[#d0f238] text-[#1a3028] font-bold px-8 py-3 rounded-full hover:opacity-90 transition-opacity w-full sm:w-auto">
                 Subscribe
               </button>
             </div>

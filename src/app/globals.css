@@ -190,6 +190,8 @@ canvas {
   --x: 50%;
   --y: 50%;
   --size: 0px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 
   mask-image: radial-gradient(
     circle var(--size) at var(--x) var(--y),

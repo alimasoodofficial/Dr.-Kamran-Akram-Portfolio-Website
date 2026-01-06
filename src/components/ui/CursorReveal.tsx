@@ -30,7 +30,7 @@ const CursorReveal = () => {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-[400px] h-[500px] flex items-center justify-center"
+      className="relative w-full h-[300px] md:h-[500px] flex items-center justify-center"
     >
       {/* Bottom image */}
       <img
