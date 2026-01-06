@@ -63,7 +63,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
           return (
             <span
               key={index}
-              className="relative text-[3rem] font-black cursor-pointer"
+              className="relative text-[3rem] font-black "
               style={{
                 filter: isActive ? "blur(0px)" : `blur(${blurAmount}px)`,
                 opacity: isActive ? 1 : 0.5, // Added opacity for better focus contrast

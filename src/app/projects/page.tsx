@@ -5,6 +5,7 @@ import { CreativePricingDemo } from "@/components/ui/PricingPlan";
 import { Timeline } from "@/components/ui/Timeline";
 import ProjectPage from "../../components/ui/ProjectPage";
 import ProfileStatsSection,{StatItem} from "@/components/ui/ProfileStatsSection";
+import TimelineCarousel from "@/components/ui/TimelineCarousel";
 
 export default function ProjectsPage() {
   const statsData: StatItem[] = [
@@ -36,6 +37,9 @@ export default function ProjectsPage() {
           description="Advancing scientific knowledge through reviewed publications, books, and research across AI, data science, blockchain, security studies, and interdisciplinary domains for over two decades."
           stats={statsData}
         />
+      </div>
+      <div className=" overflow-x-hidden">
+        <TimelineCarousel />
       </div>
 
       <div>
