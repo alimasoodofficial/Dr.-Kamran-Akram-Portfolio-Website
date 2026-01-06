@@ -49,7 +49,7 @@ export default function HomePage() {
       /> */}
       <LogoLoopDetails/>
       </div>
-      <section className="  flex flex-col md:flex-row align-center justify-center px-5  py-20 mx-auto gap-10 ">
+      <section className="   flex flex-col md:flex-row align-center justify-center w-11/12  py-20 mx-auto gap-10 ">
         <div className="flex flex-col gap-5 duration-300">
           <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
             How Can <br />{" "}
@@ -72,32 +72,32 @@ export default function HomePage() {
  "
           />
           <Cards
-            title="Consulting"
+            title="Projects"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
             svgSrc="/icons/cog.svg"
-            link="/consulting"
+            link="/projects"
             className="card hover:shadow-lg hover:bg-green-300 "
           />
         </div>
 
-        <div className="flex flex-col gap-5 duration-300">
+        <div className=" flex flex-col gap-5 duration-300">
           <Cards
-            title="YouTube"
+            title="Free Resources"
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
             svgSrc="/icons/cog.svg"
-            link="#"
+            link="free-resources"
             className="card hover:shadow-lg hover:bg-red-300 "
           />
 
           <Cards
-            title="Courses"
+            title="Courses / Academy "
             description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
             svgSrc="/icons/cog.svg"
-            link="/academy"
+            link="#"
             className="card hover:shadow-lg hover:bg-purple-300 "
           />
           <Cards
-            title="....and more!"
+            title="Website Newsletter"
             svgSrc="/icons/cog.svg"
             link="/newsletter"
             className="card hover:shadow-lg hover:bg-yellow-300 "
@@ -220,7 +220,6 @@ export default function HomePage() {
         <div style={{ height: "600px", position: "relative" }}>
           <CircularGallery
             bend={8}
-            textColor="#ffffff"
             borderRadius={0.05}
             scrollEase={0.02}
             scrollSpeed={4}
