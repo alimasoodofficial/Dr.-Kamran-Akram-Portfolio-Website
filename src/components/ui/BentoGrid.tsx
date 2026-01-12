@@ -5,7 +5,7 @@ export default function BentoGrid() {
     <div className="w-full max-w-[1400px] px-6 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
       {/* --- Column 1 --- */}
       <div className="flex flex-col gap-6">
-        <InfoCard
+        <InfoCard 
           title="Ph.D"
           subtitle="Animal Sciences"
           desc="Translating complex research into practical knowledge for farmers, students, and communities."

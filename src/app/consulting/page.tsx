@@ -7,6 +7,8 @@ import Banner from "@/components/sections/Banner";
 import Button from "@/components/ui/Button";
 import { CreativePricing } from "@/components/ui/creative-pricing";
 import { CreativePricingDemo } from "@/components/ui/PricingPlan";
+import ConsultationGrid from "@/components/ui/BentoCard";
+import WorkTimeline from "@/components/sections/WorkTimeline";
 
 export default function ConsultingPage() {
   return (
@@ -21,10 +23,10 @@ export default function ConsultingPage() {
 
       {/* ✳️ What You Can Ask */}
       <section className="py-16 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-heading font-bold mb-8">
+        <h2 className="text-5xl font-heading font-bold mb-8">
           What You Can Ask
         </h2>
-        <div className="grid md:grid-cols-2 gap-6 text-left font-body">
+        {/* <div className="grid md:grid-cols-2 gap-6 text-left font-body">
           <ul className="list-disc list-inside space-y-2">
             <li>How to shortlist universities or supervisors</li>
             <li>Scholarship opportunities and expected funding</li>
@@ -36,49 +38,25 @@ export default function ConsultingPage() {
             <li>Building a research or LinkedIn profile</li>
             <li>Career roadmap and future planning</li>
           </ul>
-        </div>
+        </div> */}
+        <ConsultationGrid 
+        containerClassName="max-w-[1200px] mx-auto px-5 py-20"
+        headingClassName="font-extrabold tracking-tight"
+        descriptionClassName="text-slate-500"
+        iconClassName="" // Add extra icon classes if needed
+      />
       </section>
 
       {/* 💬 How It Works */}
-      <section className="bg-gray-50 dark:bg-[#0b0c12] py-16 px-6 text-center">
-        <h2 className="text-4xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
-          How It Works
+      <section className="bg-gray-50 dark:bg-gray-900 py-16  text-center pr-4 md:px-0">
+        <h2 className="text-5xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
+         💬 How It Works
         </h2>
+        <p className="py-2">A seamless, 4-step journey to your academic and professional goals.</p>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            {
-              step: "1",
-              title: "Select Your Package",
-              desc: "Choose the consultation type that best matches your needs and goals.",
-            },
-            {
-              step: "2",
-              title: "Complete the Form",
-              desc: "Provide your details and preferred time so we can prepare for your session.",
-            },
-            {
-              step: "3",
-              title: "Meet via Video Call",
-              desc: "Join the scheduled session through the provided link and begin your consultation.",
-            },
-          ].map((item) => (
-            <div
-              key={item.step}
-              className="p-6 rounded-2xl bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
-            >
-              <div className="text-4xl font-bold text-orange-500">
-                {item.step}
-              </div>
-              <h3 className="text-xl font-semibold mt-4 mb-2 text-gray-900 dark:text-white">
-                {item.title}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+       
+      <WorkTimeline />
+
       </section>
 
     

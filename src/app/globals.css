@@ -79,6 +79,7 @@ body {
   background-color: var(--color-dark-card);
   border: 1px solid var(--color-dark-border);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: white;
 }
 .card:hover {
   transform: translateY(-4px);
@@ -256,4 +257,21 @@ canvas {
 
 .animate-scroll-right {
   animation: scrollRight linear infinite;
+}
+
+/* Define the keyframes */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Create the utility class */
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
 }
