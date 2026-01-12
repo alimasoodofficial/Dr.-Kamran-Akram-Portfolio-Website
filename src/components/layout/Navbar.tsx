@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks } from "@/data/navLinks";
 import { freeResources } from "@/data/freeResourcesMenu";
 import { Menu, X } from "lucide-react";
@@ -11,6 +12,7 @@ import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <nav
@@ -32,7 +34,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl font-heading font-bold flex items-center gap-1"
+          className="text-xl  font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-[var(--foreground)]">mk.</span>
           <span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">
@@ -106,15 +108,22 @@ export default function Navbar() {
           {/* Other Links */}
           {navLinks
             .filter((link) => link.label !== "Free Resources")
-            .map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-orange-500 "
-              >
-                {link.label}
-              </Link>
-            ))}
+            .map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname?.startsWith(link.href));
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`transition-colors hover:text-orange-500 ${
+                    isActive ? "text-blue-600" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
         </div>
 
         {/* 🎛 Right Controls */}
@@ -124,7 +133,7 @@ export default function Navbar() {
           <Button
             type="button"
             href="/newsletter"
-            className="hidden  lg:block comic-button "
+            className="hidden  lg:block bg-blue-600 hover:bg-blue-900 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white "
           >
             Join 1000+ Subscribers
           </Button>
@@ -168,16 +177,23 @@ export default function Navbar() {
 
           {/* Navigation Links */}
           <div className="flex flex-col items-center space-y-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-orange-500 transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname?.startsWith(link.href));
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-sm font-medium hover:text-orange-500 transition-colors ${
+                    isActive ? "text-orange-500" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* CTA Button */}

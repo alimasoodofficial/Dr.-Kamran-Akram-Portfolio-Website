@@ -13,6 +13,7 @@ import CircularGallery from "@/components/ui/CircularGallery";
 import CursorReveal from "@/components/ui/CursorReveal";
 import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
 import TrueFocus from "@/components/ui/TrueFocus";
+import SlantedGrid from "@/components/ui/SlantedGrid";
 
 export default function HomePage() {
   const stats = {
@@ -110,7 +111,7 @@ export default function HomePage() {
       {/* About Me Section */}
       <section className="flex flex-col items-center justify-center  rounded-2xl  pt-10 md:pt-20 pb-20  ">
         {/* Main content container */}
-        <div className="pb-20">
+        {/* <div className="pb-20">
           <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
             <GradientText
               colors={["#97ABFF", "#123597"]}
@@ -134,7 +135,7 @@ export default function HomePage() {
               Researcher
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
           {/* 🧠 Left Side: Text */}
           <div className="flex-1 text-center md:text-left">
@@ -148,8 +149,8 @@ export default function HomePage() {
                 pauseBetweenAnimations={1}
               />
             </h2>
-            <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)] text-justify md:text-left">
-              I am <span className="font-semibold">Dr Muhammad Kamran</span>, a
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)]  md:text-left">
+              I am <span className="font-semibold ">Dr Muhammad Kamran</span>, a
               scientist, data storyteller, and dreamer who believes that
               meaningful change begins with curiosity. My journey started in a
               small village in Pakistan where simple questions about animals and
@@ -190,6 +191,10 @@ export default function HomePage() {
             Work With Me
           </Button>
         </div>
+      </section>
+
+      <section>
+        <SlantedGrid />
       </section>
 
       <section className="py-10">

@@ -97,15 +97,15 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
                     className="absolute w-4 h-4 border-[3px] rounded-[3px] top-0 left-0 border-r-0 border-b-0"
                     style={{
                       borderColor: borderColor,
-                      boxShadow: `0 0 4px ${borderColor}`, // Cleaner glow using CSS shadow
+                      boxShadow: `0 0 0 ${borderColor}`, // Cleaner glow using CSS shadow
                     }}
                   />
                   {/* Top Right Corner */}
                   <span
-                    className="absolute w-4 h-4 border-[3px] rounded-[3px] top-0 right-0 border-l-0 border-b-0"
+                    className="absolute w-4 h-4  border-[3px] rounded-[3px] top-0 right-0 border-l-0 border-b-0"
                     style={{
                       borderColor: borderColor,
-                      boxShadow: `0 0 4px ${borderColor}`,
+                      boxShadow: `0 0 0 ${borderColor}`,
                     }}
                   />
                   {/* Bottom Left Corner */}
@@ -113,7 +113,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
                     className="absolute w-4 h-4 border-[3px] rounded-[3px] bottom-0 left-0 border-r-0 border-t-0"
                     style={{
                       borderColor: borderColor,
-                      boxShadow: `0 0 4px ${borderColor}`,
+                      boxShadow: `0 0 0 ${borderColor}`,
                     }}
                   />
                   {/* Bottom Right Corner */}
@@ -121,7 +121,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
                     className="absolute w-4 h-4 border-[3px] rounded-[3px] bottom-0 right-0 border-l-0 border-t-0"
                     style={{
                       borderColor: borderColor,
-                      boxShadow: `0 0 4px ${borderColor}`,
+                      boxShadow: `0 0 0 ${borderColor}`,
                     }}
                   />
                 </motion.div>
