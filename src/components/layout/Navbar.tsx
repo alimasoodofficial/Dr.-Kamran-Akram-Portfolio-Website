@@ -18,7 +18,7 @@ export default function Navbar() {
     <nav
       className="
       fixed top-4 left-1/2 -translate-x-1/2
-      w-11/12 max-w-7xl
+      w-11/12 
       z-50
       backdrop-blur-xl backdrop-saturate-150
       bg-white/10 dark:bg-[#0b0c12]/40
