@@ -22,7 +22,7 @@ export default function ConsultingPage() {
       />
 
       {/* ✳️ What You Can Ask */}
-      <section className="py-16 px-6 max-w-6xl mx-auto text-center">
+      <section className="py-16  w-11/12 mx-auto text-center">
         <h2 className="text-5xl font-heading font-bold mb-8">
           What You Can Ask
         </h2>
@@ -48,11 +48,11 @@ export default function ConsultingPage() {
       </section>
 
       {/* 💬 How It Works */}
-      <section className="bg-gray-50 dark:bg-gray-900 py-16  text-center pr-4 md:px-0">
+      <section className="w-full bg-gray-50 dark:bg-gray-900 py-16  text-center pr-4 md:px-0">
         <h2 className="text-5xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
          💬 How It Works
         </h2>
-        <p className="py-2">A seamless, 4-step journey to your academic and professional goals.</p>
+        <p className="pb-20">A seamless, 4-step journey to your academic and professional goals.</p>
 
        
       <WorkTimeline />

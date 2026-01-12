@@ -92,18 +92,18 @@ const TimelineItem: React.FC<{
 const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
  
   steps,
-  containerClassName = " mx-auto px-5 py-20",
+  containerClassName = "w-full mx-auto px-5 py-20",
   accentColorClass = "text-blue-600",
   accentBgClass = "bg-blue-100",
 }) => {
   return (
-    <section className={`bg-slate-50 ${containerClassName}`}>
+    <section className={`bg-slate-50 flex items-center justify-center w-full ${containerClassName}`}>
       
       {/* Header Section */}
      
 
       {/* Timeline Container */}
-      <div className="relative max-w-4xl mx-auto">
+      <div className="relative  mx-auto">
         
         {/* Vertical Center Line */}
         <div 
