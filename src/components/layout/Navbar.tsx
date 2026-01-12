@@ -84,7 +84,7 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-start gap-3 p-2 rounded-xl  hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                    className="flex items-start gap-3 p-2 rounded-xl  hover:bg-gray-100 dark:hover:bg-gray-800 transition  "
                   >
                     <img
                       src={item.icon}
@@ -116,7 +116,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition-colors hover:text-orange-500 ${
+                  className={`transition-all  hover:text-orange-500 hover:scale-125  ${
                     isActive ? "text-blue-600" : ""
                   }`}
                 >

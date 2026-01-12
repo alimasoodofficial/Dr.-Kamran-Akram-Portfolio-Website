@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 
 // --- Types ---
 interface Achievement {
@@ -13,12 +13,21 @@ interface Achievement {
 }
 
 // --- 1. Single Digit Component (The Vertical Strip) ---
-const OdometerDigit = ({ digit, isVisible, delayIndex }: { digit: string; isVisible: boolean; delayIndex: number }) => {
+const OdometerDigit = ({
+  digit,
+  isVisible,
+  delayIndex,
+}: {
+  digit: string;
+  isVisible: boolean;
+  delayIndex: number;
+}) => {
   // If it's not a number (like a comma), render statically
-  if (isNaN(parseInt(digit))) return <span className="inline-block">{digit}</span>;
+  if (isNaN(parseInt(digit)))
+    return <span className="inline-block">{digit}</span>;
 
   const target = parseInt(digit);
-  
+
   // We create a vertical strip of numbers 0-9
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -30,9 +39,11 @@ const OdometerDigit = ({ digit, isVisible, delayIndex }: { digit: string; isVisi
         className="flex flex-col transition-transform duration-[2000ms] ease-[cubic-bezier(0.2,0,0,1)]"
         style={{
           // Move up by 10% per number (since there are 10 numbers)
-          transform: isVisible ? `translateY(-${target * 10}%)` : 'translateY(0)',
+          transform: isVisible
+            ? `translateY(-${target * 10}%)`
+            : "translateY(0)",
           // Add slight stagger delay based on position for extra polish
-          transitionDelay: `${delayIndex * 100}ms`
+          transitionDelay: `${delayIndex * 100}ms`,
         }}
       >
         {numbers.map((num) => (
@@ -65,16 +76,16 @@ const OdometerNumber = ({ value }: { value: number }) => {
   }, []);
 
   // Split number into array of strings (e.g. 15 -> ['1', '5'])
-  const digits = value.toString().split('');
+  const digits = value.toString().split("");
 
   return (
     <div ref={ref} className="inline-flex leading-none overflow-hidden">
       {digits.map((digit, index) => (
-        <OdometerDigit 
-          key={index} 
-          digit={digit} 
-          isVisible={isVisible} 
-          delayIndex={index} 
+        <OdometerDigit
+          key={index}
+          digit={digit}
+          isVisible={isVisible}
+          delayIndex={index}
         />
       ))}
     </div>
@@ -82,7 +93,13 @@ const OdometerNumber = ({ value }: { value: number }) => {
 };
 
 // --- 3. Card Component ---
-const AchievementCard: React.FC<Achievement> = ({ value, suffix, label, bgClass, icon }) => {
+const AchievementCard: React.FC<Achievement> = ({
+  value,
+  suffix,
+  label,
+  bgClass,
+  icon,
+}) => {
   return (
     <div
       className={`
@@ -106,14 +123,16 @@ const AchievementCard: React.FC<Achievement> = ({ value, suffix, label, bgClass,
         <span className="text-6xl md:text-7xl tracking-tighter flex items-center h-[1em]">
           <OdometerNumber value={value} />
         </span>
-        <span className="text-4xl md:text-5xl text-white/80 ml-1 translate-y-[-10%]">{suffix}</span>
+        <span className="text-4xl md:text-5xl text-white/80 ml-1 translate-y-[-10%]">
+          {suffix}
+        </span>
       </div>
 
       {/* Label */}
       <h3 className="text-lg md:text-xl font-bold uppercase tracking-widest opacity-90">
         {label}
       </h3>
-      
+
       {/* Decorative Line */}
       <div className="w-12 h-1 bg-white/40 mt-6 rounded-full"></div>
     </div>
@@ -166,11 +185,13 @@ const AchievementGrid = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-slate-50">
+    <section className="py-20 px-4 bg-slate-50 dark:bg-gray-900 dark:text-slate-100 ">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <span className="text-blue-600 font-bold tracking-widest uppercase text-sm">Track Record</span>
-          <h2 className="text-4xl font-heading md:text-5xl font-black text-slate-900 mt-2">
+          <span className="text-blue-600 dark:text-blue-400 font-bold tracking-widest uppercase text-sm">
+            Track Record
+          </span>
+          <h2 className="text-4xl font-heading md:text-5xl font-black text-slate-900 dark:text-slate-100 mt-2">
             Milestones & Impact
           </h2>
         </div>

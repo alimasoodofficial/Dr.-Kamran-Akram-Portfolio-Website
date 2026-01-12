@@ -111,31 +111,7 @@ export default function HomePage() {
       {/* About Me Section */}
       <section className="flex flex-col items-center justify-center  rounded-2xl  pt-10 md:pt-20 pb-20  ">
         {/* Main content container */}
-        {/* <div className="pb-20">
-          <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
-            <GradientText
-              colors={["#97ABFF", "#123597"]}
-              animationSpeed={6}
-              className=""
-            >
-              I’m Kamran
-            </GradientText>
-          </h2>
-          <div className="flex flex-col md:flex-row justify-evenly gap-2.5 items-start md:items-center">
-            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
-              Entrepreneur
-            </div>
-            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
-              Veterinarian
-            </div>
-            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
-              Science Communicator
-            </div>
-            <div className=" rounded-4xl border-blue-500 text-blue-500 font-body border-2 px-4 py-2">
-              Researcher
-            </div>
-          </div>
-        </div> */}
+        
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
           {/* 🧠 Left Side: Text */}
           <div className="flex-1 text-center md:text-left">
