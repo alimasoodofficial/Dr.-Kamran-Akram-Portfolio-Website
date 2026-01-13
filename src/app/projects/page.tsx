@@ -6,8 +6,11 @@ import { Timeline } from "@/components/ui/Timeline";
 import ProjectPage from "../../components/ui/ProjectPage";
 import ProfileStatsSection,{StatItem} from "@/components/ui/ProfileStatsSection";
 import TimelineCarousel from "@/components/ui/TimelineCarousel";
+import ScrollRevealText from "@/components/ui/ScrollRevealText";
+import Roadmap from "@/components/ui/Roadmap";
 
 export default function ProjectsPage() {
+  const paragraphText = "A multilingual agricultural scientist and data analyst dedicated to clear, impactful science communication and extension across agriculture and animal sciences. With experience as an MLA Red Meat Industry Ambassador and Young Science Ambassador, focused on translating complex research into practical knowledge for farmers, students, and communities. Skilled in research, data analysis, and public speaking, with a passion for empowering others through education and outreach. Committed to fostering innovation and sustainability in agriculture through effective communication and collaboration.";
   const statsData: StatItem[] = [
     { number: "113+", label: "Research Outputs" },
     { number: "50+", label: "Conference Contributions" },
@@ -37,9 +40,28 @@ export default function ProjectsPage() {
           description="Advancing scientific knowledge through reviewed publications, books, and research across AI, data science, blockchain, security studies, and interdisciplinary domains for over two decades."
           stats={statsData}
         />
+
+        <section>
+        <div className=" px-5 md:px-0 mx-auto w-11/12 flex items-center justify-center py-20">
+        <ScrollRevealText 
+            text={paragraphText} 
+            className="text-sm md:text-lg"
+        />
+      </div>
+
+      {/* Spacer to allow scrolling past the element */}
+      {/* <div className="h-[100vh]"></div> */}
+        </section>
+
+
+
       </div>
       <div className=" overflow-x-hidden">
         <TimelineCarousel />
+      </div>
+
+      <div>
+        <Roadmap  />
       </div>
 
       <div>

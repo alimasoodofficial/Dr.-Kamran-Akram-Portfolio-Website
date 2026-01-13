@@ -14,16 +14,11 @@ import CursorReveal from "@/components/ui/CursorReveal";
 import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
 import TrueFocus from "@/components/ui/TrueFocus";
 import SlantedGrid from "@/components/ui/SlantedGrid";
+import ScrollRevealText from "@/components/ui/ScrollRevealText";
 
 export default function HomePage() {
-  const stats = {
-    counters: [
-      { value: 1200, label: "Patients Treated", suffix: "+" },
-      { value: 15, label: "Years Experience", suffix: "+" },
-      { value: 50, label: "Countries Reached", suffix: "+" },
-      { value: 200, label: "Publications", suffix: "+" },
-    ],
-  };
+ const aboutText = "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
+ 
   return (
     <>
       <div className="overflow-hidden relative">
@@ -122,16 +117,12 @@ export default function HomePage() {
               />
             </h2>
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)]  md:text-left">
-              I am <span className="font-semibold ">Dr Muhammad Kamran</span>, a
-              scientist, data storyteller, and dreamer who believes that
-              meaningful change begins with curiosity. My journey started in a
-              small village in Pakistan where simple questions about animals and
-              nature slowly turned into a lifelong fascination with science and
-              technology. That curiosity carried me across cities, continents,
-              and disciplines until I found myself in Brisbane, exploring how
-              data can reveal the invisible patterns that shape life, health,
-              and sustainability.
+               
             </p>
+            <ScrollRevealText 
+                        text={aboutText} 
+                        className="text-sm md:text-lg"
+                    />
           </div>
 
           {/* 🖼️ Right Side: Visual Content */}
