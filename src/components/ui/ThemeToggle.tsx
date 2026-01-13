@@ -36,7 +36,7 @@ export default function ThemeToggle() {
       <label className="switch">
         <input
           type="checkbox"
-          checked={theme === "dark"}
+          checked={theme === "light"}
           onChange={toggleTheme}
           aria-label="Toggle theme"
         />
@@ -79,7 +79,7 @@ const StyledWrapper = styled.div`
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background-color: #2a2a2a;
+    background-color: #010345;
     transition: 0.4s;
     border-radius: 30px;
     overflow: hidden;
