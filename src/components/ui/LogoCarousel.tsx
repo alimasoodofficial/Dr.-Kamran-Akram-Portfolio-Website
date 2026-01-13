@@ -1,57 +1,73 @@
-import React from "react";
+import Image from "next/image";
 
 interface Skill {
   name: string;
-  icon: string;
+  logo: string;
 }
 
 interface LogoCarouselProps {
   items: Skill[];
-  speed?: number;      // Speed in seconds (e.g., 20 for fast, 60 for slow)
-  size?: number;       // Size in pixels for the icon (e.g., 40, 64)
-  direction?: "left" | "right"; 
+  speed?: number;       // Speed in seconds
+  size?: number;        // Icon size (px)
+  containerSize?: number; // Circle size (px)
+  direction?: "left" | "right";
 }
 
-const LogoCarousel = ({ 
-  items, 
-  speed = 50, 
-  size = 64, 
-  direction = "left" 
+const LogoCarousel = ({
+  items,
+  speed = 40,
+  size = 40,
+  containerSize = 80,
+  direction = "left",
 }: LogoCarouselProps) => {
-  
   const animationClass = direction === "left" ? "animate-scroll-left" : "animate-scroll-right";
 
-  return (
-    <div className="relative overflow-hidden w-full  py-8">
-      {/* Gradient Fades for a professional edge-to-edge look */}
-      {/* <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-secondary to-transparent z-10"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-secondary to-transparent z-10"></div> */}
+  // 1. Triple/Quadruple items to ensure the strip is wider than any screen (1920px+)
+  //    This prevents the "empty space" glitch at the end of the loop.
+  const seamlessItems = [...items, ...items, ...items, ...items, ...items];
 
-      {/* The Scrolling Container */}
-      <div 
-        className={`${animationClass} flex w-max hover:[animation-play-state:paused]`}
-        style={{ 
-          animationDuration: `${speed}s`,
-        }}
-      >
-        {/* Doubling items for a seamless loop */}
-        {[...items, ...items].map((item, index) => (
-          <div
-            key={`${item.name}-${index}`}
-            className="flex-shrink-0 rounded-2xl mx-6 p-4 bg-background border-2 border-primary shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center"
-          >
-            <img
-              src={item.icon || "/placeholder-logo.png"} // Fallback if icon is missing
-              alt={item.name}
-              style={{ width: `${size}px`, height: `${size}px` }}
-              className="object-contain"
-            />
-            {/* Optional: Add name below icon if it's a niche startup logo */}
-            <span className="text-[10px] mt-2 font-mono uppercase opacity-0 group-hover:opacity-100 transition-opacity">
-               {item.name}
-            </span>
-          </div>
-        ))}
+  return (
+    <div className="relative w-full overflow-hidden py-10 bg-transparent">
+      {/* 2. Gradient Overlays for smooth entry/exit */}
+      <div className="absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-white dark:from-gray-900 to-transparent pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-white dark:from-gray-900 to-transparent pointer-events-none" />
+
+      {/* 3. The Animated Container */}
+      <div className="flex w-max">
+        <div
+          className={`flex w-max ${animationClass} hover:[animation-play-state:paused]`}
+          style={{ animationDuration: `${speed}s` }}
+        >
+          {seamlessItems.map((item, index) => (
+            <div
+              key={`${item.name}-${index}`}
+              // 4. Using Margin Right (mr-8) instead of gap ensures 
+              //    mathematically perfect distribution for the loop.
+              className="flex-shrink-0 mr-8 md:mr-12"
+            >
+              <div
+                style={{
+                  width: `${containerSize}px`,
+                  height: `${containerSize}px`,
+                }}
+                className="rounded-full bg-white  shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center transition-transform duration-300 hover:scale-110"
+              >
+                <div
+                  className="relative"
+                  style={{ width: `${size}px`, height: `${size}px` }}
+                >
+                  <Image
+                    src={item.logo || "/images/dummy.webp"}
+                    alt={item.name}
+                    fill
+                    sizes={`${size}px`}
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

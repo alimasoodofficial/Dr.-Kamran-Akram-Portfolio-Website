@@ -1,5 +1,6 @@
 import Banner from "@/components/sections/Banner";
 import BookCard from "@/components/ui/BookCard";
+import Image from "next/image";
 
 export default function articles() {
   return (
@@ -9,6 +10,15 @@ export default function articles() {
         showLottie={true}
         lottieSrc="/lotties/articles.lottie"
       />
+
+      <section>
+        <Image
+          src="/images/articles-banner.png"
+          alt="Articles Banner"
+          width={1200}
+          height={400}
+        />  
+      </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 p-8">
         <BookCard

@@ -86,10 +86,9 @@ export default function Navbar() {
                     href={item.href}
                     className="flex items-start gap-3 p-2 rounded-xl  hover:bg-gray-100 dark:hover:bg-gray-800 transition  "
                   >
-                    <img
-                      src={item.icon}
-                      alt={item.title}
-                      className="w-6 h-6 opacity-80"
+                    <i
+                      className={` ${item.icon} text-2xl opacity-80`}
+                      aria-hidden="true"
                     />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-gray-100">

@@ -43,12 +43,8 @@ export default function HomePage() {
         /> */}
       </div>
 
-      <div className="relative overflow-hidden py-20 transition-all">
-        {/* <LogoLoop 
-        logos={techLogos} 
-        speed={30} 
-        gap={60} 
-      /> */}
+      <div className=" overflow-hidden py-20 transition-all">
+       
         <LogoLoopDetails />
       </div>
       <section className="   flex flex-col md:flex-row align-center justify-center w-11/12  py-20 mx-auto gap-10 ">
