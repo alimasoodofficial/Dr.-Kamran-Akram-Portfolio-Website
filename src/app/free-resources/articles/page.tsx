@@ -1,9 +1,48 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Banner from "@/components/sections/Banner";
 import ArticleBook from "@/components/ui/ArticleBook";
-import BookCard from "@/components/ui/BookCard";
-import Image from "next/image";
+// import BookCard from "@/components/ui/BookCard"; // Unused in your snippet, kept if needed
+// import Image from "next/image"; // Unused in your snippet, kept if needed
 
-export default function articles() {
+export default function Articles() {
+  // --- STATE MANAGEMENT ---
+  const [activeBookId, setActiveBookId] = useState<number | null>(null);
+
+  // 1. Close book on Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (activeBookId !== null) {
+        setActiveBookId(null);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeBookId]);
+
+  // 2. Close book on Click Outside (Background)
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setActiveBookId(null);
+    };
+    // The book component uses e.stopPropagation(), so this only triggers on background clicks
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Toggle Logic
+  const handleBookToggle = (id: string | number) => {
+    const numId = typeof id === 'string' ? parseInt(id, 10) : id;
+    setActiveBookId((prev) => (prev === numId ? null : numId));
+  };
+
+  // Navigation Logic (Placeholder)
+  const handleRead = (title: string) => {
+    console.log(`Navigating to: ${title}`);
+    // router.push('/article/slug') etc.
+  };
+
   const articles = [
     {
       title: "The Future of React",
@@ -68,6 +107,7 @@ export default function articles() {
       issue: "99",
     },
   ];
+
   return (
     <section>
       <Banner
@@ -76,92 +116,16 @@ export default function articles() {
         lottieSrc="/lotties/articles.lottie"
       />
 
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 p-8">
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50] "
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-        <BookCard
-          title="What Color Is Your Parachute"
-          imageSrc="https://imkamran.com/wp-content/uploads/2025/01/article-1-1.png"
-          width={360}
-          height={480}
-          coverColor="bg-[#2a1f50]"
-          coverText="What Color Is Your Parachute"
-          href="/"
-          buttonText="Open course"
-          openInNewTab={false}
-        />
-
-
-      </div> */}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-40 justify-items-center md:justify-items-start items-center md:w-9/12  mx-auto md:ps-20 py-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-40 justify-items-center md:justify-items-start items-center md:w-9/12 mx-auto md:ps-20 py-16">
         {articles.map((article, index) => (
           <ArticleBook
             key={index}
+            // --- NEW PROPS FOR MOBILE INTERACTION ---
+            id={index} 
+            isOpen={activeBookId === index}
+            onToggle={handleBookToggle}
+            onRead={() => handleRead(article.title)}
+            // ----------------------------------------
             title={article.title}
             category={article.category}
             summary={article.summary}
