@@ -46,7 +46,7 @@ export default function RootLayout({
       <body className="min-h-screen antialiased  font-body ">
         <Navbar />
 
-        <BackgroundGrid className="dark:opacity-5" />
+        <BackgroundGrid className="dark:opacity-10" />
 
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
 

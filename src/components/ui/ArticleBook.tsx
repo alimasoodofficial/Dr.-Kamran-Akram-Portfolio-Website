@@ -28,7 +28,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
   return (
     // Container: Defines the perspective
     <div 
-      className={`group relative w-[300px] h-[450px] cursor-pointer [perspective:1000px] ${className}`}
+      className={`group relative w-[150px] h-[225px] md:w-[300px] md:h-[450px] cursor-pointer [perspective:1000px] ${className}`}
       onClick={onClick}
     >
       {/* Book Wrapper: Handles the 3D rotation of the whole unit */}
@@ -42,23 +42,23 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
             
             {/* Header */}
             <div className="flex justify-between items-start">
-              <span className="text-xs font-mono text-cyan-400 tracking-widest uppercase">
+              <span className="text-[8px] md:text-sm font-mono text-cyan-400 tracking-widest uppercase">
                 {date} • {category}
               </span>
             </div>
 
             {/* Title Card */}
             <div className="mt-4 backdrop-blur-sm bg-white/10 border border-white/20 p-4 rounded-lg">
-              <h2 className="text-3xl font-bold font-serif leading-tight mb-2 drop-shadow-md">
+              <h2 className="text-xs md:text-2xl font-bold font-serif leading-tight mb-2 drop-shadow-md">
                 {title}
               </h2>
               <div className="h-1 w-12 bg-cyan-500 rounded" />
-              {author && <p className="text-xs text-gray-300 mt-2">By {author}</p>}
+              {author && <p className="text-[8px] md:text-xs text-gray-300 mt-2">By {author}</p>}
             </div>
 
             {/* Footer */}
             <div className="text-right">
-              <p className="text-sm text-gray-400 font-mono">Vol. {issueNumber}</p>
+              <p className="text-xs text-gray-400 font-mono">Vol. {issueNumber}</p>
             </div>
             
             {/* Lighting overlay for realism */}
