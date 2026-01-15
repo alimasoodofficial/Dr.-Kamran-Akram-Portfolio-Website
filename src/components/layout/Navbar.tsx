@@ -11,7 +11,7 @@ import "../../app/globals.css";
 import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
 
   return (
@@ -34,7 +34,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl  font-heading font-bold flex items-center gap-1"
+          className="text-xl font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-[var(--foreground)]">mk.</span>
           <span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">
@@ -46,9 +46,9 @@ export default function Navbar() {
         </Link>
 
         {/* 🌐 Desktop Navigation */}
-        <div className="hidden lg:flex gap-8 font-body font-medium ml-auto mr-8 items-center relative">
-          {/* Free Resources Dropdown */}
-          <div className="group relative">
+        <div className="hidden lg:flex gap-4 font-body font-medium ml-auto mr-8 items-center relative">
+          {/* Free Resources Mega Dropdown */}
+          <div className="group relative px-3 py-2">
             <button className="flex items-center gap-1 transition-colors hover:text-orange-500">
               Free Resources
               <svg
@@ -66,35 +66,35 @@ export default function Navbar() {
                 />
               </svg>
             </button>
-
-            {/* Dropdown Menu */}
             <div
               className="invisible opacity-0 group-hover:visible group-hover:opacity-100
               transition-all duration-300 ease-in-out
-              absolute top-full left-0 mt-4 w-80
-              bg-white dark:bg-[#0b0c12]/90 border border-gray-200 dark:border-gray-700 
-              rounded-2xl shadow-xl backdrop-blur-lg p-4 z-50"
+              absolute top-full left-0 mt-4 
+              bg-white dark:bg-[#1a1b26] border border-gray-100 dark:border-gray-700
+              rounded-2xl shadow-2xl backdrop-blur-lg p-6 z-50 min-w-[800px]"
             >
-              <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
                 Explore Free Resources
               </h3>
 
-              <div className="flex flex-col gap-3 ">
+              <div className="grid grid-cols-2 gap-6">
                 {freeResources.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-start gap-3 p-2 rounded-xl  hover:bg-gray-100 dark:hover:bg-gray-800 transition  "
+                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
-                    <i
-                      className={` ${item.icon} text-2xl opacity-80`}
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0">
+                      <i
+                        className={`${item.icon} text-white text-xl`}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900 dark:text-white mb-1">
                         {item.title}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-tight">
                         {item.description}
                       </p>
                     </div>
@@ -105,8 +105,12 @@ export default function Navbar() {
           </div>
 
           {/* Other Links */}
+          {/* Filter out 'Free Resources' and 'About' from navigation */}
           {navLinks
-            .filter((link) => link.label !== "Free Resources")
+            .filter(
+              (link) =>
+                link.label !== "Free Resources" && link.label !== "About"
+            )
             .map((link) => {
               const isActive =
                 pathname === link.href ||
@@ -115,7 +119,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition-all  hover:text-orange-500 hover:scale-125  ${
+                  className={`px-3 py-2 transition-all hover:text-orange-500 hover:scale-110 ${
                     isActive ? "text-blue-600" : ""
                   }`}
                 >
@@ -132,7 +136,7 @@ export default function Navbar() {
           <Button
             type="button"
             href="/newsletter"
-            className="hidden  lg:block bg-blue-600 hover:bg-blue-900 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white "
+            className="hidden lg:block bg-blue-600 hover:bg-blue-900 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white font-black tracking-wide "
           >
             Join 1000+ Subscribers
           </Button>
@@ -152,20 +156,19 @@ export default function Navbar() {
       {isOpen && (
         <div
           className="
-            fixed top-0 right-0  z-50
+            fixed top-0 right-0 z-50
             h-screen w-full rounded-3xl
-            flex flex-col items-center justify-center
-            space-y-8
-            px-6 py-10
-             font-body
+            flex flex-col overflow-y-auto
+            space-y-6
+            px-6 py-16
+            font-body
             bg-white/95
-            dark:bg-blue-950
+            dark:bg-gray-900
             text-[var(--foreground)]
             backdrop-blur-3xl
             animate-fadeIn
           "
         >
-          {/* Close Button */}
           <button
             className="absolute top-6 right-6 p-2 rounded-full bg-black/10 dark:bg-white/10 hover:scale-105 transition-transform"
             onClick={() => setIsOpen(false)}
@@ -174,35 +177,77 @@ export default function Navbar() {
             <X className="h-7 w-7" />
           </button>
 
-          {/* Navigation Links */}
-          <div className="flex flex-col items-center space-y-6">
-            {navLinks.map((link) => {
-              const isActive =
-                pathname === link.href ||
-                (link.href !== "/" && pathname?.startsWith(link.href));
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`text-sm font-medium hover:text-orange-500 transition-colors ${
-                    isActive ? "text-orange-500" : ""
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          <div className="flex flex-col space-y-8 pt-4">
+            {/* Navigation Links */}
+            <div className="flex flex-col space-y-4">
+              {navLinks
+                .filter(
+                  (link) =>
+                    link.label !== "Free Resources" && link.label !== "About"
+                )
+                .map((link) => {
+                  const isActive =
+                    pathname === link.href ||
+                    (link.href !== "/" && pathname?.startsWith(link.href));
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`text-2xl font-black tracking-wide hover:text-orange-500 transition-colors px-2 py-1 ${
+                        isActive ? "text-orange-500" : ""
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+            </div>
+
+            {/* Free Resources Section */}
+            <div className="flex flex-col space-y-4 border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 px-2">
+                Free Resources
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {freeResources.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
+                      <i
+                        className={`${item.icon} text-white text-lg`}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-white text-sm mb-0.5">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
+                        {item.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* CTA Button */}
-          <Button
-            href="/newsletter"
-            onClick={() => setIsOpen(false)}
-            className="comic-button"
-          >
-            Join 1000+ Subscribers
-          </Button>
+          <div className="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700">
+            <Button
+              href="/newsletter"
+              onClick={() => setIsOpen(false)}
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-yellow-600
+               dark:hover:bg-yellow-700 tracking-wide text-white text-center text-sm font-black py-3"
+            >
+              Join 1000+ Subscribers
+            </Button>
+          </div>
         </div>
       )}
     </nav>
