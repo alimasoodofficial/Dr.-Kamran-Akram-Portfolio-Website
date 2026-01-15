@@ -62,7 +62,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
 
   return (
     <div 
-      className={`relative ms-20 md:ms-0 w-[150px] h-[225px] md:w-[300px] md:h-[450px] cursor-pointer [perspective:1000px] ${className}`}
+      className={`relative ms-20 lg:ms-0 w-[150px] h-[225px] md:w-[300px] md:h-[450px] cursor-pointer [perspective:1000px] ${className}`}
       onClick={handleInteraction}
     >
       {/* Book Wrapper */}

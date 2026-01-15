@@ -1,9 +1,7 @@
 import GradientText from "@/components/ui/GradientText";
 import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
-import Cards from "@/components/ui/Cards";
 import Spline from "@/components/ui/Spline";
-import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
 import ThemeBackground from "@/components/ui/ThemeBackground";
 import ElectricBorder from "@/components/ui/ElectricBorder";
@@ -15,6 +13,7 @@ import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
 import TrueFocus from "@/components/ui/TrueFocus";
 import SlantedGrid from "@/components/ui/SlantedGrid";
 import ScrollRevealText from "@/components/ui/ScrollRevealText";
+import HelpCardsHome from "@/components/ui/HelpCardsHome";
 
 export default function HomePage() {
  const aboutText = "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
@@ -42,61 +41,8 @@ export default function HomePage() {
        
         <LogoLoopDetails />
       </div>
-      <section className="   flex flex-col md:flex-row align-center justify-center w-11/12  py-20 mx-auto gap-10 ">
-        <div className="flex flex-col gap-5 duration-500">
-          <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
-            How Can <br />{" "}
-            <span>
-              <GradientText
-                colors={["#ff8800", "#8a2be2", "#007aff"]}
-                animationSpeed={6}
-                className=" "
-              >
-                I Help You?
-              </GradientText>
-            </span>
-          </h2>
-          <Cards
-            title="Consulting"
-            description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            iconClassName="fa-solid fa-chalkboard-user"
-            link="/consulting"
-            className="card hover:shadow-lg  hover:bg-orange-400 
- "
-          />
-          <Cards
-            title="Projects"
-            description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-            iconClassName="fa-solid fa-diagram-project"
-            link="/projects"
-            className="card hover:shadow-lg hover:bg-green-400 "
-          />
-        </div>
-
-        <div className=" flex flex-col gap-5 duration-300">
-          <Cards
-            title="Free Resources"
-            description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
-            iconClassName="fa-solid fa-play"
-            link="free-resources"
-            className="card hover:shadow-lg hover:bg-red-400 "
-          />
-
-          <Cards
-            title="Courses / Academy "
-            description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
-            iconClassName="fa-solid fa-graduation-cap"
-            link="#"
-            className="card hover:shadow-lg hover:bg-purple-400 "
-          />
-          <Cards
-            title="Website Newsletter"
-            iconClassName="fa-solid fa-envelope"
-            link="/newsletter"
-            className="card hover:shadow-lg hover:bg-yellow-400 "
-            buttonText="Subscribe"
-          />
-        </div>
+      <section>
+        <HelpCardsHome />
       </section>
 
       {/* About Me Section */}

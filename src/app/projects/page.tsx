@@ -61,15 +61,15 @@ export default function ProjectsPage() {
       </div>
 
       <div>
-        <Roadmap  />
+        {/* <Roadmap  /> */}
       </div>
 
       <div>
-        <Timeline />
+        {/* <Timeline /> */}
       </div>
 
       <div>
-        <ProjectPage />
+        {/* <ProjectPage /> */}
       </div>
     </>
   );
