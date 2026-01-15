@@ -6,19 +6,19 @@ import { packages } from "@/data/consultancyPackages";
 import Banner from "@/components/sections/Banner";
 import Button from "@/components/ui/Button";
 import { CreativePricing } from "@/components/ui/creative-pricing";
-import { CreativePricingDemo } from "@/components/ui/PricingPlan";
+import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
 
 export default function ConsultingPage() {
   return (
     <>
-     <Banner
+      <Banner
         title="One-on-One Consultation Calls with Dr Muhammad Kamran"
         description="Get tailored guidance for your research, career, or move abroad. Learn from real-world experience in academia, data analytics, and life in Australia."
         showLottie={true}
         lottieSrc="/lotties/meeting.lottie"
-        showBreadcrumb={true}  
+        showBreadcrumb={true}
       />
 
       {/* ✳️ What You Can Ask */}
@@ -39,30 +39,28 @@ export default function ConsultingPage() {
             <li>Career roadmap and future planning</li>
           </ul>
         </div> */}
-        <ConsultationGrid 
-        containerClassName="max-w-[1200px] mx-auto px-5 py-20"
-        headingClassName="font-extrabold tracking-tight"
-        descriptionClassName="text-slate-500"
-        iconClassName="" // Add extra icon classes if needed
-      />
+        <ConsultationGrid
+          containerClassName="max-w-[1200px] mx-auto px-5 py-20"
+          headingClassName="font-extrabold tracking-tight"
+          descriptionClassName="text-slate-500"
+          iconClassName="" // Add extra icon classes if needed
+        />
       </section>
 
       {/* 💬 How It Works */}
       <section className="w-full bg-gray-50 dark:bg-gray-900 py-16  text-center pr-4 md:px-0">
         <h2 className="text-5xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
-         💬 How It Works
+          💬 How It Works
         </h2>
-        <p className="pb-20">A seamless, 4-step journey to your academic and professional goals.</p>
+        <p className="pb-20">
+          A seamless, 4-step journey to your academic and professional goals.
+        </p>
 
-       
-      <WorkTimeline />
-
+        <WorkTimeline />
       </section>
 
-    
-
       <section>
-        <CreativePricingDemo />
+        <PricingPlanDemo />
       </section>
 
       {/* 📅 Embedded Calendly Widget */}

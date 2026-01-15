@@ -43,7 +43,7 @@ export default function Cards({
       {link && (
         <Link 
           href={link} 
-          className="mt-2 border rounded-lg hover:bg-white shadow shadow-black/100 hover:text-black px-2 inline-flex items-center gap-1 transition-all"
+          className="mt-2 comic-button  px-2 inline-flex items-center gap-1 transition-all"
         >
           {buttonText} <span className="">→</span>
         </Link>

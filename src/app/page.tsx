@@ -83,19 +83,19 @@ export default function HomePage() {
         <div className="flex flex-wrap justify-center gap-4 mt-12">
           <Button
             href="/newsletter"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
           >
             Join My Newsletter
           </Button>
           <Button
             href="/academy"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
           >
             Join My Academy
           </Button>
           <Button
             href="/consulting"
-            className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
           >
             Work With Me
           </Button>

@@ -21,7 +21,7 @@ export default function Button({
     return (
       <Link
         href={href}
-        className={`px-8 py-2 rounded-3xl   transition duration-400 hover:scale-105   ${className}`}
+        className={`px-8 py-2 rounded-3xl bg-gradient-to-b from-[#396afc] to-[#2948ff] text-white hover:from-[#2948ff] hover:to-[#396afc]    transition duration-400 hover:scale-105   ${className}`}
         
       >
         {children}

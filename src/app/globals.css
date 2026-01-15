@@ -165,20 +165,21 @@ canvas {
   font-weight: bold;
   text-align: center;
   text-decoration: none;
-  color: #fff;
+  color: black;
   background-color: rgb(255, 255, 255);
-  border: 2px solid #000;
+  /* border: 2px solid #000; */
   border-radius: 10px;
   /* box-shadow: 5px 5px 0px #474747; */
-  transition: all 0.3s ease;
+  box-shadow: 5px 5px 0px black ;
+  transition: all 0.5s ease;
   cursor: pointer;
 }
 
 .comic-button:hover {
   background-color: #fff;
-  color: #1b0ead;
-  border: 2px solid #2c0f96;
-  box-shadow: 5px 5px 0px #041eaf;
+  color: black;
+  border: 2px solid black;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.534);
 }
 
 .comic-button:active {

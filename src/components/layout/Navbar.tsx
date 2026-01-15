@@ -136,7 +136,7 @@ export default function Navbar() {
           <Button
             type="button"
             href="/newsletter"
-            className="hidden lg:block bg-blue-600 hover:bg-blue-900 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white font-black tracking-wide "
+            className="hidden lg:block  text-white font-black tracking-wide "
           >
             Join 1000+ Subscribers
           </Button>
@@ -242,8 +242,7 @@ export default function Navbar() {
             <Button
               href="/newsletter"
               onClick={() => setIsOpen(false)}
-              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-yellow-600
-               dark:hover:bg-yellow-700 tracking-wide text-white text-center text-sm font-black py-3"
+              className="w-full  tracking-wide text-white text-center text-sm font-black py-3"
             >
               Join 1000+ Subscribers
             </Button>
