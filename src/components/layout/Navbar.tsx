@@ -14,6 +14,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
 
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <nav
       className="
@@ -27,7 +29,7 @@ export default function Navbar() {
       rounded-full
       shadow-[0_0_20px_rgba(0,0,0,0.25)]
       transition-all duration-500
-      -mb-20
+      
     "
     >
       <div className="flex items-center justify-between px-5 py-3 md:py-4 ">

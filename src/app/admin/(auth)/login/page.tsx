@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import GradientText from "@/components/ui/GradientText";
@@ -10,7 +11,33 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
+  const [isVerifying, setIsVerifying] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    async function checkExistingSession() {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          const res = await fetch("/api/admin/check", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accessToken: session.access_token }),
+          });
+
+          if (res.ok) {
+            router.replace("/admin/gallery");
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Session check failed:", error);
+      } finally {
+        setIsVerifying(false);
+      }
+    }
+    checkExistingSession();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +51,6 @@ export default function AdminLogin() {
     const token = data.session?.access_token;
     if (!token) return setErr("No session token");
 
-    // server verify admin role to keep anon key privileges minimal
     const res = await fetch("/api/admin/check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -32,7 +58,6 @@ export default function AdminLogin() {
     });
 
     if (!res.ok) {
-      // try to decode server message so user sees the real reason
       try {
         const body = await res.json();
         setErr(body?.error || `Not authorized as admin (${res.status})`);
@@ -42,20 +67,30 @@ export default function AdminLogin() {
       await supabaseClient.auth.signOut();
       return;
     }
-    // show a success toast and redirect the admin to gallery
     toast.success("Welcome Dr Kamran!", { duration: 3000 });
     router.push("/admin/gallery");
   };
 
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-400 font-medium">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <ElectricBorder
+    <div className="min-h-screen flex items-center justify-center p-6 pt-10">
+      {/* <ElectricBorder
         color="orange"
         speed={100}
         chaos={2}
         thickness={20}
         style={{ borderRadius: 20 }}
-      >
+      > */}
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow"
@@ -87,7 +122,7 @@ export default function AdminLogin() {
             Sign in
           </button>
         </form>
-      </ElectricBorder>
+      {/* </ElectricBorder> */}
     </div>
   );
 }
