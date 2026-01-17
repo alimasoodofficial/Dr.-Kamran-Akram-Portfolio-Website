@@ -11,7 +11,7 @@ function HelpCardsHome() {
             How Can <br />{" "}
             <span>
               <GradientText
-                colors={["#ff8800", "#8a2be2", "#007aff"]}
+                colors={["#5d00ffff", "#289dd4ff", "#792eceff"]}
                 animationSpeed={6}
                 className=" "
               >

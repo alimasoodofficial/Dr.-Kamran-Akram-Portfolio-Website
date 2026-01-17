@@ -74,16 +74,16 @@ export default function AdminEbooks() {
           <Link 
               href="/free-resources/ebooks"
               target="_blank"
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center text-xs md:text-sm gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
           >
-              <ExternalLink className="w-5 h-5" />
+              <ExternalLink className="w-3 h-3 md:w-5 md:h-5" />
               <span>View Page</span>
           </Link>
           <Link 
               href="/admin/ebooks/new"
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-orange-500/20"
+              className="flex items-center text-xs md:text-sm gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-orange-500/20"
           >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-3 h-3 md:w-5 md:h-5" />
               <span>Add Ebook</span>
           </Link>
         </div>

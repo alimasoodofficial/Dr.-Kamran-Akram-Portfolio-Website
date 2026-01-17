@@ -93,16 +93,16 @@ export default function AdminGallery() {
           <Link 
               href="/gallery"
               target="_blank"
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center text-xs md:text-sm gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
           >
-              <ExternalLink className="w-5 h-5" />
+              <ExternalLink className="w-3 h-3 md:w-5 md:h-5" />
               <span>View Page</span>
           </Link>
           <Link 
               href="/admin/gallery/new"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-blue-500/20"
+              className="flex items-center text-xs md:text-sm gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-blue-500/20"
           >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-3 h-3 md:w-5 md:h-5" />
               <span>Add New Item</span>
           </Link>
         </div>

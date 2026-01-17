@@ -61,16 +61,16 @@ export default function AdminNewsletter() {
           <Link 
               href="/newsletter"
               target="_blank"
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center gap-2 text-xs md:text-sm bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
           >
-              <ExternalLink className="w-5 h-5" />
+              <ExternalLink className="w-5 h-5 text-xs md:text-sm" />
               <span>View Page</span>
           </Link>
           <Link 
               href="/admin/newsletter/new"
-              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
+              className="flex items-center gap-2 text-xs md:text-sm bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
           >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-5 h-5 text-xs md:text-sm " />
               <span>New Campaign</span>
           </Link>
         </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 const SocialIcon = ({ path }: { path: string }) => (
@@ -13,6 +16,9 @@ const SocialIcon = ({ path }: { path: string }) => (
 );
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-[#111320] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
       {/* Optional: Background gradient effect or overlay if needed */}
