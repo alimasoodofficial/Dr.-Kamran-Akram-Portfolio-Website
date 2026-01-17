@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 
-export const config = { api: { bodyParser: false } };
 
 // Note: Node's built-in formData reading works in Next.js route handlers.
 export async function POST(req: Request) {

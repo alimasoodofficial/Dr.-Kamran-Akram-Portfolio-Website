@@ -1,7 +1,6 @@
 import ElectricBorder from "@/components/ui/ElectricBorder";
 import Banner from "@/components/sections/Banner";
 import { GlowingEffectDemo } from "@/components/sections/GlowingEffectDemo";
-import { CreativePricingDemo } from "@/components/ui/PricingPlan";
 import { Timeline } from "@/components/ui/Timeline";
 import ProjectPage from "../../components/ui/ProjectPage";
 import ProfileStatsSection,{StatItem} from "@/components/ui/ProfileStatsSection";
