@@ -16,29 +16,22 @@ export default function ConsultingPage() {
       <Banner
         title="One-on-One Consultation Calls with Dr Muhammad Kamran"
         description="Get tailored guidance for your research, career, or move abroad. Learn from real-world experience in academia, data analytics, and life in Australia."
-        showLottie={true}
-        lottieSrc="/lotties/meeting.lottie"
+        showLottie={false}
+        showImage={false}
+        showVideo={true}
         showBreadcrumb={true}
-      />
+        containerClass="!px-0  "
+        videoSrc="https://www.pexels.com/download/video/8188999/"
+        videoOverlay="bg-white/80"
+        videoProps={{ autoPlay: true, loop: true, muted: true }}
+/>
 
       {/* ✳️ What You Can Ask */}
       <section className="py-16  w-11/12 mx-auto text-center">
         <h2 className="text-5xl font-heading font-bold mb-8">
           What You Can Ask
         </h2>
-        {/* <div className="grid md:grid-cols-2 gap-6 text-left font-body">
-          <ul className="list-disc list-inside space-y-2">
-            <li>How to shortlist universities or supervisors</li>
-            <li>Scholarship opportunities and expected funding</li>
-            <li>Budgeting and living in Australia</li>
-            <li>Accommodation and part-time work</li>
-          </ul>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Skills and certifications for employability</li>
-            <li>Building a research or LinkedIn profile</li>
-            <li>Career roadmap and future planning</li>
-          </ul>
-        </div> */}
+       
         <ConsultationGrid
           containerClassName="max-w-[1200px] mx-auto px-5 py-20"
           headingClassName="font-extrabold tracking-tight"

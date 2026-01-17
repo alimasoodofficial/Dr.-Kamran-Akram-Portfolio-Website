@@ -17,7 +17,13 @@ interface BannerProps {
   showLottie?: boolean;
   showBreadcrumb?: boolean;
   className?: string;
+  containerClass?: string;
   bannerClass?: string;
+  lottieWidth?: number;
+  showVideo?: boolean;
+  videoSrc?: string;
+  videoOverlay?: string; // e.g. "bg-black/40"
+  videoProps?: React.VideoHTMLAttributes<HTMLVideoElement>;
 
   // 🆕 Optional gradient customization props
   gradientColors?: string[];
@@ -34,7 +40,13 @@ export default function Banner({
   showLottie = false,
   showBreadcrumb = true,
   className = "",
+  containerClass = "",
   bannerClass = "",
+  lottieWidth = 300,
+  showVideo = false,
+  videoSrc = "",
+  videoOverlay = "bg-black/40",
+  videoProps = {},
   gradientColors,
   animationSpeed,
 }: BannerProps) {
@@ -56,14 +68,33 @@ if (!mounted) return null;
 
 const gradientSettings = {
   colors:
-    gradientColors || ["#97ABFF", "#123597"],
+    gradientColors || ["#6a6eedff", "#125497ff"],
   animationSpeed: animationSpeed || 6,
 };
 
   return (
-    <section className="container-bg-color pt-28 pb-16 px-4 md:px-28">
+    <section className={`relative overflow-hidden container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}>
+      {/* 📹 Background Video */}
+      {showVideo && videoSrc && (
+        <>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            {...videoProps}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+          {videoOverlay && (
+            <div className={`absolute inset-0 z-1 ${videoOverlay}`} />
+          )}
+        </>
+      )}
+
       <div
-        className={`container mx-auto flex ${
+        className={`relative z-10 container mx-auto flex ${
           hasVisual
             ? "flex-col md:flex-row items-center gap-8"
             : "flex-col items-center text-center lg:w-1/2"
@@ -96,7 +127,7 @@ const gradientSettings = {
         {hasVisual && (
           <div className="md:w-1/2 flex justify-center items-center">
             {showLottie ? (
-              <LottiePlayer src={lottieSrc} height={300} width={300} />
+              <LottiePlayer src={lottieSrc} height={lottieWidth} width={lottieWidth} />
             ) : (
               showImage &&
               (isExternal ? (
