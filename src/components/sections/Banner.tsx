@@ -28,6 +28,7 @@ interface BannerProps {
   // 🆕 Optional gradient customization props
   gradientColors?: string[];
   animationSpeed?: number;
+  children?: React.ReactNode;
 }
 
 export default function Banner({
@@ -49,6 +50,7 @@ export default function Banner({
   videoProps = {},
   gradientColors,
   animationSpeed,
+  children,
 }: BannerProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -121,6 +123,7 @@ const gradientSettings = {
           </GradientText>
 
           <p className="text-lg md:text-xl font-body">{description}</p>
+          {children && <div className="mt-6">{children}</div>}
         </div>
 
         {/* 🎨 Visual Section */}

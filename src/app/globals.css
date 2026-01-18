@@ -59,7 +59,7 @@ body {
 
 /* 🧱 Container Background */
 .container-bg-color {
-  background-color: var(--color-container);
+  background: linear-gradient(180deg, #7dcbff 0%, #cad4e0 100%);
 }
 .dark .container-bg-color {
   background: linear-gradient(180deg, #012944 0%, #03141c 100%);

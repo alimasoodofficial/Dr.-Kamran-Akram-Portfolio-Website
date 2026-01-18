@@ -9,6 +9,7 @@ import { CreativePricing } from "@/components/ui/creative-pricing";
 import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
+import MotherBoard from "@/components/loading animations/MotherBoard";
 
 export default function ConsultingPage() {
   return (
@@ -20,9 +21,9 @@ export default function ConsultingPage() {
         showImage={false}
         showVideo={true}
         showBreadcrumb={true}
-        containerClass="!px-0  "
+        containerClass="!px-0 text-white "
         videoSrc="https://www.pexels.com/download/video/8188999/"
-        videoOverlay="bg-white/80"
+        videoOverlay="bg-gradient-to-b from-blue-600/50 to-black/50"
         videoProps={{ autoPlay: true, loop: true, muted: true }}
 />
 
