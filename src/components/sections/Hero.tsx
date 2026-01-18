@@ -1,6 +1,7 @@
 import "../../app/globals.css";
 import NewsletterForm from "../forms/NewsletterForm";
 import BentoGrid from "../ui/BentoGrid";
+import GradientText from "../ui/GradientText";
 import LogoLoop from "../ui/LogoLoop";
 import Silk from "../ui/Silk";
 import LogoLoopDetails from "./LogoLoopDetails";
@@ -33,8 +34,8 @@ export default function Hero() {
           </span>
           An Expert Data Analyst
         </span>
-        <h1 className="font-heading text-4xl md:text-6xl pb-3 font-black  leading-tight tracking-wider">
-          Turbocharge your brand. <br className="invisible md:visible" />
+        <h1 className="font-heading uppercase text-4xl md:text-6xl pb-3 font-black  leading-tight tracking-wider">
+          Turbocharge your <GradientText colors={["#0b42f5ff", "#7ebcf6ff"]} > brand </GradientText> <br className="invisible md:visible" />
           Reach millions online
         </h1>
 

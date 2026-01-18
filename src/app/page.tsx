@@ -37,7 +37,7 @@ export default function HomePage() {
         /> */}
       </div>
 
-      <div className=" overflow-hidden py-20 transition-all">
+      <div className=" overflow-hidden   transition-all">
        
         <LogoLoopDetails />
       </div>

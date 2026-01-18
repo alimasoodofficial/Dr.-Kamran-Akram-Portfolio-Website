@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import ArticlesSection from "@/components/sections/ArticlesSection";
 import Banner from "@/components/sections/Banner";
 
@@ -12,22 +13,35 @@ export default function Articles() {
       >
         <div className="flex flex-wrap gap-4 mt-4">
             <div className="flex flex-wrap gap-4 w-full">
-                <Image 
-                    src="/images/logos/googleScholar.webp" 
-                    alt="CSIRO" 
-                    width={150} 
-                    height={150} 
-                    className=" object-cover"
-                />
-                 <Image 
-                    src="/images/logos/orcid.png" 
-                    alt="University of Queensland" 
-                    width={150} 
-                    height={150} 
-                    className=" object-cover"
-                />
+                <Link 
+                    href="https://scholar.google.com.au/citations?user=lBBycJgAAAAJ&hl" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-105 transition-transform"
+                >
+                    <Image 
+                        src="/images/logos/googleScholar.webp" 
+                        alt="Google Scholar" 
+                        width={100} 
+                        height={100} 
+                        className=" object-cover animate-float"
+                    />
+                </Link>
+                <Link 
+                    href="https://orcid.org/0000-0002-0909-8476" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-105 transition-transform"
+                >
+                    <Image 
+                        src="/images/logos/orcid.png" 
+                        alt="ORCID" 
+                        width={100} 
+                        height={100} 
+                        className=" object-cover animate-float"
+                    />
+                </Link>
             </div>
-           
         </div>
       </Banner>
       <ArticlesSection />

@@ -11,6 +11,7 @@ export default function BentoGrid() {
           desc="Translating complex research into practical knowledge for farmers, students, and communities."
           btnText="View Publications"
           bgClass="bg-blue-600"
+          href="https://scholar.google.com.au/citations?user=lBBycJgAAAAJ&hl"
         />
         <StripCard
           icon="fa-solid fa-microphone-lines"
