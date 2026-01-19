@@ -69,25 +69,21 @@ export default function Footer() {
 
         {/* --- Column 2: Quick Links (Span 2 columns) --- */}
         <div className="lg:col-span-2">
-          <h4 className="font-bold text-lg mb-6">Quick Links</h4>
+          <h4 className="font-bold text-lg mb-6 text-white font-heading">Quick Links</h4>
           <ul className="space-y-3 text-gray-300">
             {[
-              "Home",
-              "About Kamran",
-              "Upcoming Masterclasses",
-              "Recorded Masterclasses",
-              "Books",
-              "Blogs",
-              "Contact Me",
-              "Feedback",
-              "Reviews",
+              { name: "Home", path: "/" },
+              { name: "Resume", path: "/resume" },
+              { name: "Projects", path: "/projects" },
+              { name: "Gallery", path: "/gallery" },
+              { name: "Newsletter", path: "/newsletter" },
             ].map((item) => (
-              <li key={item}>
+              <li key={item.name}>
                 <Link
-                  href="/"
+                  href={item.path}
                   className="hover:text-[#d4f238] transition-colors"
                 >
-                  {item}
+                  {item.name}
                 </Link>
               </li>
             ))}
@@ -96,16 +92,29 @@ export default function Footer() {
 
         {/* --- Column 3: Work With Me (Span 2 columns) --- */}
         <div className="lg:col-span-2">
-          <h4 className="font-bold text-lg mb-6">Work With Me</h4>
+          <h4 className="font-bold text-lg mb-6 text-white font-heading">Work With Me</h4>
           <ul className="space-y-3 text-gray-300">
-            {["Hire Me", "E-Meeting", "Contact Me", "Invite Me"].map((item) => (
-              <li key={item}>
-                <Link
-                  href="/"
-                  className="hover:text-[#d4f238] transition-colors"
-                >
-                  {item}
-                </Link>
+            {[
+              { name: "Consulting", path: "/consulting" },
+              { name: "Academy", path: "/academy" },
+              { name: "Contact Me", path: "mailto:hi@imkamran.com" },
+            ].map((item) => (
+              <li key={item.name}>
+                {item.path.startsWith("mailto") ? (
+                  <a
+                    href={item.path}
+                    className="hover:text-[#d4f238] transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className="hover:text-[#d4f238] transition-colors"
+                  >
+                    {item.name}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -113,13 +122,13 @@ export default function Footer() {
 
         {/* --- Column 4: Contact Info (Span 3 columns) --- */}
         <div className="lg:col-span-3 sm:col-span-2">
-          <h4 className="font-bold text-lg mb-6">Contact Info</h4>
+          <h4 className="font-bold text-lg mb-6 text-white font-heading">Contact Info</h4>
           <div className="space-y-4 text-gray-300">
             {/* Email */}
             <div className="flex items-center gap-3">
               <span className="text-[#d4f238] text-lg">✉</span>
               <a
-                href="mailto:connect@Kamranusmani.com"
+                href="mailto:hi@imkamran.com"
                 className="hover:text-[#d4f238] transition-colors"
               >
                 hi@imkamran.com
@@ -135,15 +144,21 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="flex gap-4 mt-6 flex-wrap items-center">
               {/* Facebook */}
-              <SocialIcon path="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              <a href="https://www.facebook.com/kamran.akram3/" target="_blank" rel="noopener noreferrer">
+                <SocialIcon path="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              </a>
               {/* YouTube */}
-              <SocialIcon path="M21.58 7.24a2.95 2.95 0 00-2.08-2.09C17.67 4.5 12 4.5 12 4.5s-5.67 0-7.5.65a2.95 2.95 0 00-2.09 2.09A31.14 31.14 0 002 12.24a31.14 31.14 0 00.41 5.25 2.95 2.95 0 002.09 2.09C6.33 20 12 20 12 20s5.67 0 7.5-.65a2.95 2.95 0 002.09-2.09 31.14 31.14 0 00.41-5.25 31.14 31.14 0 00-.41-5zM9.75 15.02V8.98l5.25 3.02z" />
+              <a href="https://www.youtube.com/@MKamran09" target="_blank" rel="noopener noreferrer">
+                <SocialIcon path="M21.58 7.24a2.95 2.95 0 00-2.08-2.09C17.67 4.5 12 4.5 12 4.5s-5.67 0-7.5.65a2.95 2.95 0 00-2.09 2.09A31.14 31.14 0 002 12.24a31.14 31.14 0 00.41 5.25 2.95 2.95 0 002.09 2.09C6.33 20 12 20 12 20s5.67 0 7.5-.65a2.95 2.95 0 002.09-2.09 31.14 31.14 0 00.41-5.25 31.14 31.14 0 00-.41-5zM9.75 15.02V8.98l5.25 3.02z" />
+              </a>
               {/* Twitter/X */}
-              <SocialIcon path="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              <a href="https://x.com/mkamran09" target="_blank" rel="noopener noreferrer">
+                <SocialIcon path="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </a>
               {/* LinkedIn */}
-              <SocialIcon path="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-2 2 2 2 0 012-2z" />
-              {/* TikTok */}
-              <SocialIcon path="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+              <a href="https://www.linkedin.com/in/kam09/" target="_blank" rel="noopener noreferrer">
+                <SocialIcon path="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-2 2 2 2 0 012-2z" />
+              </a>
             </div>
           </div>
         </div>
@@ -157,27 +172,7 @@ export default function Footer() {
           <span className="font-bold text-white">DATA EXPERTS 360</span>
         </div>
 
-        {/* Right: Policies */}
-        <div className="flex gap-6 flex-wrap justify-center md:justify-end">
-          <Link
-            href="/privacy"
-            className="hover:text-[#d4f238] transition-colors"
-          >
-            Privacy Policy
-          </Link>
-          <Link
-            href="/terms"
-            className="hover:text-[#d4f238] transition-colors"
-          >
-            Terms & Conditions
-          </Link>
-          <Link
-            href="/refund"
-            className="hover:text-[#d4f238] transition-colors"
-          >
-            Refund Policy
-          </Link>
-        </div>
+        {/* Right: Policies removed as requested */}
       </div>
     </footer>
   );

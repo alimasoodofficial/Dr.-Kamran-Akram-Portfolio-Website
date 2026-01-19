@@ -54,52 +54,18 @@ const getDummyImage = (text: string, bgColor: string = "#3b82f6"): string => {
   return canvas.toDataURL();
 };
 
-// Image loader with fallback to dummy images
-const loadImage = (
-  path: string,
-  fallbackText: string,
-  fallbackColor: string
-): string => {
-  try {
-    const img = require(path).default;
-    // Handle StaticImageData from Next.js imports
-    return typeof img === "object" && img.src
-      ? img.src
-      : typeof img === "string"
-      ? img
-      : getDummyImage(fallbackText, fallbackColor);
-  } catch {
-    return getDummyImage(fallbackText, fallbackColor);
-  }
-};
-
-const heroBg = loadImage(
-  "@/assets/hero-bg.jpg",
-  "Dr. Kamran Projects",
-  "#1e293b"
-);
-const dataExpertsLogo = loadImage(
-  "@/assets/data-experts-logo.jpg",
-  "Data Experts 360",
-  "#2563eb"
-);
-const triisumImage = loadImage(
-  "@/assets/triisum.jpeg",
-  "Triisum Tourism",
-  "#059669"
-);
-const agriExpertsImage = loadImage(
-  "@/assets/agri-experts.jpg",
-  "Agri Experts 360",
-  "#7c3aed"
-);
+// Image paths from public directory
+const heroBg = "/images/projects/hero_bg.png";
+const dataExpertsLogo = "/images/projects/data_experts.png";
+const triisumImage = "/images/projects/triisum.png";
+const agriExpertsImage = "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop"; // High quality fallback
 
 // ============= HERO SECTION =============
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-hero-zoom"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />

@@ -67,7 +67,7 @@ export default function HomePage() {
             </p>
             <ScrollRevealText 
                         text={aboutText} 
-                        className="text-sm md:text-lg"
+                        className="text-sm md:text-lg text-justify"
                     />
           </div>
 

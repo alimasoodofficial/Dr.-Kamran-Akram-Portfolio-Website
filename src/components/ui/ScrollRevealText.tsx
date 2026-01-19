@@ -21,18 +21,19 @@ export default function ScrollRevealText({ text, className = "" }: ScrollRevealT
   return (
     <p
       ref={element}
-      // Added transition-colors so theme switching is smooth
-      // The text color is now controlled here by the parent's className or defaults
-      className={`flex flex-wrap leading-tight transition-colors duration-300 ${className}`}
+      className={`leading-relaxed transition-colors duration-300 ${className}`}
     >
       {words.map((word, i) => {
         const start = i / words.length;
         const end = start + 1 / words.length;
         
         return (
-          <Word key={i} range={[start, end]} progress={scrollYProgress}>
-            {word}
-          </Word>
+          <React.Fragment key={i}>
+            <Word range={[start, end]} progress={scrollYProgress}>
+              {word}
+            </Word>
+            {i < words.length - 1 && " "}
+          </React.Fragment>
         );
       })}
     </p>
@@ -51,7 +52,7 @@ const Word = ({ children, range, progress }: WordProps) => {
   const step = amount / characters.length;
 
   return (
-    <span className="mr-2 mt-2 relative">
+    <span className="relative inline-block">
       {characters.map((char, i) => {
         const start = range[0] + i * step;
         const end = range[0] + (i + 1) * step;

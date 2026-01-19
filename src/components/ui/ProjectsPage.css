@@ -182,8 +182,17 @@
   .section-title {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
   }
-
   .floating-orb {
     display: none;
   }
+}
+
+/* Hero Zoom Animation */
+@keyframes hero-zoom {
+  from { transform: scale(1.1); }
+  to { transform: scale(1.0); }
+}
+
+.animate-hero-zoom {
+  animation: hero-zoom 10s ease-out forwards;
 }
