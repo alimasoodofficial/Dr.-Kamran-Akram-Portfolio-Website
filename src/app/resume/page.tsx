@@ -17,6 +17,7 @@ function ResumePage() {
          <ResumeHeader />
          <ResumeAbout />
          <ResumeExperience />
+         
          <ResumeEducation />
          <ResumeAwards />
       </main>

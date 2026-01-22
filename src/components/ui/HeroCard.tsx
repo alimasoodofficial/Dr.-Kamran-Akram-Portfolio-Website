@@ -69,7 +69,7 @@ export const StripCard = ({
   bgClass: string;
 }) => (
   <CardWrapper
-    className={`${bgClass} min-h-[120px] flex items-center gap-4 text-white `}
+    className={`${bgClass} min-h-[120px] flex items-center gap-4 dark:text-white text-black `}
   >
     <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
       <i className={`${icon} text-xl`}></i>

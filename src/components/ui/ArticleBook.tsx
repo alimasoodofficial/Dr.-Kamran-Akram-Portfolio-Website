@@ -76,14 +76,14 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
             
             {/* Header */}
             <div className="flex justify-between items-start">
-              <span className="text-[8px] md:text-sm font-mono text-cyan-400 tracking-widest uppercase">
+              <span className="text-[8px] md:text-xs font-mono text-cyan-400 tracking-widest uppercase">
                 {date} • {category}
               </span>
             </div>
 
             {/* Title Card */}
             <div className="mt-4 backdrop-blur-sm bg-white/10 border border-white/20 p-2 md:p-4 rounded-lg">
-              <h2 className="text-xs md:text-2xl font-bold font-serif leading-tight mb-2 drop-shadow-md">
+              <h2 className="text-xs md:text-sm font-bold font-serif leading-tight mb-2 drop-shadow-md">
                 {title}
               </h2>
               <div className="h-1 w-8 md:w-12 bg-cyan-500 rounded" />
@@ -92,7 +92,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
 
             {/* Footer */}
             <div className="text-right">
-              <p className="text-[10px] md:text-xs text-gray-400 font-mono">Vol. {issueNumber}</p>
+              {/* <p className="text-[10px] md:text-xs text-gray-400 font-mono">Vol. {issueNumber}</p> */}
             </div>
             
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-white/10 to-transparent rounded-r-md" />
@@ -103,12 +103,19 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
             <h3 className="text-sm md:text-lg font-bold text-slate-900 mb-2 md:mb-4 border-b border-slate-200 pb-2">
               Abstract
             </h3>
-            <p className="text-slate-600 text-[10px] md:text-sm leading-relaxed mb-4 md:mb-6 line-clamp-6">
+            <p className="text-slate-600 text-[10px] md:text-xs text-justify leading-relaxed mb-4 md:mb-6 line-clamp-20">
               {summary}
             </p>
             <div className="mt-auto flex items-center justify-between">
               <span className="text-[10px] md:text-xs font-bold text-cyan-700 uppercase tracking-wide">
-                {readTime}
+                {/* {readTime} */}
+                 <button 
+              onClick={handleReadClick}
+              className={`bg-blue-600 px-5 py-2 rounded-full text-xs font-bold text-white shadow-xl transform transition-all duration-500 delay-100 hover:bg-cyan-400 hover:text-white ${buttonOpacity}`}
+            >
+              Read More
+            </button>
+
               </span>
             </div>
           </div>
@@ -119,7 +126,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
           <img 
             src={imageUrl} 
             alt={title} 
-            className={`w-full h-full object-cover transition-all duration-700 ${imageScale}`}
+            className={`w-full px-7 h-full object-contain object-center transition-all duration-700 ${imageScale}`}
           />
           {/* CTA Overlay - Only clickable when open */}
           <div className={`absolute inset-0 bg-black/10 transition-colors flex items-center justify-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>

@@ -43,7 +43,7 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
       </head>
-      <body className="min-h-screen antialiased  font-body ">
+      <body className="min-h-screen mx-auto antialiased  font-body ">
         <Navbar />
 
         <BackgroundGrid className="dark:opacity-10" />

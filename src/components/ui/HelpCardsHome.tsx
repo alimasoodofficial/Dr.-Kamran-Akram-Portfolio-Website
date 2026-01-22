@@ -41,7 +41,7 @@ function HelpCardsHome() {
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
             iconClassName="fa-solid fa-play"
             link="free-resources"
-            className=" hover:shadow-lg hover:bg-red-400 dark:bg-red-600"
+            className=" hover:shadow-lg hover:bg-red-400 dark:hover:bg-red-600"
           />
 
           <Cards

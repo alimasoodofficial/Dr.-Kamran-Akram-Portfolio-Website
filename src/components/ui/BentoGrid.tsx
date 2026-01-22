@@ -49,13 +49,13 @@ export default function BentoGrid() {
           subtitle="Free Resources"
           desc="Access my collection of eBooks, courses, and free guides for students and professionals."
           btnText="Download eBooks"
-          bgClass="bg-yellow-600" // Custom brown
+          bgClass="bg-orange-600" // Custom brown
           href="free-resources/ebooks"
         />
         <StripCard
           icon="fa-solid fa-award"
           text="MLA Red Meat Industry Ambassador"
-          bgClass="bg-blue-600"
+          bgClass="bg-blue-300"
         />
       </div>
     </div>
