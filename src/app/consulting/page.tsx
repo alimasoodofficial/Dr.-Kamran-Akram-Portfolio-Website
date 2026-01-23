@@ -9,7 +9,6 @@ import { CreativePricing } from "@/components/ui/creative-pricing";
 import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
-import MotherBoard from "@/components/loading animations/MotherBoard";
 
 export default function ConsultingPage() {
   return (
