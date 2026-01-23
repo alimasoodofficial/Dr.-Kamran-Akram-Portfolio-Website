@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 
 import { DM_Serif_Display, Poppins, Inter } from "next/font/google";
 import BackgroundGrid from "@/components/ui/BackgroundGrid";
+import ResearchGame from "@/components/ui/ResearchGame";
 
 // Define fonts
 const dmSerif = DM_Serif_Display({
@@ -52,7 +53,9 @@ export default function RootLayout({
       <body className="min-h-screen mx-auto antialiased  font-body ">
         <Navbar />
 
-      <BackgroundGrid className="opacity-10"/>
+      <BackgroundGrid className="dark:opacity-10 opacity-80"/>
+      
+      <ResearchGame/>
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
 
         <Footer />
