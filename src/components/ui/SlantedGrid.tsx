@@ -185,7 +185,7 @@ const AchievementGrid = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-slate-50 dark:bg-gray-900 dark:text-slate-100 ">
+    <section className="py-20 px-4 bg-green-50 dark:bg-gradient-to-br from-[#022c22] via-[#06634a] to-[#022c22] dark:text-slate-100 ">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <span className="text-[#10b981] dark:text-[#34d399] font-bold tracking-widest uppercase text-sm">

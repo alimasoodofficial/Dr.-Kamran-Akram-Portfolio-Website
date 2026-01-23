@@ -63,10 +63,12 @@ export default function HomePage() {
               />
             </h2>
             
-            <ScrollRevealText 
-                        text={aboutText} 
-                        className="text-sm md:text-2xl text-justify"
-                    />
+            <div className="bg-gray-50 dark:bg-emerald-950/20 backdrop-blur-md border border-white/10 dark:border-emerald-500/10 p-10 rounded-2xl">
+              <ScrollRevealText 
+                          text={aboutText} 
+                          className="text-sm md:text-2xl text-justify"
+                      />
+            </div>
           </div>
 
           {/* 🖼️ Right Side: Visual Content */}
