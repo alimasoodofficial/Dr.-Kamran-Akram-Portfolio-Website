@@ -22,8 +22,9 @@ export default function ConsultingPage() {
         showVideo={true}
         showBreadcrumb={true}
         containerClass="!px-0 text-white "
+        bannerClass="backdrop-blur-lg p-5 bg-[#0b0c12]/40 transition-all duration-500 ease-in-out shadow-[0_0_20px_rgba(0,0,0,0.25)] rounded-2xl "
         videoSrc="https://www.pexels.com/download/video/8188999/"
-        videoOverlay="bg-gradient-to-b from-blue-600/50 to-black/50"
+        videoOverlay=""
         videoProps={{ autoPlay: true, loop: true, muted: true }}
 />
 

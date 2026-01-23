@@ -31,9 +31,9 @@ export default function WorkTimeline() {
         
         steps={timelineData}
         
-        accentColorClass="text-[#E67E22] card"
-        accentBgClass="bg-[#fdf2e9]"
-        containerClassName="dark:bg-gray-900 "
+        accentColorClass=" card"
+        // accentBgClass="bg-blue-900"
+        containerClassName="gradient-to-b from-[#fdf2e9] via-[#04ec8f] to-[#e9fdf2] dark:bg-gray-900"
       />
     </main>
   );

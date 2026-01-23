@@ -83,10 +83,12 @@ body {
 
 /* 🧱 Container Background */
 .container-bg-color {
-  background: #ecfdf5; /* Very Light Mint */
+/* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
 }
 .dark .container-bg-color {
-  background: #011f18;
+background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+
 }
 
 

@@ -70,7 +70,7 @@ export const  StripCard = ({
   bgClass: string;
 }) => (
   <CardWrapper
-    className={`${bgClass} min-h-[120px] flex flex-col md:flex-row items-center gap-4 dark:text-white text-black `}
+    className={`${bgClass} min-h-[120px] flex flex-col md:flex-row items-center gap-4 text-white `}
   >
     <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
       <i className={`${icon} text-xl`}></i>
@@ -106,7 +106,7 @@ export const ImageCard = ({
 // --- 4. Center Stat Card (Action) ---
 export const CenterStatCard = () => (
   <CardWrapper className="bg-[#E67E22] flex flex-col justify-center items-center text-center text-white">
-    <h2 className="text-4xl font-bold mb-1">10+</h2>
+    <h3 className="text-4xl font-bold mb-1">10+</h3>
     <p className="font-medium mb-6">Years of Experience</p>
     <div className="bg-black/10 w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
       <i className="fa-solid fa-hand-holding-dollar"></i> Hire for Consulting

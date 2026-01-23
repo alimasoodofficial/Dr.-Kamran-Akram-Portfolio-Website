@@ -3,10 +3,6 @@ import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Spline from "@/components/ui/Spline";
 import Image from "next/image";
-import ThemeBackground from "@/components/ui/ThemeBackground";
-import ElectricBorder from "@/components/ui/ElectricBorder";
-import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
 import CircularGallery from "@/components/ui/CircularGallery";
 import CursorReveal from "@/components/ui/CursorReveal";
 import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
@@ -14,6 +10,7 @@ import TrueFocus from "@/components/ui/TrueFocus";
 import SlantedGrid from "@/components/ui/SlantedGrid";
 import ScrollRevealText from "@/components/ui/ScrollRevealText";
 import HelpCardsHome from "@/components/ui/HelpCardsHome";
+import ImageBackground from "@/components/ui/ImageBgContainer";
 
 export default function HomePage() {
  const aboutText = "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
@@ -104,6 +101,12 @@ export default function HomePage() {
 
       <section>
         <SlantedGrid />
+      </section>
+
+      <section>
+        <ImageBackground
+        
+        />
       </section>
 
       <section className="py-10">

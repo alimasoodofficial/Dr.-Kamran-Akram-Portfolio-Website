@@ -44,7 +44,10 @@ export default function Articles() {
             </div>
         </div>
       </Banner>
+      <section className="w-full mx-auto">
+
       <ArticlesSection />
+      </section>
     </>
   );
 }

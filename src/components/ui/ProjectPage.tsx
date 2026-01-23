@@ -108,8 +108,8 @@ const FeatureCard = ({ icon: Icon, title, description, index }: any) => (
         <Icon size={24} />
       </div>
       <div>
-        <h4 className="text-lg font-semibold text-card-foreground">{title}</h4>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <h4 className="text-lg font-semibold text-card-foreground ">{title}</h4>
+        <p className="text-sm  dark:text-white">{description}</p>
       </div>
     </div>
   </motion.div>
@@ -129,9 +129,9 @@ const ProjectSection = ({ project }: { project: any }) => (
         </motion.div>
 
         <div className="w-full lg:w-1/2 space-y-6">
-          <span className="px-4 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary uppercase tracking-wider">{project.subtitle}</span>
-          <h2 className="text-3xl md:text-5xl font-bold font-display text-foreground">{project.title}</h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">{project.description}</p>
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider ">{project.subtitle}</span>
+          <h2 className="text-3xl my-2 md:text-5xl font-bold  font-display text-foreground">{project.title}</h2>
+          <p className="text-lg text-muted-foreground text-justify dark:text-white leading-relaxed">{project.description}</p>
           <div className="flex flex-wrap gap-4">
             {project.links.map((link: any, idx: number) => (
               <a key={idx} href={link.url} className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${link.type === 'website' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border'}`}>

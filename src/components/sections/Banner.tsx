@@ -46,7 +46,7 @@ export default function Banner({
   lottieWidth = 300,
   showVideo = false,
   videoSrc = "",
-  videoOverlay = "bg-black/40",
+  videoOverlay = "",
   videoProps = {},
   gradientColors,
   animationSpeed,
@@ -70,7 +70,7 @@ if (!mounted) return null;
 
 const gradientSettings = {
   colors:
-    gradientColors || ["#10b981", "#064e3b", "#34d399"],
+    gradientColors || ["#e3eeff", "#f3e7e9", "#f3efef"],
   animationSpeed: animationSpeed || 6,
 };
 
@@ -98,7 +98,7 @@ const gradientSettings = {
       <div
         className={`relative z-10 container mx-auto flex ${
           hasVisual
-            ? "flex-col md:flex-row items-center gap-8"
+            ? "flex-col md:flex-row items-center gap-8 rounded-lg"
             : "flex-col items-center text-center lg:w-1/2"
         } ${bannerClass}`}
       >

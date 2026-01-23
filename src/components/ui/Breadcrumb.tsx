@@ -11,7 +11,7 @@ export default function Breadcrumb() {
     <nav className="text-sm mb-4">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link href="/" className="hover:underline text-blue-600">
+          <Link href="/" className="hover:underline text-orange-400 font-extrabold">
             Home
           </Link>
         </li>

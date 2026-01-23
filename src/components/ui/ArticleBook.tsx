@@ -45,7 +45,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
 
   // Base rotation classes
   const containerRotation = isOpen 
-    ? "[transform:rotateY(-30deg)_translateX(30px)]" 
+    ? "[transform:rotateY(-30deg)_translateX(30px)] ms-10 lg:ms-0" 
     : "";
     
   const coverRotation = isOpen 
@@ -62,7 +62,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
 
   return (
     <div 
-      className={`relative ms-20 lg:ms-0 w-[150px] h-[225px] md:w-[300px] md:h-[450px] cursor-pointer [perspective:1000px] ${className}`}
+      className={`relative w-[150px] h-[450px] md:w-[350px] md:h-[500px] cursor-pointer  ${className}`}
       onClick={handleInteraction}
     >
       {/* Book Wrapper */}
@@ -83,9 +83,9 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
 
             {/* Title Card */}
             <div className="mt-4 backdrop-blur-sm bg-white/10 border border-white/20 p-2 md:p-4 rounded-lg">
-              <h2 className="text-xs md:text-sm font-bold font-serif leading-tight mb-2 drop-shadow-md">
+              <h3 className="text-[10px] md:text-xs font-inter font-bold   leading-relaxed mb-2 drop-shadow-md">
                 {title}
-              </h2>
+              </h3>
               <div className="h-1 w-8 md:w-12 bg-cyan-500 rounded" />
               {author && <p className="text-[8px] md:text-xs text-gray-300 mt-2">By {author}</p>}
             </div>
@@ -103,7 +103,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
             <h3 className="text-sm md:text-lg font-bold text-slate-900 mb-2 md:mb-4 border-b border-slate-200 pb-2">
               Abstract
             </h3>
-            <p className="text-slate-600 text-[10px] md:text-xs text-justify leading-relaxed mb-4 md:mb-6 line-clamp-20">
+            <p className="text-slate-600 text-[10px] md:text-xs text-justify leading-relaxed mb-4 md:mb-6 line-clamp-15">
               {summary}
             </p>
             <div className="mt-auto flex items-center justify-between">

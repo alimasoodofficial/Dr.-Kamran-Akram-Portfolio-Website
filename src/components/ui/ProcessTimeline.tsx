@@ -97,7 +97,7 @@ const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   accentBgClass = "bg-blue-100",
 }) => {
   return (
-    <section className={`bg-slate-50 flex items-center justify-center w-full ${containerClassName}`}>
+    <section className={` flex items-center justify-center w-full ${containerClassName}`}>
       
       {/* Header Section */}
      
@@ -107,7 +107,7 @@ const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
         
         {/* Vertical Center Line */}
         <div 
-            className="absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#fdf2e9] via-[#E67E22] to-[#fdf2e9] rounded-full
+            className="absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#fdf2e9] via-[#04ec8f] to-[#e9fdf2] rounded-full
             /* Mobile: Shift line to the left */
             left-8 
             /* Desktop: Center the line */
