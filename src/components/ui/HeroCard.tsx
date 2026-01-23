@@ -44,9 +44,9 @@ export const InfoCard = ({
   >
     
     <div className="flex flex-col justify-between">
-      <h3 className="text-4xl  font-bold mb-2">{title}</h3>
-      <h3 className="text-lg font-heading mb-3">{subtitle}</h3>
-      <p className="text-sm opacity-90 leading-relaxed">{desc}</p>
+      <h3 className="text-lg md:text-4xl  font-bold mb-2">{title}</h3>
+      <h3 className="text-2xl  font-heading mb-3">{subtitle}</h3>
+      <p className="text-sm md:text-lg  leading-relaxed">{desc}</p>
     </div>
     <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
       <Link
@@ -60,7 +60,7 @@ export const InfoCard = ({
 );
 
 // --- 2. Strip Card (e.g., Relentless Love) ---
-export const StripCard = ({
+export const  StripCard = ({
   icon,
   text,
   bgClass,
@@ -70,7 +70,7 @@ export const StripCard = ({
   bgClass: string;
 }) => (
   <CardWrapper
-    className={`${bgClass} min-h-[120px] flex items-center gap-4 dark:text-white text-black `}
+    className={`${bgClass} min-h-[120px] flex flex-col md:flex-row items-center gap-4 dark:text-white text-black `}
   >
     <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
       <i className={`${icon} text-xl`}></i>

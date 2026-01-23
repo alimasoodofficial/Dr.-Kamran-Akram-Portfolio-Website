@@ -52,7 +52,7 @@ export default function RootLayout({
       <body className="min-h-screen mx-auto antialiased  font-body ">
         <Navbar />
 
-
+      <BackgroundGrid className="opacity-10"/>
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
 
         <Footer />

@@ -49,9 +49,9 @@ export default function Hero() {
           </span>
         </p> */}
         {/* <div className="py-3">
-          <NewsletterForm />
+          <NewsletterForm /> 
         </div> */}
-        <div className=" mx-0 px-0">
+        <div className="w-full mx-auto">
           <BentoGrid />
         </div>
       </div>
