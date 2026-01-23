@@ -101,10 +101,10 @@ const timelineEvents: TimelineEvent[] = [
 ];
 
 const decades = [
-  { label: "70's", start: 1970, end: 1979, color: "bg-purple-700" },
-  { label: "80's", start: 1980, end: 1989, color: "bg-red-700" },
-  { label: "90's", start: 1990, end: 1999, color: "bg-green-700" },
-  { label: "2000's", start: 2000, end: 2030, color: "bg-blue-700" },
+  { label: "70's", start: 1970, end: 1979, color: "bg-[#064e3b]" },
+  { label: "80's", start: 1980, end: 1989, color: "bg-[#022c22]" },
+  { label: "90's", start: 1990, end: 1999, color: "bg-[#10b981]" },
+  { label: "2000's", start: 2000, end: 2030, color: "bg-[#34d399]" },
 ];
 
 // Calculate spread positions to avoid overlaps
@@ -178,7 +178,7 @@ export const Timeline = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + index * 0.15, duration: 0.3 }}
-                    className="w-4 h-4 rounded-full bg-amber-500 border-2 border-white dark:border-gray-900 shadow-lg"
+                    className="w-4 h-4 rounded-full bg-[#10b981] border-2 border-white dark:border-gray-900 shadow-lg"
                   />
                 </motion.div>
               ))}
@@ -208,7 +208,7 @@ export const Timeline = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.2, duration: 0.4 }}
-                className="w-0 h-0 border-t-[24px] border-b-[24px] border-l-[30px] border-t-transparent border-b-transparent border-l-amber-500"
+                className="w-0 h-0 border-t-[24px] border-b-[24px] border-l-[30px] border-t-transparent border-b-transparent border-l-[#10b981]"
               />
             </div>
 
@@ -227,7 +227,7 @@ export const Timeline = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + index * 0.15, duration: 0.3 }}
-                    className="w-4 h-4 rounded-full bg-amber-500 border-2 border-white dark:border-gray-900 shadow-lg"
+                    className="w-4 h-4 rounded-full bg-[#10b981] border-2 border-white dark:border-gray-900 shadow-lg"
                   />
                   <motion.div
                     initial={{ scaleY: 0 }}

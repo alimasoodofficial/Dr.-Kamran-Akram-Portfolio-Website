@@ -98,7 +98,7 @@ const ProjectCounterGrid: React.FC<ProjectCounterGridProps> = ({
         >
            <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
                       <GradientText
-                        colors={["#97ABFF", "#123597"]}
+                        colors={["#10b981", "#064e3b", "#34d399"]}
                         animationSpeed={6}
                         className=""
                       >

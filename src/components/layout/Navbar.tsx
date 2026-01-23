@@ -40,7 +40,7 @@ export default function Navbar() {
           className="text-xl font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-[var(--foreground)]">mk.</span>
-          <span className="hidden md:block text-orange-500 dark:text-purple-500 transition-colors duration-300">
+          <span className="hidden md:block text-[#E67E22] dark:text-purple-500 transition-colors duration-300">
             |
           </span>
           <span className="font-extralight font-body hidden md:block ">
@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="hidden lg:flex gap-4 font-body font-medium ml-auto mr-8 items-center relative">
           {/* Free Resources Mega Dropdown */}
           <div className="group relative px-3 py-2">
-            <button className="flex items-center gap-1 transition-colors hover:text-orange-500">
+            <button className="flex items-center gap-1 transition-colors hover:text-[#E67E22]">
               Free Resources
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ export default function Navbar() {
 
           {/* About Me Mega Dropdown */}
           <div className="group relative px-3 py-2">
-            <button className="flex items-center gap-1 transition-colors hover:text-orange-500 font-medium">
+            <button className="flex items-center gap-1 transition-colors hover:text-[#E67E22] font-medium">
               About Me
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +184,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 transition-all hover:text-orange-500 hover:scale-110 ${
+                  className={`px-3 py-2 transition-all hover:text-[#E67E22] hover:scale-110 ${
                     isActive ? "text-blue-600" : ""
                   }`}
                 >
@@ -264,8 +264,8 @@ export default function Navbar() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className={`text-2xl font-black tracking-wide hover:text-orange-500 transition-colors px-2 py-1 ${
-                        isActive ? "text-orange-500" : ""
+                      className={`text-2xl font-black tracking-wide hover:text-[#E67E22] transition-colors px-2 py-1 ${
+                        isActive ? "text-[#E67E22]" : ""
                       }`}
                     >
                       {link.label}

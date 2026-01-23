@@ -6,21 +6,35 @@
 @theme {
   --font-heading: var(--font-dm-serif), serif;
   --font-body: var(--font-poppins), sans-serif;
+  --font-inter: var(--font-inter), sans-serif;
 
   /* 🎨 Theme Colors */
-  --color-primary: #172716;
-  --color-secondary: #f59e0b;
-  --color-accent: #10b981;
+  --color-primary: #10b981; /* Vibrant Emerald */
+  --color-secondary: #ecfdf5; /* Very Light Mint */
+  --color-accent: #34d399; /* Bright Spring Green */
   --color-dark: #111827;
   --color-light: #f3f4f6;
-  --color-blue-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  --color-container: #f4f6f7;
+  --color-blue-primary: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
+  --color-container: #ecfdf5; /* Secondary/Section Backgrounds */
+  --color-primary-foreground: #ffffff;
+  --color-secondary-foreground: #022c22;
+  --color-accent-foreground: #022c22;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-card-foreground: #022c22;
+  --color-muted-foreground: rgba(6, 78, 59, 0.7);
+  
   /* ✨ Dark Theme Extended Palette */
-  --color-dark-bg: #212121;
-  --color-dark-card: #111319;
-  --color-dark-text: #e7e7e7;
-  --color-dark-muted: #8b93a7;
-  --color-dark-border: rgba(255, 255, 255, 0.08);
+  --color-dark-bg: #022c22;
+  --color-dark-card: #0d614b;
+  --color-dark-text: #ecfdf5;
+  --color-dark-muted: rgba(236, 253, 245, 0.7);
+  --color-dark-border: rgba(255, 255, 255, 0.1);
+
+  /* 🟠 Action Colors (Requested Orange) */
+  --color-action: #E67E22;
+  --color-action-hover: #D35400;
+  --color-action-soft: #fdf2e9;
 
   /* 🌈 Animation */
   --animate-float: float 3s ease-in-out infinite;
@@ -38,15 +52,25 @@
 
 /* 🌞 Default Light Theme */
 :root {
-  --background: #ffffff;
-  --foreground: #0b1020;
+  --background: #FFFFFF;
+  --foreground: #022c22;
+  --color-heading: #172c22;
+}
+
+/* Base Typography */
+h1, h2 {
+  color: var(--color-heading);
 }
 
 /* 🌙 Dark Theme */
 .dark {
-  --background: linear-gradient(180deg, #0b0c10 0%, #111319 50%, #0b1020 100%);
-
+  --background: #021b15;
   --foreground: var(--color-dark-text);
+  --color-heading: #ecfdf5;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: var(--color-heading);
 }
 
 /* ✅ Global Body */
@@ -59,21 +83,25 @@ body {
 
 /* 🧱 Container Background */
 .container-bg-color {
-  background: linear-gradient(90deg, #c7eaff 0%, #e9eaea 100%);
+  background: #ecfdf5; /* Very Light Mint */
 }
 .dark .container-bg-color {
-  background: linear-gradient(180deg, #012944 0%, #03141c 100%);
+  background: #011f18;
 }
 
 
 /* 🪄 Card Style (for dark + light) */
 .card {
   @apply rounded-2xl transition-shadow duration-300;
+  background-color: #d1fae5; /* Pale Sage */
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
   transition-property: color, background-color, border-color,
     text-decoration-color, fill, stroke;
   transition-duration: 500ms;
   transition-timing-function: ease-in-out;
+}
+.muted {
+  color: rgba(6, 78, 59, 0.7); /* 70% of Heading Color */
 }
 .dark .card {
   background-color: var(--color-dark-card);
@@ -92,18 +120,33 @@ body {
 }
 
 .btn-gradient {
-  background-image: linear-gradient(
-    to right,
-    #4776e6 0%,
-    #41089d 51%,
-    #5b20d2 100%
-  );
-  background-size: 200% auto;
-  transition: background-position 0.5s ease-in-out;
+  background-color: #10b981;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
 }
 
 .btn-gradient:hover {
-  background-position: right center;
+  background-color: #34d399;
+}
+
+.btn-action {
+  background-color: var(--color-action);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  background-color: var(--color-action-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+}
+
+.bg-action {
+  background-color: var(--color-action);
+}
+
+.bg-action-soft {
+  background-color: var(--color-action-soft);
 }
 
 /* 🎢 Floating Animation */
@@ -217,9 +260,8 @@ canvas {
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .dark .Scard {
-  background: #111319;
-  /* border: 6px solid #bc8700; */
-  box-shadow: 20px 20px 0 #bc8700;
+  background: #064e3b;
+  box-shadow: 20px 20px 0 #10b981;
 }
 
 @keyframes scroll {

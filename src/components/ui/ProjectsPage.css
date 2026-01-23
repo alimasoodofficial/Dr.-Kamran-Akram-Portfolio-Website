@@ -43,7 +43,7 @@
 
 /* Glass Morphism Card */
 .glass-card {
-  background: rgba(53, 54, 132, 0.05);
+  background: rgba(236, 253, 245, 0.5); /* Mint tint */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   backdrop-filter: blur(10px);
@@ -57,7 +57,7 @@
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -65,17 +65,17 @@
 
 /* Glow Text Effect */
 .glow-text {
-  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.5));
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
 @keyframes glow-pulse {
   0%,
   100% {
-    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+    filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.5));
   }
   50% {
-    filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.8));
+    filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.8));
   }
 }
 
@@ -93,7 +93,7 @@
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
   color: white;
   border-radius: 0.75rem;
   font-weight: 600;
@@ -102,12 +102,12 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
 }
 
 .btn-primary:active {
@@ -132,9 +132,9 @@
 }
 
 .btn-outline:hover {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: #3b82f6;
-  color: #3b82f6;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  color: #10b981;
 }
 
 /* Project Icon */
@@ -144,7 +144,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(16, 185, 129, 0.2);
   border-radius: 0.75rem;
   backdrop-filter: blur(10px);
   animation: icon-float 3s ease-in-out infinite;
@@ -173,7 +173,7 @@
   }
 
   .project-icon {
-    background: rgb(59, 131, 246);
+    background: rgb(16, 185, 129);
   }
 /* } */
 

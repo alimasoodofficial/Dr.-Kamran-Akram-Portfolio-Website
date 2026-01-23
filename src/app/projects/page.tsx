@@ -37,7 +37,7 @@ export default function ProjectsEntryPage() {
         <div className="max-w-5xl mx-auto py-24 border-t border-border/50 mt-20">
           <ScrollRevealText 
             text={paragraphText} 
-            className="text-lg md:text-3xl  font-light  text-justify text-muted-foreground "
+            className="text-lg md:text-3xl  font-light  text-justify transition-all  "
           />
         </div>
       </div>

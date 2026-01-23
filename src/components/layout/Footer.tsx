@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const SocialIcon = ({ path }: { path: string }) => (
   <svg
-    className="w-5 h-5 text-white hover:text-[#d4f238] transition-colors cursor-pointer"
+    className="w-5 h-5 text-white hover:text-[#34d399] transition-colors cursor-pointer"
     fill="currentColor"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +20,7 @@ export default function Footer() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <footer className="bg-[#111320] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
+    <footer className="bg-[#022c22] text-white pt-16 pb-8 text-sm font-sans  overflow-hidden">
       {/* Optional: Background gradient effect or overlay if needed */}
 
       <div className="w-full mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-12 mb-16">
@@ -58,9 +58,9 @@ export default function Footer() {
                 type="email"
                 aria-label="Email address"
                 placeholder="Your Email Address*"
-                className="flex-1 bg-white text-gray-800 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d4f238] w-full sm:w-auto min-w-0"
+                className="flex-1 bg-white text-gray-800 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-[#34d399] w-full sm:w-auto min-w-0"
               />
-              <button className="bg-[#d0f238] text-[#1a3028] font-bold px-8 py-3 rounded-full hover:opacity-90 transition-opacity w-full sm:w-auto">
+              <button className="bg-[#10b981] text-white font-bold px-8 py-3 rounded-full hover:bg-[#34d399] hover:opacity-100 transition-colors w-full sm:w-auto">
                 Subscribe
               </button>
             </div>
@@ -81,7 +81,7 @@ export default function Footer() {
               <li key={item.name}>
                 <Link
                   href={item.path}
-                  className="hover:text-[#d4f238] transition-colors"
+                  className="hover:text-[#34d399] transition-colors"
                 >
                   {item.name}
                 </Link>
@@ -103,14 +103,14 @@ export default function Footer() {
                 {item.path.startsWith("mailto") ? (
                   <a
                     href={item.path}
-                    className="hover:text-[#d4f238] transition-colors"
+                    className="hover:text-[#34d399] transition-colors"
                   >
                     {item.name}
                   </a>
                 ) : (
                   <Link
                     href={item.path}
-                    className="hover:text-[#d4f238] transition-colors"
+                    className="hover:text-[#34d399] transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -126,10 +126,10 @@ export default function Footer() {
           <div className="space-y-4 text-gray-300">
             {/* Email */}
             <div className="flex items-center gap-3">
-              <span className="text-[#d4f238] text-lg">✉</span>
+              <span className="text-[#34d399] text-lg">✉</span>
               <a
                 href="mailto:hi@imkamran.com"
-                className="hover:text-[#d4f238] transition-colors"
+                className="hover:text-[#34d399] transition-colors"
               >
                 hi@imkamran.com
               </a>
@@ -137,7 +137,7 @@ export default function Footer() {
 
             {/* Address */}
             <div className="flex items-start gap-3">
-              <span className="text-[#d4f238] text-lg mt-0.5">📍</span>
+              <span className="text-[#34d399] text-lg mt-0.5">📍</span>
               <span>Brisbane, Australia </span>
             </div>
 

@@ -70,7 +70,7 @@ if (!mounted) return null;
 
 const gradientSettings = {
   colors:
-    gradientColors || ["#0b42f5ff", "#7ebcf6ff"],
+    gradientColors || ["#10b981", "#064e3b", "#34d399"],
   animationSpeed: animationSpeed || 6,
 };
 

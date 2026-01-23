@@ -29,13 +29,13 @@ export default function Hero() {
         >
           {/* Glowing green dot */}
           <span className="relative flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3  bg-green-500"></span>
+            <span className="absolute inline-flex h-full w-full rounded-full bg-[#E67E22] opacity-75 animate-ping"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3  bg-[#E67E22]"></span>
           </span>
           An Expert Data Analyst
         </span>
-        <h1 className="font-heading uppercase text-4xl md:text-6xl pb-3 font-black  leading-tight tracking-wider">
-          Turbocharge your <GradientText colors={["#0b42f5ff", "#7ebcf6ff"]} > brand </GradientText> <br className="invisible md:visible" />
+        <h1 className=" text-4xl md:text-6xl pb-3 font-black  leading-tight tracking-wider">
+          Turbocharge your <GradientText colors={["#10b981", "#10b981", "#10b981"]} > brand </GradientText> <br className="invisible md:visible" />
           Reach millions online
         </h1>
 

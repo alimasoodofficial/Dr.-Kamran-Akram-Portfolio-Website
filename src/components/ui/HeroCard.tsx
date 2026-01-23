@@ -42,8 +42,9 @@ export const InfoCard = ({
   <CardWrapper
     className={`${bgClass} ${textColor} min-h-[320px] flex flex-col justify-between`}
   >
-    <div>
-      <h2 className="text-4xl  font-bold mb-2">{title}</h2>
+    
+    <div className="flex flex-col justify-between">
+      <h3 className="text-4xl  font-bold mb-2">{title}</h3>
       <h3 className="text-lg font-heading mb-3">{subtitle}</h3>
       <p className="text-sm opacity-90 leading-relaxed">{desc}</p>
     </div>
@@ -102,9 +103,9 @@ export const ImageCard = ({
   </CardWrapper>
 );
 
-// --- 4. Center Stat Card (Yellow) ---
+// --- 4. Center Stat Card (Action) ---
 export const CenterStatCard = () => (
-  <CardWrapper className="bg-blue-600 flex flex-col justify-center items-center text-center text-white">
+  <CardWrapper className="bg-[#E67E22] flex flex-col justify-center items-center text-center text-white">
     <h2 className="text-4xl font-bold mb-1">10+</h2>
     <p className="font-medium mb-6">Years of Experience</p>
     <div className="bg-black/10 w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">

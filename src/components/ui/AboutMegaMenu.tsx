@@ -25,7 +25,7 @@ export default function AboutMegaMenu() {
       {/* Trigger Link */}
       <Link
         href="/about"
-        className="flex items-center gap-1 font-medium hover:text-orange-500 transition-colors"
+        className="flex items-center gap-1 font-medium hover:text-[#E67E22] transition-colors"
       >
         About
         <svg

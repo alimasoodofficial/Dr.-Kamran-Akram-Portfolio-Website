@@ -5,7 +5,7 @@ import ThemeProviderWrapper from "@/components/providers/ThemeProviderWrapper";
 
 import type { Metadata } from "next";
 
-import { DM_Serif_Display, Poppins } from "next/font/google";
+import { DM_Serif_Display, Poppins, Inter } from "next/font/google";
 import BackgroundGrid from "@/components/ui/BackgroundGrid";
 
 // Define fonts
@@ -19,6 +19,12 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -35,7 +41,7 @@ export default function RootLayout({
     <html
       suppressHydrationWarning
       lang="en"
-      className={`${dmSerif.variable} ${poppins.variable}`}
+      className={`${dmSerif.variable} ${poppins.variable} ${inter.variable}`}
     >
       <head>
         <link
@@ -46,7 +52,6 @@ export default function RootLayout({
       <body className="min-h-screen mx-auto antialiased  font-body ">
         <Navbar />
 
-        <BackgroundGrid className="dark:opacity-10" />
 
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
 

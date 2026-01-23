@@ -8,7 +8,7 @@ export default function AcademyComingSoon() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center  text-center px-6">
       <h1 className="text-7xl md:text-9xl font-heading font-black tracking-tighter mb-12">
-        <GradientText colors={["#093468ff", "#0d3cbeff", "#7285f4ff"]}>
+        <GradientText colors={["#10b981", "#064e3b", "#34d399"]}>
           COMING SOON
         </GradientText>
       </h1>

@@ -129,7 +129,7 @@ const AchievementCard: React.FC<Achievement> = ({
       </div>
 
       {/* Label */}
-      <h3 className="text-lg md:text-xl font-bold uppercase tracking-widest opacity-90">
+      <h3 className="text-lg text-white md:text-xl font-bold uppercase tracking-widest opacity-90">
         {label}
       </h3>
 
@@ -147,7 +147,7 @@ const AchievementGrid = () => {
       value: 10,
       suffix: "+",
       label: "Years of Experience",
-      bgClass: "bg-blue-600",
+      bgClass: "bg-[#064e3b]",
       icon: "fa-solid fa-calendar-check",
     },
     {
@@ -155,7 +155,7 @@ const AchievementGrid = () => {
       value: 8,
       suffix: "+",
       label: "Projects Completed",
-      bgClass: "bg-emerald-500",
+      bgClass: "bg-[#10b981]",
       icon: "fa-solid fa-list-check",
     },
     {
@@ -163,7 +163,7 @@ const AchievementGrid = () => {
       value: 15,
       suffix: "+",
       label: "Courses Taught",
-      bgClass: "bg-violet-600",
+      bgClass: "bg-[#34d399]",
       icon: "fa-solid fa-chalkboard-user",
     },
     {
@@ -171,7 +171,7 @@ const AchievementGrid = () => {
       value: 3,
       suffix: "+",
       label: "Volunteer Work",
-      bgClass: "bg-rose-500",
+      bgClass: "bg-[#022c22]",
       icon: "fa-solid fa-hand-holding-heart",
     },
     {
@@ -179,7 +179,7 @@ const AchievementGrid = () => {
       value: 7,
       suffix: "+",
       label: "e-Books Published",
-      bgClass: "bg-amber-500",
+      bgClass: "bg-[#10b981]",
       icon: "fa-solid fa-book",
     },
   ];
@@ -188,7 +188,7 @@ const AchievementGrid = () => {
     <section className="py-20 px-4 bg-slate-50 dark:bg-gray-900 dark:text-slate-100 ">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <span className="text-blue-600 dark:text-blue-400 font-bold tracking-widest uppercase text-sm">
+          <span className="text-[#10b981] dark:text-[#34d399] font-bold tracking-widest uppercase text-sm">
             Track Record
           </span>
           <h2 className="text-4xl font-heading md:text-5xl font-black text-slate-900 dark:text-slate-100 mt-2">

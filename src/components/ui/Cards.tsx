@@ -27,17 +27,17 @@ export default function Cards({
       {iconClassName && (
         <div className="text-4xl mb-2">
           <i 
-            className={`${iconClassName} transition-transform duration-700 group-hover:rotate-[15deg]`}
+            className={`${iconClassName} transition-transform duration-700 group-hover:scale-110`}
             aria-hidden="true"
           ></i>
         </div>
       )}
 
       {/* Title */}
-      <h3 className="font-heading text-2xl md:text-4xl font-bold">{title}</h3>
+      <h3 className="font-heading text-2xl md:text-5xl font-bold">{title}</h3>
 
       {/* Description */}
-      <p className="font-body">{description}</p>
+      <p className="font-body text-lg md:text-2xl md:pr-10">{description}</p>
 
       {/* Link (optional) */}
       {link && (
