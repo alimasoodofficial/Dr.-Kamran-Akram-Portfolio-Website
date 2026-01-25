@@ -53,7 +53,7 @@ export default function RootLayout({
       <body className="min-h-screen mx-auto antialiased  font-body ">
         <Navbar />
 
-      <BackgroundGrid className="dark:opacity-10 opacity-80"/>
+      <BackgroundGrid className="dark:opacity-10 "/>
       
       <ResearchGame/>
         <ThemeProviderWrapper>{children}</ThemeProviderWrapper>

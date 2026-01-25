@@ -17,7 +17,7 @@ export default function HomePage() {
  
   return (
     <>
-      <div className="overflow-hidden relative">
+      <div className="overflow-hidden">
         <Hero />
         {/* <Spline
           className="
@@ -34,7 +34,7 @@ export default function HomePage() {
         /> */}
       </div>
 
-      <div className=" overflow-hidden   transition-all">
+      <div className=" overflow-hidden    transition-all">
        
         <LogoLoopDetails />
       </div>

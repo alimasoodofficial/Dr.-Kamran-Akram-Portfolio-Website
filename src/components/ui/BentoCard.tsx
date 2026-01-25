@@ -57,7 +57,7 @@ const BentoCard: React.FC<BentoCardProps> = ({
             group-hover:scale-110 group-hover:-rotate-3
           `}
         />
-        <h4 className={`mb-2.5 text-xl font-bold text-slate-900 ${headingClassName}`}>
+        <h4 className={`mb-2.5 text-xl font-bold  ${headingClassName}`}>
           {title}
         </h4>
         <p className={`text-[0.95rem] leading-relaxed text-slate-600 ${descriptionClassName}`}>
