@@ -3,10 +3,17 @@ export const dynamic = "force-dynamic";
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
 import GlowingInput from "@/components/ui/GlowingInput";
+import HangingGallery from "@/components/ui/HangingGallery";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
+  const myPhotos = [
+  { url: 'https://picsum.photos/200/300?1', alt: 'Trip 1' },
+  { url: 'https://picsum.photos/200/300?2', alt: 'Trip 2' },
+  { url: 'https://picsum.photos/200/300?3', alt: 'Trip 3' },
+  { url: 'https://picsum.photos/200/300?4', alt: 'Trip 4' },
+];
 
 export default async function GalleryPage() {
   const supabase = createSupabaseServerClient();
@@ -32,7 +39,12 @@ export default async function GalleryPage() {
         showLottie={true}
         lottieSrc="/lotties/gallery.lottie"
         showBreadcrumb={true}
+        gradientColors={["#e3eeff", "#f3e7e9", "#e3eeff"]}
+        animationSpeed={10}
       />
+      <section>
+        <HangingGallery images={myPhotos} />
+      </section>
 
       <div className="py-20 px-6 max-w-7xl mx-auto">
         <GalleryGridClient items={items} />

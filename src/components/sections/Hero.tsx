@@ -27,7 +27,7 @@ export default function Hero() {
         {/* Premium Gradient Overlay for blending and high readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)] via-transparent to-[var(--background)]"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)] via-transparent to-[var(--background)]"></div>
-        <div className="absolute inset-0 bg-[var(--background)]/30 backdrop-brightness-75"></div>
+        <div className="absolute inset-0 bg-[var(--background)]/30"></div>
       </div>
 
       {/* 💬 Content (on top of background) */}

@@ -82,18 +82,19 @@ export default function ResearchGamePopup() {
       {/* Game Window */}
       {isOpen && (
         <div className="mb-4 w-[280px] xs:w-[320px] sm:w-[380px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl overflow-hidden transition-all animate-in slide-in-from-bottom-2">
-          <div className="p-3 sm:p-4 bg-white/5 border-b border-white/10 flex justify-between items-center">
-            <span className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Research Sprint</span>
+          <div className="p-3 sm:p-4 bg-white/5 border-b  border-white/10 flex justify-between items-center">
+            <span className="text-xs sm:text-lg font-bold text-white font-inter  tracking-wider">Research Sprint</span>
             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white p-1">✕</button>
           </div>
+
 
           <div className="p-4 sm:p-5">
             {gameState === 'idle' ? (
               <div className="text-center py-4">
-                <p className="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                <p className="text-slate-300 text-xs sm:text-lg mb-4 leading-relaxed">
                   Spot 5 valid research moves. <br/>Avoid the shortcuts!
                 </p>
-                <button onClick={startGame} className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-900/20">
+                <button onClick={startGame} className="w-full py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-green-900/20 cursor-pointer">
                   Start Game
                 </button>
               </div>
