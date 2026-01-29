@@ -1,11 +1,4 @@
-import ConsultancyForm from "@/components/forms/ConsultancyForm";
-import CalendlyEmbed from "@/components/forms/Calendly";
-import { packages } from "@/data/consultancyPackages";
-// import { motion } from "framer-motion";
-
 import Banner from "@/components/sections/Banner";
-import Button from "@/components/ui/Button";
-import { CreativePricing } from "@/components/ui/creative-pricing";
 import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
@@ -53,17 +46,11 @@ export default function ConsultingPage() {
         <WorkTimeline />
       </section>
 
-      <section>
+      <section className="py-10">
         <PricingPlanDemo />
       </section>
 
-      {/* 📅 Embedded Calendly Widget */}
-      <section className="pt-20 dark:bg-[#0b0c12]    ">
-        <h2 className="text-4xl py-5 font-heading font-bold text-center ">
-          Ready to Start?
-        </h2>
-        <CalendlyEmbed url="https://calendly.com/dataexperts360/30min" />
-      </section>
+     
     </>
   );
 }
