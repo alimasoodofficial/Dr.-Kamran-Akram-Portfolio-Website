@@ -18,8 +18,10 @@ export default function AdminDashboardLayout({
   useEffect(() => {
     async function checkAuth() {
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        
+        const {
+          data: { session },
+        } = await supabaseClient.auth.getSession();
+
         if (!session) {
           router.replace("/admin/login");
           return;
@@ -53,7 +55,9 @@ export default function AdminDashboardLayout({
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 font-medium animate-pulse">Verifying Admin Session...</p>
+          <p className="text-slate-400 font-medium animate-pulse">
+            Verifying Admin Session...
+          </p>
         </div>
       </div>
     );
@@ -66,16 +70,23 @@ export default function AdminDashboardLayout({
         <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
           Admin Panel
         </h2>
-        <button 
+        <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
         >
-          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isSidebarOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
         </button>
       </div>
 
-      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
+      <AdminSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
       <main className="lg:ml-64 min-h-screen px-4 md:px-8 pb-8 pt-20 lg:pt-10 transition-all duration-300">
         <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
           {children}
