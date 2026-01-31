@@ -24,6 +24,7 @@ import {
   MessageCircle,
   CheckCircle,
 } from "lucide-react";
+import Image from "next/image";
 
 // --- Constants ---
 
@@ -341,7 +342,17 @@ export default function ProjectDashboard() {
   const isDesktop = dimensions.width >= 1024;
 
   return (
-    <section className="relative w-full py-10 bg-gradient-to-br from-[#f8fafc] via-[#f0f9ff] to-[#f0fdf4] overflow-hidden">
+    <section className="relative w-full py-10 overflow-hidden">
+      <Image
+        src="https://images.pexels.com/photos/9227508/pexels-photo-9227508.jpeg"
+        alt="Project Management Background"
+        fill
+        className="object-cover opacity-20 pointer-events-none"
+        priority
+      />
+      {/* Premium Glassmorphic Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#f8fafc]/60 via-[#f0f9ff]/60 to-[#f0fdf4]/60 backdrop-blur-[2px]" />
+
       <style
         dangerouslySetInnerHTML={{
           __html: `
