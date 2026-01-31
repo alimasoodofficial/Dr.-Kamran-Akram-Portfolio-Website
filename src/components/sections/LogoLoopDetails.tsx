@@ -7,8 +7,8 @@ export default function LogoLoopDetails() {
       {/* For Universities - Responsive sizing */}
       <LogoCarousel
         items={educationLogos}
-        speed={60}
-        mobileSize={100}
+        speed={100}
+        mobileSize={120}
         mobileContainerSize={150}
         size={200}
         containerSize={200}
@@ -18,8 +18,8 @@ export default function LogoLoopDetails() {
       {/* For Startups - Responsive sizing */}
       <LogoCarousel
         items={professionalLogos}
-        speed={60}
-        mobileSize={100}
+        speed={100}
+        mobileSize={120}
         mobileContainerSize={150}
         size={200}
         containerSize={200}

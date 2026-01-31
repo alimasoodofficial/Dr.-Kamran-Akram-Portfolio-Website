@@ -101,10 +101,10 @@ const FeatureCard = ({ icon: Icon, title, description, index }: any) => (
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
     viewport={{ once: true }}
-    className="glass-card p-6 border border-border/50 bg-card hover:bg-accent/5 transition-all duration-300"
+    className="bg-white dark:bg-teal-900 p-6 rounded-2xl shadow-lg bg-card hover:bg-accent/5 transition-all duration-300"
   >
     <div className="flex items-start gap-4">
-      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-primary bg-primary/10 group-hover:bg-primary transition-colors">
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-primary bg-primary/10 group-hover:bg-primary transition-colors ">
         <Icon size={24} />
       </div>
       <div>

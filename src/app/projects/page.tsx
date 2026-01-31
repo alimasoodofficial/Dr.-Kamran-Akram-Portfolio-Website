@@ -5,6 +5,7 @@ import { ProjectsPage as ProjectsList, ProjectBanner } from "@/components/ui/Pro
 import ProfileStatsSection, { StatItem } from "@/components/ui/ProfileStatsSection";
 import ScrollRevealText from "@/components/ui/ScrollRevealText";
 import Banner from "@/components/sections/Banner";
+import ProjectDashboard from "@/components/sections/ProjectDashboard";
 
 export default function ProjectsEntryPage() {
   const paragraphText = "A multilingual agricultural scientist and data analyst dedicated to clear, impactful science communication and extension across agriculture and animal sciences. With experience as an MLA Red Meat Industry Ambassador and Young Science Ambassador, focused on translating complex research into practical knowledge for farmers, students, and communities. Skilled in research, data analysis, and public speaking, with a passion for empowering others through education and outreach. Committed to fostering innovation and sustainability in agriculture through effective communication and collaboration.";
@@ -17,10 +18,12 @@ export default function ProjectsEntryPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background transition-colors duration-300">
+    <main className="min-h-screen  transition-colors duration-300">
       {/* 1. Hero Banner */}
       {/* <ProjectBanner /> */}
-      <Banner/>
+      <section>
+        <ProjectDashboard />
+      </section>
 
       {/* 2. Academic Profile Section */}
       <div className="container mx-auto px-6 py-20">

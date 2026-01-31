@@ -66,7 +66,7 @@ const LogoCarousel = ({
                   width: `${mobileContainerSize}px`,
                   height: `${mobileContainerSize}px`,
                 }}
-                className="  bg-white shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center transition-transform duration-300 hover:scale-110"
+                className="  bg-white shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center transition-transform duration-300 hover:scale-110 rounded-xl"
               >
                 <div
                   className="relative"

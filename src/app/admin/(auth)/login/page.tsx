@@ -144,7 +144,7 @@ export default function AdminLogin() {
             >
               <Lock className="w-8 h-8 text-blue-400" />
             </motion.div>
-            <h2 className="text-3xl font-bold tracking-tight text-white mb-2">
+            <h2 className="text-3xl font-bold tracking-tight font-inter !text-white mb-2">
               Management Portal
             </h2>
             <p className="text-slate-400 text-sm">

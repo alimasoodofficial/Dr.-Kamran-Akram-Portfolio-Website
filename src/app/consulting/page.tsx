@@ -30,7 +30,7 @@ export default function ConsultingPage() {
         <ConsultationGrid
           containerClassName="max-w-[1200px] mx-auto px-5 py-20"
           headingClassName="font-extrabold  tracking-tight"
-          descriptionClassName="text-slate-500"
+          descriptionClassName=""
           iconClassName="" // Add extra icon classes if needed
         />
       </section>

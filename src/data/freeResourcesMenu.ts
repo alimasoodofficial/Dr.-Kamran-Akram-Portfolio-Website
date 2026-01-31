@@ -33,9 +33,15 @@ export const freeResources: FreeResourceItem[] = [
     
   },
   {
-    title: "Blog",
+    title: "Downloadables /Linkedin PDFs",
     description: "Deep dives into creativity & entrepreneurship.",
-    href: "#",
-    icon: "fa-solid fa-blog",
+    href: "https://www.linkedin.com/in/kam09/",
+    icon: "fa-solid fa-file-pdf",
+  },
+  {
+    title: "Buy me a coffee",
+    description: "Deep dives into creativity & entrepreneurship.",
+    href: "https://buymeacoffee.com/drkamran",
+    icon: "fa-solid fa-coffee",
   },
 ];
