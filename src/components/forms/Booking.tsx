@@ -169,32 +169,13 @@ export default function BookingPage() {
   };
 
   return (
-    <div className=" bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <Toaster position="top-right" />
+    <div className=" bg-gradient-to-br from-green-100 via-white to-green-50 dark:from-gray-900 dark:via-green-900 dark:to-teal-900">
+      <Toaster position="top-center" />
 
-      <div className=" ">
-        <Banner
-        title="Book Your Appointment"
-        description="Schedule a consultation with Dr. Kamran Akram. Select a date and choose your preferred time slot."
-        showImage={false}
-        />
-      </div>
+    
 
       <div className="max-w-7xl mx-auto py-12 ">
-        {/* Header */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Book Your Appointment
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Schedule a consultation with Dr. Kamran Akram. Select a date and
-            choose your preferred time slot.
-          </p>
-        </motion.div> */}
+      
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column - Calendar & Slots */}
@@ -205,10 +186,10 @@ export default function BookingPage() {
             className="space-y-6"
           >
             {/* Calendar */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2 mb-6">
                 <Calendar className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold ">
                   Select a Date
                 </h2>
               </div>
@@ -224,6 +205,11 @@ export default function BookingPage() {
                     selected: "bg-indigo-600 text-white rounded-lg",
                     today: "font-bold text-indigo-600",
                   }}
+                  classNames={{
+                    day: "hover:bg-indigo-100 hover:text-indigo-700 transition-colors rounded-lg",
+
+                    
+                  }}
                 />
               </div>
             </div>
@@ -233,7 +219,7 @@ export default function BookingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
+                className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800"
               >
                 <div className="flex items-center gap-2 mb-6">
                   <Clock className="w-6 h-6 text-indigo-600" />
@@ -283,7 +269,7 @@ export default function BookingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 h-fit sticky top-8"
+            className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 h-fit sticky top-8"
           >
             <AnimatePresence mode="wait">
               {bookingSuccess ? (
@@ -349,7 +335,7 @@ export default function BookingPage() {
                         value={formData.userName}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         placeholder="John Doe"
                       />
                     </div>
@@ -365,7 +351,7 @@ export default function BookingPage() {
                         value={formData.userEmail}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -380,7 +366,7 @@ export default function BookingPage() {
                         value={formData.notes}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
                         placeholder="Any specific topics or questions you'd like to discuss..."
                       />
                     </div>
@@ -391,7 +377,7 @@ export default function BookingPage() {
                       className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
                         !selectedSlot || submitting
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-105"
+                          : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-105 cursor-pointer"
                       }`}
                     >
                       {submitting ? (

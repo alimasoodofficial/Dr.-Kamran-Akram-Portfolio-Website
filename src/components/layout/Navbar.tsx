@@ -39,17 +39,17 @@ export default function Navbar() {
           href="/"
           className="text-xl font-heading font-bold flex items-center gap-1"
         >
-          <span className="text-2xl text-[var(--foreground)]">mk.</span>
+          <span className="text-2xl text-black dark:text-white">mk.</span>
           <span className="hidden md:block text-[#E67E22] dark:text-purple-500 transition-colors duration-300">
             |
           </span>
-          <span className="font-extralight font-body hidden md:block ">
+          <span className="font-extralight font-body hidden md:block text-black dark:text-white ">
             Dr M Kamran
           </span>
         </Link>
 
         {/* 🌐 Desktop Navigation */}
-        <div className="hidden lg:flex gap-4 font-body font-medium ml-auto mr-8 items-center relative">
+        <div className="hidden lg:flex gap-4 font-body font-medium ml-auto mr-8 items-center relative text-black dark:text-white">
           {/* Free Resources Mega Dropdown */}
           <div className="group relative px-3 py-2">
             <button className="flex items-center gap-1 transition-colors hover:text-[#E67E22]">
@@ -206,28 +206,7 @@ export default function Navbar() {
             Join 1000+ Subscribers
           </Button>
 
-          <Link
-            href="/booking"
-            className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm tracking-wide shadow-lg hover:shadow-indigo-500/25 hover:scale-105 transition-all duration-300"
-          >
-            <span>Book Appointment</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-              <line x1="16" x2="16" y1="2" y2="6" />
-              <line x1="8" x2="8" y1="2" y2="6" />
-              <line x1="3" x2="21" y1="10" y2="10" />
-            </svg>
-          </Link>
+          
 
           {/* 🍔 Mobile Menu Button */}
           <button
@@ -364,30 +343,6 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
-            <Link
-              href="/booking"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm tracking-wide shadow-lg"
-            >
-              <span>Book Appointment</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                <line x1="16" x2="16" y1="2" y2="6" />
-                <line x1="8" x2="8" y1="2" y2="6" />
-                <line x1="3" x2="21" y1="10" y2="10" />
-              </svg>
-            </Link>
-
             <Button
               href="/newsletter"
               onClick={() => setIsOpen(false)}

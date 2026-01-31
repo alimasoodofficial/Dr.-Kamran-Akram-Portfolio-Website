@@ -10,6 +10,7 @@ import BackgroundGrid from "@/components/ui/BackgroundGrid";
 import ResearchGame from "@/components/ui/ResearchGame";
 import { Suspense } from "react";
 import Preloader from "@/components/loaders/Preloader";
+import { Toaster } from "react-hot-toast";
 import Loading from "./loading";
 // Define fonts
 const dmSerif = DM_Serif_Display({
@@ -34,8 +35,6 @@ export const metadata: Metadata = {
   title: "DR.Muhammad Kamran",
   description: "Personal Portfolio of Dr.Muhammad Kamran",
 };
-
-
 
 export default function RootLayout({
   children,

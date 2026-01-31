@@ -2,6 +2,7 @@ import Banner from "@/components/sections/Banner";
 import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
+import Booking from "@/components/forms/Booking";
 
 export default function ConsultingPage() {
   return (
@@ -48,6 +49,10 @@ export default function ConsultingPage() {
 
       <section className="py-10">
         <PricingPlanDemo />
+      </section>
+
+      <section>
+        <Booking />
       </section>
 
      
