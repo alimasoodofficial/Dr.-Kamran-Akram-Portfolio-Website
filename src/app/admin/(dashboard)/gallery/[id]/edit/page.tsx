@@ -172,7 +172,7 @@ export default function EditGalleryItem() {
               type={field === "date" ? "date" : "text"}
               value={value}
               onChange={(e) => handleChange(field, e.target.value)}
-              className="w-full p-3 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              className="w-full p-3 shadow-sm text-black rounded-lg dark:bg-gray-100 dark:border-gray-700"
             />
           </div>
         ))}

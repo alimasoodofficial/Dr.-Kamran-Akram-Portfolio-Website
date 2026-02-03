@@ -171,7 +171,7 @@ export default function AdminGallery() {
                             )}
                         </div>
                         <div className="p-4">
-                            <h3 className="font-semibold text-lg text-slate-800 mb-1 truncate">{item.title}</h3>
+                            <h3 className="font-semibold text-lg !text-slate-800 mb-1 truncate">{item.title}</h3>
                             <p className="text-slate-500 text-sm line-clamp-2 min-h-[40px]">{item.description || "No description"}</p>
                             
                             <div className="mt-4 flex flex-wrap gap-2">
