@@ -5,7 +5,7 @@ import {
   useMotionValue,
   useAnimationFrame,
   useTransform,
-} from "motion/react";
+} from "framer-motion";
 
 interface GradientTextProps {
   children: ReactNode;

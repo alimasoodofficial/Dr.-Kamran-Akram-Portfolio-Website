@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// Enable ISR with 60 second revalidation for better performance
+export const revalidate = 60;
 
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
@@ -8,11 +9,11 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
-  const myPhotos = [
-  { url: 'https://picsum.photos/200/300?1', alt: 'Trip 1' },
-  { url: 'https://picsum.photos/200/300?2', alt: 'Trip 2' },
-  { url: 'https://picsum.photos/200/300?3', alt: 'Trip 3' },
-  { url: 'https://picsum.photos/200/300?4', alt: 'Trip 4' },
+const myPhotos = [
+  { url: "https://picsum.photos/200/300?1", alt: "Trip 1" },
+  { url: "https://picsum.photos/200/300?2", alt: "Trip 2" },
+  { url: "https://picsum.photos/200/300?3", alt: "Trip 3" },
+  { url: "https://picsum.photos/200/300?4", alt: "Trip 4" },
 ];
 
 export default async function GalleryPage() {
@@ -46,7 +47,7 @@ export default async function GalleryPage() {
         <HangingGallery images={myPhotos} />
       </section>
 
-      <div className="py-20 px-6 max-w-7xl mx-auto">
+      <div className=" ">
         <GalleryGridClient items={items} />
       </div>
     </main>

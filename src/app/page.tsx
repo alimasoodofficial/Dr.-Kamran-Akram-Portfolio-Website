@@ -3,18 +3,21 @@ import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
 import Spline from "@/components/ui/Spline";
 import Image from "next/image";
-import CircularGallery from "@/components/ui/CircularGallery";
-import CursorReveal from "@/components/ui/CursorReveal";
 import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
-import TrueFocus from "@/components/ui/TrueFocus";
-import SlantedGrid from "@/components/ui/SlantedGrid";
 import ScrollRevealText from "@/components/ui/ScrollRevealText";
 import HelpCardsHome from "@/components/ui/HelpCardsHome";
 import ImageBackground from "@/components/ui/ImageBgContainer";
+import {
+  TrueFocus,
+  SlantedGrid,
+  CursorReveal,
+  CircularGallery,
+} from "@/components/home/DynamicHomeComponents";
 
 export default function HomePage() {
- const aboutText = "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
- 
+  const aboutText =
+    "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
+
   return (
     <>
       <div className="overflow-hidden">
@@ -35,7 +38,6 @@ export default function HomePage() {
       </div>
 
       <div className=" overflow-hidden    transition-all">
-       
         <LogoLoopDetails />
       </div>
       <section>
@@ -45,11 +47,11 @@ export default function HomePage() {
       {/* About Me Section */}
       <section className="flex flex-col items-center justify-center  rounded-2xl  pt-10 md:pt-20 pb-20  ">
         {/* Main content container */}
-        
+
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
           {/* 🧠 Left Side: Text */}
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-2xl  md:text-3xl font-bold mb-4 text-[var(--foreground)]"> 
+            <h2 className="text-2xl  md:text-3xl font-bold mb-4 text-[var(--foreground)]">
               <TrueFocus
                 sentence="About Me"
                 manualMode={false}
@@ -59,12 +61,12 @@ export default function HomePage() {
                 pauseBetweenAnimations={1}
               />
             </h2>
-            
+
             <div className="bg-gray-50 dark:bg-emerald-950/20 backdrop-blur-md border border-white/10 dark:border-emerald-500/10 p-10 rounded-2xl">
-              <ScrollRevealText 
-                          text={aboutText} 
-                          className="text-sm md:text-2xl text-justify"
-                      />
+              <ScrollRevealText
+                text={aboutText}
+                className="text-sm md:text-2xl text-justify"
+              />
             </div>
           </div>
 
@@ -104,9 +106,7 @@ export default function HomePage() {
       </section>
 
       <section>
-        <ImageBackground
-        
-        />
+        <ImageBackground />
       </section>
 
       <section className="py-10">

@@ -11,10 +11,10 @@ export default function Preloader() {
 
   useEffect(() => {
     setLoading(true);
-    // Simulate loading time for transitions
+    // Optimized loading time for faster transitions
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 800); // Slightly faster for transitions
+    }, 250); // Reduced from 800ms to 250ms for better performance
 
     return () => clearTimeout(timer);
   }, [pathname]);
@@ -26,7 +26,7 @@ export default function Preloader() {
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            transition: { duration: 0.8, ease: "easeInOut" },
+            transition: { duration: 0.3, ease: "easeInOut" },
           }}
           className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-white dark:bg-[#050505]"
         >

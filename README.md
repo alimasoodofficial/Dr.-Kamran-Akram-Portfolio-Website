@@ -1,31 +1,27 @@
-**Dr. Kamran Akram — Portfolio Website
-**
-A modern, high-performance portfolio and consultancy website built with Next.js (App Router), Supabase,
+# Dr. Kamran Akram � Portfolio Website
 
-and Tailwind CSS.
-
+A modern, high-performance portfolio and consultancy site built with Next.js (App Router), Supabase, and Tailwind CSS.
 Includes a Gallery system with Admin CRUD, Calendly integration, and secure admin authentication.
 
-**Tech Stack
-**
-Frontend
+## Work Structure
+- `src/app`: App Router routes, API handlers, and page layouts (including `admin`, `gallery`, `consulting`, `projects`, and more).
+- `src/components`: Reusable UI and page sections (admin, forms, layout, loaders, providers, resume, sections, ui).
+- `src/lib`: Shared utilities and services (Supabase clients, auth helpers, email, and common utilities).
+- `src/data`: Static content and navigation data.
+- `src/types`: Shared TypeScript types.
+- `public`: Static assets.
+- `supabase-schema.sql`: Database schema reference.
 
-• Next.js 15 (App Router)
+## Technologies
+- Framework: Next.js 16 (App Router), React 19, TypeScript
+- Styling: Tailwind CSS v4, tw-animate-css, styled-components
+- UI/UX: Radix UI, Framer Motion, Motion One, GSAP, Lenis
+- 3D/Media: Three.js, @react-three/fiber, Spline, Lottie
+- Forms/Date: React Hook Form, React Day Picker, React Datepicker, date-fns
+- Auth/DB/Storage: Supabase (Auth, Database, Storage, RLS)
+- Email: Nodemailer
+- Utilities: clsx, class-variance-authority, tailwind-merge
 
-TypeScript
-
-• Tailwind CSS
-
-• Next/lmage (optimized images)
-
-**Backend / Services
-**
-• Supabase (Auth, Database, Storage)
-
-• Supabase Row Level Security (RLS)
-
-**Integrations**
-
-• Calendly (Consultation booking)
-
-• Supabase Storage (Gallery images)
+## Integrations
+- Calendly (consultation booking)
+- Supabase Storage (gallery images)

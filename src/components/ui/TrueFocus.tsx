@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, LayoutGroup } from "motion/react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 interface TrueFocusProps {
   sentence?: string;
@@ -33,7 +33,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
         () => {
           setCurrentIndex((prev) => (prev + 1) % words.length);
         },
-        (animationDuration + pauseBetweenAnimations) * 1000
+        (animationDuration + pauseBetweenAnimations) * 1000,
       );
 
       return () => clearInterval(interval);
@@ -55,7 +55,6 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
 
   return (
     <div className="relative flex gap-4 justify-center items-center flex-wrap">
-    
       <LayoutGroup>
         {words.map((word, index) => {
           const isActive = index === currentIndex;
@@ -69,7 +68,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
                 opacity: isActive ? 1 : 0.5, // Added opacity for better focus contrast
                 transition: `filter ${animationDuration}s ease, opacity ${animationDuration}s ease`,
                 // Hint to browser to promote to GPU layer for smoother blur
-                willChange: "filter, opacity", 
+                willChange: "filter, opacity",
               }}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}

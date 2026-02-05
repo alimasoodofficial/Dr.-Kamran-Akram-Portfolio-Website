@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabaseClient } from "@/lib/supabaseClient";
+import toast from "react-hot-toast";
 
 export default function EditGalleryItem() {
   const { id } = useParams();
@@ -98,11 +99,15 @@ export default function EditGalleryItem() {
   // Save changes
   const handleUpdate = async () => {
     setSaving(true);
+    const toastId = toast.loading("Saving changes...");
 
     try {
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Unauthorized");
+
       const updatePayload = {
         ...form,
-        // convert date from YYYY-MM-DD to ISO when saving
         date: form.date ? new Date(form.date).toISOString() : undefined,
         tags: form.tags
           .split(",")
@@ -110,19 +115,24 @@ export default function EditGalleryItem() {
           .filter(Boolean),
       };
 
-      const { error } = await supabaseClient
-        .from("gallery")
-        .update(updatePayload)
-        .eq("id", id);
+      const res = await fetch(`/api/admin/gallery/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatePayload),
+      });
 
-      if (error) {
-        throw error;
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to update");
       }
 
-      alert("Updated successfully!");
+      toast.success("Updated successfully!", { id: toastId });
       router.push("/admin/gallery");
     } catch (err: any) {
-      alert(err.message || "Error updating item");
+      toast.error(err.message || "Error updating item", { id: toastId });
     } finally {
       setSaving(false);
     }
@@ -134,20 +144,29 @@ export default function EditGalleryItem() {
     if (!yes) return;
 
     setDeleting(true);
+    const toastId = toast.loading("Deleting item...");
 
     try {
-      const { error } = await supabaseClient
-        .from("gallery")
-        .delete()
-        .eq("id", id);
-      if (error) {
-        throw error;
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Unauthorized");
+
+      const res = await fetch(`/api/admin/gallery/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to delete");
       }
 
-      alert("Deleted successfully!");
+      toast.success("Deleted successfully!", { id: toastId });
       router.push("/admin/gallery");
     } catch (err: any) {
-      alert(err.message || "Error deleting item");
+      toast.error(err.message || "Error deleting item", { id: toastId });
     } finally {
       setDeleting(false);
     }

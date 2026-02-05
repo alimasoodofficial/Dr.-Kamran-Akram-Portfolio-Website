@@ -59,23 +59,24 @@ export default function Banner({
   const hasVisual = showImage || showLottie;
 
   // 🪄 Default gradient settings
- const { theme } = useTheme();
-const [mounted, setMounted] = useState(false);
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-useEffect(() => {
-  setMounted(true);
-}, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-if (!mounted) return null;
+  if (!mounted) return null;
 
-const gradientSettings = {
-  colors:
-    gradientColors || ["#e3eeff", "#f3e7e9", "#e3eeff"],
-  animationSpeed: animationSpeed || 6,
-};
+  const gradientSettings = {
+    colors: gradientColors || ["#e3eeff", "#f3e7e9", "#e3eeff"],
+    animationSpeed: animationSpeed || 6,
+  };
 
   return (
-    <section className={`relative overflow-hidden  container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}>
+    <section
+      className={`relative overflow-hidden  container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}
+    >
       {/* 📹 Background Video */}
       {showVideo && videoSrc && (
         <>
@@ -122,7 +123,9 @@ const gradientSettings = {
             {title}
           </GradientText>
 
-          <p className="text-lg md:text-xl font-body text-white">{description}</p>
+          <p className="text-lg md:text-xl font-body text-white">
+            {description}
+          </p>
           {children && <div className="mt-6">{children}</div>}
         </div>
 
@@ -130,14 +133,23 @@ const gradientSettings = {
         {hasVisual && (
           <div className="md:w-1/2 flex justify-center items-center">
             {showLottie ? (
-              <LottiePlayer src={lottieSrc} height={lottieWidth} width={lottieWidth} />
+              <LottiePlayer
+                src={lottieSrc}
+                height={lottieWidth}
+                width={lottieWidth}
+              />
             ) : (
               showImage &&
               (isExternal ? (
-                <img
+                <Image
                   src={finalImageSrc}
                   alt={imageAlt}
+                  width={500}
+                  height={500}
+                  priority
                   className={`object-cover ${className}`}
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                 />
               ) : (
                 <Image

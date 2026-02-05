@@ -15,6 +15,7 @@ export default function Hero() {
           muted
           loop
           playsInline
+          preload="none"
           className="absolute inset-0 w-full h-full object-cover"
           poster="https://images.pexels.com/photos/12869244/pexels-photo-12869244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         >
@@ -55,7 +56,6 @@ export default function Hero() {
           Reach millions online
         </h1>
 
-     
         <div className="w-full mx-auto">
           <BentoGrid />
         </div>

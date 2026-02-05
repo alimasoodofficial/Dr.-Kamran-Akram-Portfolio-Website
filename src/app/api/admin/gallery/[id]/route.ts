@@ -6,12 +6,12 @@ import { validateAdminRequest } from "@/lib/adminAuth";
 const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
 
-export async function GET(req: Request, context: any) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const id = context.params.id;
+    const { id } = await params;
     const { data, error } = await getSupabaseService()
       .from("gallery")
       .select("*")
@@ -31,12 +31,12 @@ export async function GET(req: Request, context: any) {
   }
 }
 
-export async function PUT(req: Request, context: any) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const id = context.params.id;
+    const { id } = await params;
     const body = await req.json();
 
     // if an empty value is passed, set default image; if undefined, keep existing
@@ -61,12 +61,12 @@ export async function PUT(req: Request, context: any) {
   }
 }
 
-export async function DELETE(req: Request, context: any) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const validation = await validateAdminRequest(req);
   if (!validation.ok) return validation.response;
 
   try {
-    const id = context.params.id;
+    const { id } = await params;
 
     const { error } = await getSupabaseService().from("gallery").delete().eq("id", id);
 

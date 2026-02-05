@@ -1,6 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 BOOKING_SYSTEM_GUIDE.md
 supabase-schema.sql
+MILESTONE_COMPLETION_REPORT.md
+OPTIMIZATION_QUICK_REFERENCE.md
+PERFORMANCE_OPTIMIZATIONS.md
 # dependencies
 /node_modules
 /.pnp
