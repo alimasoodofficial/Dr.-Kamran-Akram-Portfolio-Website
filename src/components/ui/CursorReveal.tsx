@@ -42,7 +42,7 @@ const CursorReveal = () => {
       {/* Top image (masked) */}
       <img
         ref={topImageRef}
-        src="/images/original.jpg"
+        src="/images/original.png"
         alt="Original"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none z-20 mask-effect Scard"
       />
