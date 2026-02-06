@@ -38,8 +38,20 @@ export default function BookingPage() {
   const [formData, setFormData] = useState({
     userName: "",
     userEmail: "",
+    timezone:
+      typeof Intl !== "undefined"
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : "UTC",
     notes: "",
   });
+
+  const [timezones, setTimezones] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (typeof Intl !== "undefined") {
+      setTimezones(Intl.supportedValuesOf("timeZone"));
+    }
+  }, []);
 
   // Fetch available slots when date is selected
   useEffect(() => {
@@ -104,7 +116,9 @@ export default function BookingPage() {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setFormData({
       ...formData,
@@ -137,6 +151,7 @@ export default function BookingPage() {
           slotId: selectedSlot.id,
           userName: formData.userName,
           userEmail: formData.userEmail,
+          timezone: formData.timezone,
           notes: formData.notes,
         }),
       });
@@ -146,7 +161,15 @@ export default function BookingPage() {
       if (response.ok && data.success) {
         toast.success("🎉 Booking confirmed! Check your email for details.");
         setBookingSuccess(true);
-        setFormData({ userName: "", userEmail: "", notes: "" });
+        setFormData({
+          userName: "",
+          userEmail: "",
+          notes: "",
+          timezone:
+            typeof Intl !== "undefined"
+              ? Intl.DateTimeFormat().resolvedOptions().timeZone
+              : "UTC",
+        });
         setSelectedSlot(null);
 
         // Refresh available slots
@@ -172,11 +195,7 @@ export default function BookingPage() {
     <div className=" bg-gradient-to-br from-green-100 via-white to-green-50 dark:from-gray-900 dark:via-green-900 dark:to-teal-900">
       <Toaster position="top-center" />
 
-    
-
       <div className="max-w-7xl mx-auto py-12 ">
-      
-
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column - Calendar & Slots */}
           <motion.div
@@ -189,9 +208,7 @@ export default function BookingPage() {
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2 mb-6">
                 <Calendar className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-2xl font-bold ">
-                  Select a Date
-                </h2>
+                <h2 className="text-2xl font-bold ">Select a Date</h2>
               </div>
 
               <div className="calendar-container flex justify-center">
@@ -207,8 +224,6 @@ export default function BookingPage() {
                   }}
                   classNames={{
                     day: "hover:bg-indigo-100 hover:text-indigo-700 transition-colors rounded-lg",
-
-                    
                   }}
                 />
               </div>
@@ -354,6 +369,29 @@ export default function BookingPage() {
                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         placeholder="john@example.com"
                       />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                        <Clock className="w-4 h-4" />
+                        Timezone *
+                      </label>
+                      <select
+                        name="timezone"
+                        value={formData.timezone}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                      >
+                        <option value="" disabled>
+                          Select your timezone
+                        </option>
+                        {timezones.map((tz) => (
+                          <option key={tz} value={tz}>
+                            {tz.replace(/_/g, " ")}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>

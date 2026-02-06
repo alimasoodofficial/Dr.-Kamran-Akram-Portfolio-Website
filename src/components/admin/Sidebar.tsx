@@ -55,9 +55,9 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
         }`}
       >
         <div className="p-6 border-b border-slate-800 flex items-center justify-center">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+          <h4 className="text-2xl font-bold !bg-white bg-clip-text text-transparent">
             Admin Panel
-          </h2>
+          </h4>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2">

@@ -20,9 +20,11 @@ import {
   AlertCircle,
   ChevronRight,
   ChevronLeft,
+  ExternalLink,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { BookingWithSlot, TimeSlot } from "@/types/booking";
 
@@ -225,6 +227,14 @@ export default function AdminBookingsClient({
           <p className="text-slate-500">
             Manage appointments and availability slots
           </p>
+          <Link
+            href="/consulting"
+            target="_blank"
+            className="inline-flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View Public Page
+          </Link>
         </div>
 
         <div className="flex bg-white rounded-xl p-1 shadow-sm border border-slate-200 self-start">
@@ -335,6 +345,7 @@ export default function AdminBookingsClient({
                       <th className="px-6 py-4">Date & Time</th>
                       <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4">Notes</th>
+                      <th className="px-6 py-4 text-center">Timezone</th>
                       <th className="px-6 py-4 text-right">Action</th>
                     </tr>
                   </thead>
@@ -402,6 +413,13 @@ export default function AdminBookingsClient({
                           ) : (
                             <span className="text-slate-300 text-xs">-</span>
                           )}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded-full">
+                            {booking.timezone
+                              ? booking.timezone.replace(/_/g, " ")
+                              : "N/A"}
+                          </span>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button

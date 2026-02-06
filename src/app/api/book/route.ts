@@ -7,12 +7,12 @@ import { CreateBookingRequest, CreateBookingResponse, GetBookingsResponse } from
 export async function POST(request: NextRequest) {
   try {
     const body: CreateBookingRequest = await request.json();
-    const { slotId, userName, userEmail, notes } = body;
+    const { slotId, userName, userEmail, notes, timezone } = body;
 
     // Validate required fields
-    if (!slotId || !userName || !userEmail) {
+    if (!slotId || !userName || !userEmail || !timezone) {
       return NextResponse.json(
-        { error: 'Missing required fields: slotId, userName, userEmail' },
+        { error: 'Missing required fields: slotId, userName, userEmail, timezone' },
         { status: 400 }
       );
     }
@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
         slot_id: slotId,
         user_name: userName,
         user_email: userEmail,
+        timezone: timezone,
         notes: notes || null,
       })
       .select()
@@ -93,6 +94,7 @@ export async function POST(request: NextRequest) {
     const emailData = {
       userName,
       userEmail,
+      timezone,
       startTime: slot.start_time,
       endTime: slot.end_time,
       notes,
@@ -118,6 +120,7 @@ export async function POST(request: NextRequest) {
           slotId: booking.slot_id,
           userName: booking.user_name,
           userEmail: booking.user_email,
+          timezone: booking.timezone,
           notes: booking.notes,
           startTime: slot.start_time,
           endTime: slot.end_time,

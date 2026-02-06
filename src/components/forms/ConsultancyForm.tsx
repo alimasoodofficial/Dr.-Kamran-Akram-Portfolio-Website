@@ -12,6 +12,7 @@ type FormInputs = {
   message: string;
   date: Date;
   time: string;
+  timezone: string;
 };
 
 export default function ConsultancyForm() {
@@ -20,7 +21,23 @@ export default function ConsultancyForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormInputs>();
+    setValue,
+  } = useForm<FormInputs>({
+    defaultValues: {
+      timezone:
+        typeof Intl !== "undefined"
+          ? Intl.DateTimeFormat().resolvedOptions().timeZone
+          : "UTC",
+    },
+  });
+
+  const [timezones, setTimezones] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (typeof Intl !== "undefined") {
+      setTimezones(Intl.supportedValuesOf("timeZone"));
+    }
+  }, []);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
@@ -179,6 +196,31 @@ export default function ConsultancyForm() {
             </select>
             {errors.time && (
               <p className="text-red-500 text-sm mt-1">{errors.time.message}</p>
+            )}
+          </div>
+
+          {/* Timezone */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Timezone</label>
+            <select
+              {...register("timezone", {
+                required: "Please select a timezone",
+              })}
+              className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+            >
+              <option value="" disabled>
+                Choose a timezone
+              </option>
+              {timezones.map((tz) => (
+                <option key={tz} value={tz}>
+                  {tz.replace(/_/g, " ")}
+                </option>
+              ))}
+            </select>
+            {errors.timezone && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.timezone.message}
+              </p>
             )}
           </div>
 

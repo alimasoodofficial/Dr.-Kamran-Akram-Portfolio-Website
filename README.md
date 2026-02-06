@@ -1,4 +1,4 @@
-# Dr. Kamran Akram — Portfolio Website
+# Dr. Kamran Akram ï¿½ Portfolio Website
 
 A modern, high-performance portfolio and consultancy site built with Next.js (App Router), Supabase, and Tailwind CSS.
 Includes a Gallery system with Admin CRUD, Calendly integration, and secure admin authentication.
@@ -10,7 +10,6 @@ Includes a Gallery system with Admin CRUD, Calendly integration, and secure admi
 - `src/data`: Static content and navigation data.
 - `src/types`: Shared TypeScript types.
 - `public`: Static assets.
-- `supabase-schema.sql`: Database schema reference.
 
 ## Technologies
 - Framework: Next.js 16 (App Router), React 19, TypeScript
@@ -23,5 +22,4 @@ Includes a Gallery system with Admin CRUD, Calendly integration, and secure admi
 - Utilities: clsx, class-variance-authority, tailwind-merge
 
 ## Integrations
-- Calendly (consultation booking)
 - Supabase Storage (gallery images)

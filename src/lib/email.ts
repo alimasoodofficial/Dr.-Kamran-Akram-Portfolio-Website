@@ -16,6 +16,7 @@ export interface BookingEmailData {
   userEmail: string;
   startTime: string;
   endTime: string;
+  timezone: string;
   notes?: string;
 }
 
@@ -23,7 +24,7 @@ export interface BookingEmailData {
  * Send confirmation email to the user
  */
 export async function sendUserConfirmation(data: BookingEmailData) {
-  const { userName, userEmail, startTime, endTime, notes } = data;
+  const { userName, userEmail, startTime, endTime, timezone, notes } = data;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -107,7 +108,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
-            })}</span>
+            })} (${timezone.replace(/_/g, ' ')})</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Duration:</span>
@@ -152,7 +153,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
  * Send notification email to admin
  */
 export async function sendAdminNotification(data: BookingEmailData) {
-  const { userName, userEmail, startTime, endTime, notes } = data;
+  const { userName, userEmail, startTime, endTime, timezone, notes } = data;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -235,7 +236,7 @@ export async function sendAdminNotification(data: BookingEmailData) {
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
-            })}</span>
+            })} (${timezone.replace(/_/g, ' ')})</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Duration:</span>

@@ -13,6 +13,7 @@ export interface Booking {
   slot_id: string;
   user_name: string;
   user_email: string;
+  timezone: string | null;
   notes: string | null;
   created_at: string;
 }
@@ -26,6 +27,7 @@ export interface CreateBookingRequest {
   slotId: string;
   userName: string;
   userEmail: string;
+  timezone: string;
   notes?: string;
 }
 
@@ -37,6 +39,7 @@ export interface CreateBookingResponse {
     slotId: string;
     userName: string;
     userEmail: string;
+    timezone: string | null;
     notes: string | null;
     startTime: string;
     endTime: string;
@@ -64,6 +67,7 @@ export interface GetBookingsResponse {
 export interface BookingEmailData {
   userName: string;
   userEmail: string;
+  timezone: string;
   startTime: string;
   endTime: string;
   notes?: string;
