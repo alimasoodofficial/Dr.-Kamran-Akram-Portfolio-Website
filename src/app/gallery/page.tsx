@@ -3,9 +3,9 @@ export const revalidate = 60;
 
 import Banner from "@/components/sections/Banner";
 import GalleryGridClient from "@/components/ui/GalleryGridClient";
-import GlowingInput from "@/components/ui/GlowingInput";
 import HangingGallery from "@/components/ui/HangingGallery";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import ImageSphere from "@/components/ui/ImageSphere";
 
 const DEFAULT_IMAGE =
   "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/gallery-images/Dr-Kamran-Akram.webp";
@@ -33,22 +33,30 @@ export default async function GalleryPage() {
   }));
 
   return (
-    <main>
+    <main className="overflow-x-hidden min-h-screen">
       <Banner
         title="Captured Moments"
         description="A visual diary of my journey. This gallery features the people, places, and perspectives that catch my eye and keep me inspired."
-        showLottie={true}
+        showLottie={false}
         lottieSrc="/lotties/gallery.lottie"
         showBreadcrumb={true}
+        showImage={false}
         gradientColors={["#e3eeff", "#f3e7e9", "#e3eeff"]}
         animationSpeed={10}
+        containerClass=""
       />
-      <section>
-        <HangingGallery images={myPhotos} />
+      <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8  pb-20">
+
+        <section className="">
+          <HangingGallery images={myPhotos} />
+        </section>
+      <section className="flex justify-center pb-10">
+        <ImageSphere />
       </section>
 
-      <div className=" ">
-        <GalleryGridClient items={items} />
+        <section>
+          <GalleryGridClient items={items} />
+        </section>
       </div>
     </main>
   );

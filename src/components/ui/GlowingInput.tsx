@@ -14,7 +14,7 @@ const Input = ({
   return (
     <StyledWrapper>
       <div>
-        <div className="grid" />
+        <div className="searchbar" />
         <div id="poda">
           <div className="glow" />
           <div className="darkBorderBg" />
@@ -75,10 +75,9 @@ const Input = ({
 };
 
 const StyledWrapper = styled.div`
-  .grid {
+  .searchbar {
     height: 800px;
-    width: 800px;
-
+    // width: 800px;
     background-size: 1rem 1rem;
     background-position: center center;
     position: absolute;
@@ -111,13 +110,20 @@ const StyledWrapper = styled.div`
     padding-inline: 59px;
     font-size: 18px;
   }
+
+  @media (max-width: 360px) {
+    #poda {
+      // transform: scale(0.85);
+    }
+   
+  }
   #poda {
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .input::placeholder {
-    color: #c0b9c0;
+    color: white;
   }
 
   .input:focus {
@@ -128,15 +134,7 @@ const StyledWrapper = styled.div`
     display: none;
   }
 
-  #input-mask {
-    pointer-events: none;
-    width: 100px;
-    height: 20px;
-    position: absolute;
-    background: linear-gradient(90deg, transparent, black);
-    top: 18px;
-    left: 70px;
-  }
+  
   #pink-mask {
     pointer-events: none;
     width: 30px;
