@@ -20,7 +20,7 @@ export default function Cards({
 }: CardProps) {
   return (
     <div 
-      className={`group bg-container transition-colors duration-700 
+      className={`group bg-container  dark:bg-[#0d614b] dark:hover:bg-[#10b981]/20  transition-colors duration-700 
       flex flex-col items-start gap-4 px-6 py-10 rounded-lg shadow-sm hover:shadow-md ${className}`}
     >
       {/* Font Awesome Icon */}
