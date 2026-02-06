@@ -232,12 +232,21 @@ export default function ResearchGamePopup() {
       )}
 
       {/* Launcher Button */}
+      {!isOpen && (
+        <div
+          onClick={() => setIsOpen(true)}
+          className="mb-5 ml-4 px-3 py-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs md:text-lg font-bold rounded-lg shadow-lg animate-bounce z-10 cursor-pointer relative after:content-[''] after:absolute after:top-full after:left-4 after:border-8 after:border-transparent after:border-t-blue-600"
+        >
+          Play a Game
+        </div>
+      )}
+
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center gap-3 p-3 sm:p-4 rounded-full shadow-2xl transition-all duration-600 transform active:scale-90 ${
           isOpen
             ? "bg-red-500 !px-6 !py-5  text-white"
-            : "bg-blue-900 hover:scale-105 animate-bounce"
+            : "bg-gradient-to-r from-blue-800 to-blue-400 hover:scale-105 animate-bounce"
         }`}
       >
         <span className="text-lg md:text-2xl ">{isOpen ? "✕" : "🔬"}</span>
