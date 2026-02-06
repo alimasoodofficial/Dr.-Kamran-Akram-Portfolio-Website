@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ArticleBook from "@/components/ui/ArticleBook";
+import SketchbookCard from "@/components/ui/SketchbookCard";
 import { supabaseClient } from "@/lib/supabaseClient";
 
 const ArticlesSection: React.FC = () => {
-  const [activeBookId, setActiveBookId] = useState<string | number | null>(null);
+  const [activeBookId, setActiveBookId] = useState<string | number | null>(
+    null,
+  );
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,18 +61,18 @@ const ArticlesSection: React.FC = () => {
   };
 
   if (loading) {
-      return (
-          <div className="py-20 flex justify-center items-center">
-              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-      );
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
     <section>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-40 justify-items-center md:justify-items-start items-center md:w-9/12 mx-auto md:ps-20 py-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-20 justify-items-center items-center md:w-11/12 lg:w-9/12 mx-auto py-16">
         {articles.map((article) => (
-          <ArticleBook
+          <SketchbookCard
             key={article.id}
             id={article.id}
             isOpen={activeBookId === article.id}
@@ -82,13 +84,12 @@ const ArticlesSection: React.FC = () => {
             imageUrl={article.image_url}
             author={article.author}
             issueNumber={article.issue_number || "1"}
-            readTime={article.read_time || "5m"}
           />
         ))}
         {articles.length === 0 && (
-            <div className="col-span-full py-20 text-center text-slate-500 w-full">
-                No articles published yet.
-            </div>
+          <div className="col-span-full py-20 text-center text-slate-500 w-full">
+            No articles published yet.
+          </div>
         )}
       </div>
     </section>
