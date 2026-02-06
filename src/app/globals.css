@@ -392,3 +392,83 @@ canvas {
     animation-play-state: paused;
   }
 }
+
+/* 3D Animation sphere */
+@keyframes autoRun3d {
+  from {
+    transform: perspective(1000px) rotateY(-360deg);
+  }
+  to {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+@keyframes animateBrightness {
+  10% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(0.3);
+  }
+  90% {
+    filter: brightness(1);
+  }
+}
+
+/* 3D container */
+.card-3d {
+  position: relative;
+  width: 250px;
+  height: 180px;
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+  animation: autoRun3d 20s linear infinite;
+  will-change: transform;
+  --radius: 180px; /* Default mobile radius */
+}
+
+@media (min-width: 768px) {
+  .card-3d {
+    width: 500px;
+    height: 300px;
+    --radius: 320px; /* PC radius */
+  }
+}
+
+/* cards */
+.card-3d div {
+  position: absolute;
+  width: 80px;
+  height: 120px;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  animation: animateBrightness 20s linear infinite;
+  will-change: transform, filter;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .card-3d div {
+    width: 140px;
+    height: 220px;
+    border-radius: 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.card-3d img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* pause on hover */
+.card-3d:hover,
+.card-3d:hover div {
+  animation-play-state: paused !important;
+}
