@@ -8,6 +8,7 @@ import { freeResources } from "@/data/freeResourcesMenu";
 import { aboutMeItems } from "@/data/aboutMeMenu";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
+import Image from "next/image";
 import "../../app/globals.css";
 import ThemeToggle from "../ui/ThemeToggle";
 
@@ -88,10 +89,19 @@ export default function Navbar() {
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0">
-                      <i
-                        className={`${item.icon} text-white text-xl`}
-                        aria-hidden="true"
-                      />
+                      {item.icon && (item.icon.trim().startsWith("/") || item.icon.includes(".svg")) ? (
+                        <img
+                          src={item.icon.trim()}
+                          alt={item.title}
+                          className="object-contain"
+                          style={{ width: '28px', height: '28px', display: 'block' }}
+                        />
+                      ) : (
+                        <i
+                          className={`${item.icon} text-white text-xl`}
+                          aria-hidden="true"
+                        />
+                      )}
                     </div>
                     <div className="flex-1">
                       <p className="font-bold text-gray-900 dark:text-white mb-1">
@@ -145,10 +155,18 @@ export default function Navbar() {
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0">
-                      <i
-                        className={`${item.icon} text-white text-xl`}
-                        aria-hidden="true"
-                      />
+                      {item.icon.startsWith("/") ? (
+                        <img
+                          src={item.icon}
+                          alt={item.title}
+                          className="w-6 h-6 object-contain"
+                        />
+                      ) : (
+                        <i
+                          className={`${item.icon} text-white text-xl`}
+                          aria-hidden="true"
+                        />
+                      )}
                     </div>
                     <div className="flex-1">
                       <p className="font-bold text-gray-900 dark:text-white mb-1">
@@ -203,10 +221,8 @@ export default function Navbar() {
             href="/newsletter"
             className="hidden lg:block  text-white font-black tracking-wide "
           >
-            Join 1000+ Subscribers
+            Subscribe
           </Button>
-
-          
 
           {/* 🍔 Mobile Menu Button */}
           <button
@@ -290,10 +306,18 @@ export default function Navbar() {
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                      <i
-                        className={`${item.icon} text-white text-xl`}
-                        aria-hidden="true"
-                      />
+                      {item.icon.startsWith("/") ? (
+                        <img
+                          src={item.icon}
+                          alt={item.title}
+                          className="w-6 h-6 object-contain"
+                        />
+                      ) : (
+                        <i
+                          className={`${item.icon} text-white text-xl`}
+                          aria-hidden="true"
+                        />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-900 dark:text-white text-base mb-1">
@@ -322,10 +346,19 @@ export default function Navbar() {
                     className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                      <i
-                        className={`${item.icon} text-white text-lg`}
-                        aria-hidden="true"
-                      />
+                      {item.icon && (item.icon.trim().startsWith("/") || item.icon.includes(".svg")) ? (
+                        <img
+                          src={item.icon.trim()}
+                          alt={item.title}
+                          className="object-contain"
+                          style={{ width: '24px', height: '24px', display: 'block' }}
+                        />
+                      ) : (
+                        <i
+                          className={`${item.icon} text-white text-lg`}
+                          aria-hidden="true"
+                        />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-900 dark:text-white text-sm mb-0.5">
@@ -348,7 +381,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
               className="w-full  tracking-wide text-white text-center text-sm font-black py-3"
             >
-              Join 1000+ Subscribers
+              Subscribe
             </Button>
           </div>
         </div>

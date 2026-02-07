@@ -42,6 +42,7 @@ export const freeResources: FreeResourceItem[] = [
     title: "Buy me a coffee",
     description: "Deep dives into creativity & entrepreneurship.",
     href: "https://buymeacoffee.com/drkamran",
-    icon: "fa-solid fa-coffee",
+    icon: "/icons/buy-me-coffee-icon.svg",
   },
 ];
+
