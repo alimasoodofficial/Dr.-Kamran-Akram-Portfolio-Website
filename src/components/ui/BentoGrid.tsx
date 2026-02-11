@@ -5,12 +5,12 @@ export default function BentoGrid() {
     <div className="w-full  pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
       {/* --- Column 1 --- */}
       <div className="flex flex-col gap-6">
-        <InfoCard 
+        <InfoCard
           title="Ph.D"
           subtitle="Animal Sciences"
           desc="Translating complex research into practical knowledge for farmers, students, and communities."
           btnText="View Publications"
-          bgClass="bg-[#064e3b]"
+          bgClass="bg-[#064e3b] "
           href="https://scholar.google.com.au/citations?user=lBBycJgAAAAJ&hl"
         />
         <StripCard
@@ -50,7 +50,7 @@ export default function BentoGrid() {
           desc="Access my collection of eBooks, courses, and free guides for students and professionals."
           btnText="Download eBooks"
           bgClass="bg-[#E67E22]" // Applied requested orange
-          href="free-resources/ebooks"
+          href="https://drive.google.com/drive/folders/1hV2F-YhNjBxhKJf3raLBCtQq9BH-BqA1"
         />
         <StripCard
           icon="fa-solid fa-award"

@@ -75,19 +75,16 @@ function CreativePricing({
   return (
     <div className="w-full max-w-6xl mx-auto px-4" ref={containerRef}>
       <div className="text-center space-y-6 mb-16">
-        <div className="font-handwritten text-xl text-blue-500 rotate-[-1deg]">
+        <div className=" text-xl text-blue-500 ">
           {tag}
         </div>
         <div className="relative ">
-          <h2 className="text-4xl font-heading md:text-5xl font-bold font-handwritten text-zinc-900 dark:text-white rotate-[-1deg]">
+          <h2 className="text-4xl font-heading md:text-5xl font-bold text-zinc-900 dark:text-white ">
             {title}
           </h2>
-          <div
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-44 h-3 bg-blue-500/20 
-                        rotate-[-1deg] rounded-full blur-sm"
-          />
+          
         </div>
-        <p className="font-handwritten text-xl text-zinc-600 dark:text-zinc-400 rotate-[-1deg]">
+        <p className=" text-xl text-zinc-600 dark:text-zinc-400 ">
           {description}
         </p>
       </div>
@@ -124,7 +121,7 @@ function CreativePricing({
               {tier.popular && (
                 <div
                   className="absolute -top-2 -right-2 bg-amber-400 text-zinc-900 
-                                    font-handwritten px-3 py-1 rounded-full rotate-12 text-sm border-2 border-zinc-900"
+                                     px-3 py-1 rounded-full rotate-12 text-sm border-2 border-zinc-900"
                 >
                   Popular!
                 </div>

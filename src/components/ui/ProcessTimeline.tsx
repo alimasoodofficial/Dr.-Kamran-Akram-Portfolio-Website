@@ -76,10 +76,10 @@ const TimelineItem: React.FC<{
         </div>
 
         {/* Text */}
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
           {step.title}
         </h3>
-        <p className="text-[0.95rem] text-slate-500 dark:text-slate-400 leading-relaxed">
+        <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
           {step.description}
         </p>
       </div>

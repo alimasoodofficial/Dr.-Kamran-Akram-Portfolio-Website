@@ -37,16 +37,16 @@ export default function Hero() {
           className="font-body backdrop-blur-xl backdrop-saturate-150
   bg-white/10 border border-white/10 
   rounded-full shadow-[0_0_20px_rgba(0,0,0,0.25)]
-  px-4 py-1 mb-2 text-sm md:text-base flex items-center gap-2 "
+  px-4 py-1 mb-2 text-[8px] md:text-base flex items-center gap-2 "
         >
           {/* Glowing green dot */}
-          <span className="relative flex h-3 w-3">
+          <span className="relative flex h-3 w-3 ">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[#E67E22] opacity-75 animate-ping"></span>
             <span className="relative inline-flex rounded-full h-3 w-3  bg-[#E67E22]"></span>
           </span>
-          An Expert Data Analyst
+          Agriculture Consultant, Data & Business Analyst
         </span>
-        <h1 className=" text-4xl md:text-6xl pb-3 font-black  leading-tight tracking-wider">
+        <h1 className=" text-3xl  md:text-6xl pb-3 font-black  leading-tight tracking-wider">
           Turbocharge your{" "}
           <GradientText colors={["#10b981", "#10b981", "#10b981"]}>
             {" "}

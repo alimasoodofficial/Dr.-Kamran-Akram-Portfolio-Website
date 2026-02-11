@@ -109,7 +109,9 @@ export const CenterStatCard = () => (
     <h3 className="text-4xl font-bold mb-1">10+</h3>
     <p className="font-medium mb-6">Years of Experience</p>
     <div className="bg-black/10 w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
+    <Link href="/consulting">
       <i className="fa-solid fa-hand-holding-dollar"></i> Hire for Consulting
+    </Link>
     </div>
   </CardWrapper>
 );

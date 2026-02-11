@@ -86,15 +86,29 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    target={item.target}
+                    rel={
+                      item.target === "_blank"
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0">
-                      {item.icon && (item.icon.trim().startsWith("/") || item.icon.includes(".svg")) ? (
+                    <div
+                      className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-[#f59e0b] to-[#d97706]"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}
+                    >
+                      {item.icon &&
+                      (item.icon.trim().startsWith("/") ||
+                        item.icon.includes(".svg")) ? (
                         <img
                           src={item.icon.trim()}
                           alt={item.title}
                           className="object-contain"
-                          style={{ width: '28px', height: '28px', display: 'block' }}
+                          style={{
+                            width: "28px",
+                            height: "28px",
+                            display: "block",
+                          }}
                         />
                       ) : (
                         <i
@@ -342,16 +356,30 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    target={item.target}
+                    rel={
+                      item.target === "_blank"
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
                     onClick={() => setIsOpen(false)}
                     className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                      {item.icon && (item.icon.trim().startsWith("/") || item.icon.includes(".svg")) ? (
+                    <div
+                      className={`w-10 h-10 ${item.bgColor || "bg-gradient-to-br from-[#f59e0b] to-[#d97706]"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}
+                    >
+                      {item.icon &&
+                      (item.icon.trim().startsWith("/") ||
+                        item.icon.includes(".svg")) ? (
                         <img
                           src={item.icon.trim()}
                           alt={item.title}
                           className="object-contain"
-                          style={{ width: '24px', height: '24px', display: 'block' }}
+                          style={{
+                            width: "24px",
+                            height: "24px",
+                            display: "block",
+                          }}
                         />
                       ) : (
                         <i

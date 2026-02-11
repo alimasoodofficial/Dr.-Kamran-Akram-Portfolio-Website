@@ -29,8 +29,8 @@ export default function ConsultingPage() {
        
         <ConsultationGrid
           containerClassName="max-w-[1200px] mx-auto px-5 py-20"
-          headingClassName="font-extrabold  tracking-tight"
-          descriptionClassName=""
+          headingClassName="font-extrabold   tracking-tight !text-2xl"
+          descriptionClassName="!text-lg"
           iconClassName="" // Add extra icon classes if needed
         />
       </section>
@@ -40,7 +40,7 @@ export default function ConsultingPage() {
         <h2 className="text-5xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
           💬 How It Works
         </h2>
-        <p className="pb-20">
+        <p className="pb-20 text-lg">
           A seamless, 4-step journey to your academic and professional goals.
         </p>
 
