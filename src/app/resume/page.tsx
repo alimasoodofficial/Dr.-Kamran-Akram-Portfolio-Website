@@ -17,7 +17,7 @@ function ResumePage() {
       <main className="max-w-5xl mx-auto px-6 space-y-20">
          <ResumeHeader />
          <ResumeAbout />
-         <TimelineCarousel />
+         {/* <TimelineCarousel /> */}
          <ResumeExperience />
          
          <ResumeEducation />
