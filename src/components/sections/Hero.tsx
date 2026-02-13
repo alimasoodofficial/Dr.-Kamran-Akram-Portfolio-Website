@@ -20,7 +20,7 @@ export default function Hero() {
           poster="https://images.pexels.com/photos/12869244/pexels-photo-12869244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         >
           <source
-            src="https://www.pexels.com/download/video/12869244/"
+            src="https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/dr%20kamran%20akram.mp4"
             type="video/mp4"
           />
           Your browser does not support the video tag.
