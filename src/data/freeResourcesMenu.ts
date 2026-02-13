@@ -11,13 +11,13 @@ export const freeResources: FreeResourceItem[] = [
   {
     title: "YouTube Channel",
     description: "Videos on productivity, business & tech.",
-    href: "#",
+    href: "/coming-soon",
     icon: "fa-brands fa-youtube",
   },
   {
     title: "Newsletter",
     description: "Weekly insights to boost your learning.",
-    href: "#",
+    href: "/coming-soon",
     icon: "fa-solid fa-envelope",
   },
   {
@@ -29,7 +29,7 @@ export const freeResources: FreeResourceItem[] = [
   {
     title: "Podcast",
     description: "Inspiring chats with creators & experts.",
-    href: "#",
+    href: "/coming-soon",
     icon: "fa-solid fa-microphone",
     
   },
