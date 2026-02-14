@@ -11,7 +11,7 @@ export default function NewsletterPage() {
             <Banner
               title="Newsletter"
               description="Stay updated with the latest insights and tech trends."
-               gradientColors={["#0b42f5ff", "#7ebcf6ff"]} 
+               gradientColors={["white", "#7ebcf6ff"]} 
               showImage={false}
               className="w-auto h-100px "
             />
