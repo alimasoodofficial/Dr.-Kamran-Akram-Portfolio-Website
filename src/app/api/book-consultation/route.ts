@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("📩 Received booking data:", body);
 
-    const { name, email, phone, date, time, message, timezone } = body;
+    const { name, email, phone, date, time, message, country } = body;
 
     // ✅ Validate required fields
     if (!name || !email || !date || !time) {
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       message,
       date: new Date(date).toISOString(),
       time,
-      timezone,
+      country,
       createdAt: new Date().toISOString(),
     };
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { format } from "date-fns";
+import { formatTimeAEST, formatDateAEST } from "@/lib/timezone";
 import { supabase } from "@/lib/supabase";
 import toast, { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +16,7 @@ import {
   FileText,
   CheckCircle,
   Loader2,
+  Globe,
 } from "lucide-react";
 
 import {
@@ -24,7 +26,82 @@ import {
   GetSlotsResponse,
   RealtimeBookingPayload,
 } from "@/types/booking";
-import Banner from "@/components/sections/Banner";
+
+const COUNTRIES = [
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Argentina",
+  "Australia",
+  "Austria",
+  "Bangladesh",
+  "Belgium",
+  "Brazil",
+  "Canada",
+  "Chile",
+  "China",
+  "Colombia",
+  "Czech Republic",
+  "Denmark",
+  "Egypt",
+  "Ethiopia",
+  "Finland",
+  "France",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Hungary",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Japan",
+  "Jordan",
+  "Kenya",
+  "Kuwait",
+  "Lebanon",
+  "Libya",
+  "Malaysia",
+  "Mexico",
+  "Morocco",
+  "Netherlands",
+  "New Zealand",
+  "Nigeria",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palestine",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Saudi Arabia",
+  "Singapore",
+  "South Africa",
+  "South Korea",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Thailand",
+  "Tunisia",
+  "Turkey",
+  "UAE",
+  "United Kingdom",
+  "United States",
+  "Vietnam",
+  "Yemen",
+  "Other",
+];
 
 export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -38,20 +115,9 @@ export default function BookingPage() {
   const [formData, setFormData] = useState({
     userName: "",
     userEmail: "",
-    timezone:
-      typeof Intl !== "undefined"
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : "UTC",
+    country: "",
     notes: "",
   });
-
-  const [timezones, setTimezones] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (typeof Intl !== "undefined") {
-      setTimezones(Intl.supportedValuesOf("timeZone"));
-    }
-  }, []);
 
   // Fetch available slots when date is selected
   useEffect(() => {
@@ -76,7 +142,6 @@ export default function BookingPage() {
         },
         (payload) => {
           console.log("New booking received:", payload);
-          // Refresh slots when a new booking is made
           if (selectedDate) {
             fetchAvailableSlots(selectedDate);
           }
@@ -134,7 +199,7 @@ export default function BookingPage() {
       return;
     }
 
-    if (!formData.userName || !formData.userEmail) {
+    if (!formData.userName || !formData.userEmail || !formData.country) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -151,7 +216,7 @@ export default function BookingPage() {
           slotId: selectedSlot.id,
           userName: formData.userName,
           userEmail: formData.userEmail,
-          timezone: formData.timezone,
+          country: formData.country,
           notes: formData.notes,
         }),
       });
@@ -164,15 +229,11 @@ export default function BookingPage() {
         setFormData({
           userName: "",
           userEmail: "",
+          country: "",
           notes: "",
-          timezone:
-            typeof Intl !== "undefined"
-              ? Intl.DateTimeFormat().resolvedOptions().timeZone
-              : "UTC",
         });
         setSelectedSlot(null);
 
-        // Refresh available slots
         if (selectedDate) {
           fetchAvailableSlots(selectedDate);
         }
@@ -188,7 +249,11 @@ export default function BookingPage() {
   };
 
   const formatTime = (dateString: string) => {
-    return format(new Date(dateString), "h:mm a");
+    return formatTimeAEST(dateString);
+  };
+
+  const formatDate = (dateString: string) => {
+    return formatDateAEST(dateString);
   };
 
   return (
@@ -196,6 +261,17 @@ export default function BookingPage() {
       <Toaster position="top-center" />
 
       <div className="max-w-7xl mx-auto py-12 ">
+        {/* Australian Timezone Banner */}
+        <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 mb-8 flex items-center gap-3">
+          <Clock className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+          <p className="text-sm text-indigo-700 dark:text-indigo-300">
+            <strong>
+              All times are displayed in Australian Eastern Time (AEST/AEDT).
+            </strong>{" "}
+            Please convert to your local timezone when scheduling.
+          </p>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column - Calendar & Slots */}
           <motion.div
@@ -236,12 +312,24 @@ export default function BookingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800"
               >
-                <div className="flex items-center gap-2 mb-6">
-                  <Clock className="w-6 h-6 text-indigo-600" />
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    Available Times for {format(selectedDate, "MMMM d, yyyy")}
-                  </h2>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-6 h-6 text-indigo-600" />
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      Available Times
+                    </h2>
+                  </div>
+                  <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                    AEST/AEDT
+                  </span>
                 </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  {selectedDate.toLocaleDateString("en-AU", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
 
                 {loading ? (
                   <div className="flex items-center justify-center py-12">
@@ -326,14 +414,11 @@ export default function BookingPage() {
                   {selectedSlot && (
                     <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6">
                       <p className="text-sm text-indigo-600 font-semibold mb-1">
-                        Selected Time
+                        Selected Time (Australian Eastern Time)
                       </p>
                       <p className="text-lg font-bold text-indigo-900">
-                        {format(
-                          new Date(selectedSlot.start_time),
-                          "MMMM d, yyyy",
-                        )}{" "}
-                        at {formatTime(selectedSlot.start_time)}
+                        {formatDate(selectedSlot.start_time)} at{" "}
+                        {formatTime(selectedSlot.start_time)}
                       </p>
                     </div>
                   )}
@@ -373,22 +458,22 @@ export default function BookingPage() {
 
                     <div>
                       <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                        <Clock className="w-4 h-4" />
-                        Timezone *
+                        <Globe className="w-4 h-4" />
+                        Country *
                       </label>
                       <select
-                        name="timezone"
-                        value={formData.timezone}
+                        name="country"
+                        value={formData.country}
                         onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-800 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                       >
                         <option value="" disabled>
-                          Select your timezone
+                          Select your country
                         </option>
-                        {timezones.map((tz) => (
-                          <option key={tz} value={tz}>
-                            {tz.replace(/_/g, " ")}
+                        {COUNTRIES.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
                           </option>
                         ))}
                       </select>

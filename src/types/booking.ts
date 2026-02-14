@@ -13,7 +13,7 @@ export interface Booking {
   slot_id: string;
   user_name: string;
   user_email: string;
-  timezone: string | null;
+  country: string;
   notes: string | null;
   created_at: string;
 }
@@ -27,7 +27,7 @@ export interface CreateBookingRequest {
   slotId: string;
   userName: string;
   userEmail: string;
-  timezone: string;
+  country: string;
   notes?: string;
 }
 
@@ -39,13 +39,18 @@ export interface CreateBookingResponse {
     slotId: string;
     userName: string;
     userEmail: string;
-    timezone: string | null;
+    country: string;
     notes: string | null;
     startTime: string;
     endTime: string;
     createdAt: string;
   };
   error?: string;
+}
+
+export interface RescheduleBookingRequest {
+  bookingId: string;
+  newSlotId: string;
 }
 
 export interface GetSlotsResponse {
@@ -67,10 +72,20 @@ export interface GetBookingsResponse {
 export interface BookingEmailData {
   userName: string;
   userEmail: string;
-  timezone: string;
+  country: string;
   startTime: string;
   endTime: string;
   notes?: string;
+}
+
+export interface RescheduleEmailData {
+  userName: string;
+  userEmail: string;
+  country: string;
+  oldStartTime: string;
+  oldEndTime: string;
+  newStartTime: string;
+  newEndTime: string;
 }
 
 // Realtime subscription payload types

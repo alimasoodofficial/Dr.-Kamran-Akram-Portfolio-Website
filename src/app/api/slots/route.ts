@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getAESTDayRange } from '@/lib/timezone';
 
 import { TimeSlot } from '@/types/booking';
 
@@ -24,19 +25,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Calculate start and end of the day in UTC
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    // Calculate start and end of the day in Australian Eastern Time
+    const { start, end } = getAESTDayRange(date);
 
     // Fetch available time slots for the specified date
     const { data: slots, error } = await supabase
       .from('time_slots')
       .select('*')
-      .gte('start_time', startOfDay.toISOString())
-      .lte('start_time', endOfDay.toISOString())
+      .gte('start_time', start)
+      .lte('start_time', end)
       .eq('is_booked', false)
       .order('start_time', { ascending: true });
 

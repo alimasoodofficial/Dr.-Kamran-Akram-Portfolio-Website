@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { format, addDays, startOfDay, endOfDay } from "date-fns";
+import {
+  formatTimeAEST,
+  formatDateAEST,
+  formatShortDateAEST,
+  formatFullDateTimeAEST,
+  getAESTDayRange,
+} from "@/lib/timezone";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -21,6 +28,9 @@ import {
   ChevronRight,
   ChevronLeft,
   ExternalLink,
+  Globe,
+  RefreshCw,
+  X,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -51,12 +61,32 @@ export default function AdminBookingsClient({
 
   // Bulk generation state
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isCleaning, setIsCleaning] = useState(false);
   const [genConfig, setGenConfig] = useState({
     startDate: format(new Date(), "yyyy-MM-dd"),
     endDate: format(addDays(new Date(), 7), "yyyy-MM-dd"),
     startHour: 9,
     endHour: 17,
     duration: 30,
+  });
+
+  // Reschedule modal state
+  const [rescheduleModal, setRescheduleModal] = useState<{
+    open: boolean;
+    booking: BookingWithSlot | null;
+    availableSlots: TimeSlot[];
+    selectedNewSlotId: string | null;
+    loadingSlots: boolean;
+    submitting: boolean;
+    selectedDate: Date;
+  }>({
+    open: false,
+    booking: null,
+    availableSlots: [],
+    selectedNewSlotId: null,
+    loadingSlots: false,
+    submitting: false,
+    selectedDate: new Date(),
   });
 
   useEffect(() => {
@@ -93,11 +123,58 @@ export default function AdminBookingsClient({
     };
   }, [activeTab]);
 
+  const confirmAction = (message: string, onConfirm: () => void) => {
+    toast.custom(
+      (t) => (
+        <div
+          className={`${
+            t.visible
+              ? "animate-in fade-in zoom-in duration-300"
+              : "animate-out fade-out zoom-out duration-300"
+          } max-w-md w-full bg-white dark:bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto ring-1 ring-black/5 p-6 border border-slate-100 dark:border-slate-800 z-[9999]`}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <AlertCircle className="w-6 h-6 text-red-500" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                Are you sure?
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                {message}
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                onConfirm();
+                toast.dismiss(t.id);
+              }}
+              className="px-6 py-2 text-sm font-bold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg shadow-red-500/20 transition-all active:scale-95"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity, position: "top-center" },
+    );
+  };
+
   const fetchSlots = async () => {
     setSlotsLoading(true);
     try {
-      const start = startOfDay(selectedDate).toISOString();
-      const end = endOfDay(selectedDate).toISOString();
+      // Use Australian date for the query boundaries
+      const dateStr = format(selectedDate, "yyyy-MM-dd");
+      const { start, end } = getAESTDayRange(dateStr);
 
       const { data, error } = await supabase
         .from("time_slots")
@@ -138,23 +215,26 @@ export default function AdminBookingsClient({
   };
 
   const handleDeleteBooking = async (bookingId: string, slotId: string) => {
-    if (!confirm("Are you sure you want to cancel this booking?")) return;
+    confirmAction(
+      "Are you sure you want to cancel this booking? This will notify the client.",
+      async () => {
+        try {
+          const response = await fetch(
+            `/api/admin/bookings?id=${bookingId}&slotId=${slotId}`,
+            {
+              method: "DELETE",
+            },
+          );
 
-    try {
-      const response = await fetch(
-        `/api/admin/bookings?id=${bookingId}&slotId=${slotId}`,
-        {
-          method: "DELETE",
-        },
-      );
+          if (!response.ok) throw new Error("Failed to cancel booking");
 
-      if (!response.ok) throw new Error("Failed to cancel booking");
-
-      toast.success("Booking cancelled successfully");
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to cancel booking");
-    }
+          toast.success("Booking cancelled successfully");
+          router.refresh();
+        } catch (error: any) {
+          toast.error(error.message || "Failed to cancel booking");
+        }
+      },
+    );
   };
 
   const handleDeleteSlot = async (slotId: string, isBooked: boolean) => {
@@ -163,20 +243,24 @@ export default function AdminBookingsClient({
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this time slot?")) return;
+    confirmAction(
+      "Are you sure you want to delete this time slot?",
+      async () => {
+        try {
+          const response = await fetch(`/api/admin/slots?id=${slotId}`, {
+            method: "DELETE",
+          });
 
-    try {
-      const response = await fetch(`/api/admin/slots?id=${slotId}`, {
-        method: "DELETE",
-      });
+          if (!response.ok) throw new Error("Failed to delete slot");
 
-      if (!response.ok) throw new Error("Failed to delete slot");
-
-      toast.success("Time slot deleted");
-      fetchSlots();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete time slot");
-    }
+          toast.success("Time slot deleted");
+          
+          fetchSlots();
+        } catch (error: any) {
+          toast.error(error.message || "Failed to delete time slot");
+        }
+      },
+    );
   };
 
   const handleBulkGenerate = async () => {
@@ -205,6 +289,126 @@ export default function AdminBookingsClient({
     }
   };
 
+  const handleCleanup = async () => {
+    confirmAction(
+      "Delete all unbooked slots older than 1 week? This cannot be undone.",
+      async () => {
+        setIsCleaning(true);
+        try {
+          const response = await fetch("/api/admin/slots/cleanup", {
+            method: "POST",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok)
+            throw new Error(data.error || "Failed to cleanup slots");
+
+          toast.success(`Cleanup successful! Deleted ${data.count} old slots.`);
+          if (activeTab === "slots") fetchSlots();
+        } catch (error: any) {
+          toast.error(error.message || "Failed to cleanup slots");
+        } finally {
+          setIsCleaning(false);
+        }
+      },
+    );
+  };
+
+  // --- Reschedule Functions ---
+  const openRescheduleModal = (booking: BookingWithSlot) => {
+    setRescheduleModal({
+      open: true,
+      booking,
+      availableSlots: [],
+      selectedNewSlotId: null,
+      loadingSlots: false,
+      submitting: false,
+      selectedDate: new Date(),
+    });
+  };
+
+  const fetchRescheduleSlots = async (date: Date) => {
+    setRescheduleModal((prev) => ({
+      ...prev,
+      loadingSlots: true,
+      selectedDate: date,
+      selectedNewSlotId: null,
+    }));
+
+    try {
+      const start = startOfDay(date).toISOString();
+      const end = endOfDay(date).toISOString();
+
+      const { data, error } = await supabase
+        .from("time_slots")
+        .select("*")
+        .gte("start_time", start)
+        .lte("start_time", end)
+        .eq("is_booked", false)
+        .order("start_time", { ascending: true });
+
+      if (error) throw error;
+
+      // Filter out past slots
+      const now = new Date();
+      const futureSlots = (data || []).filter(
+        (slot) => new Date(slot.start_time) > now,
+      );
+
+      setRescheduleModal((prev) => ({
+        ...prev,
+        availableSlots: futureSlots,
+        loadingSlots: false,
+      }));
+    } catch (error) {
+      console.error("Error fetching slots for reschedule:", error);
+      toast.error("Failed to fetch available slots");
+      setRescheduleModal((prev) => ({
+        ...prev,
+        loadingSlots: false,
+      }));
+    }
+  };
+
+  const handleReschedule = async () => {
+    if (!rescheduleModal.booking || !rescheduleModal.selectedNewSlotId) return;
+
+    setRescheduleModal((prev) => ({ ...prev, submitting: true }));
+
+    try {
+      const response = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId: rescheduleModal.booking.id,
+          newSlotId: rescheduleModal.selectedNewSlotId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to reschedule");
+      }
+
+      toast.success("Booking rescheduled! Notification emails sent.");
+      setRescheduleModal({
+        open: false,
+        booking: null,
+        availableSlots: [],
+        selectedNewSlotId: null,
+        loadingSlots: false,
+        submitting: false,
+        selectedDate: new Date(),
+      });
+      router.refresh();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to reschedule booking");
+      setRescheduleModal((prev) => ({ ...prev, submitting: false }));
+    }
+  };
+
   const getStatusColor = (startTime: string) => {
     const now = new Date();
     const bTime = new Date(startTime);
@@ -227,14 +431,19 @@ export default function AdminBookingsClient({
           <p className="text-slate-500">
             Manage appointments and availability slots
           </p>
-          <Link
-            href="/consulting"
-            target="_blank"
-            className="inline-flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            View Public Page
-          </Link>
+          <div className="flex items-center gap-4 mt-2">
+            <Link
+              href="/consulting"
+              target="_blank"
+              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              View Public Page
+            </Link>
+            <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+              🇦🇺 Australian Eastern Time
+            </span>
+          </div>
         </div>
 
         <div className="flex bg-white rounded-xl p-1 shadow-sm border border-slate-200 self-start">
@@ -342,11 +551,11 @@ export default function AdminBookingsClient({
                   <thead>
                     <tr className="border-b border-slate-50 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
                       <th className="px-6 py-4">Client</th>
-                      <th className="px-6 py-4">Date & Time</th>
+                      <th className="px-6 py-4">Date & Time (AEST)</th>
                       <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4">Country</th>
                       <th className="px-6 py-4">Notes</th>
-                      <th className="px-6 py-4 text-center">Timezone</th>
-                      <th className="px-6 py-4 text-right">Action</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
@@ -374,21 +583,13 @@ export default function AdminBookingsClient({
                         <td className="px-6 py-4">
                           <div className="text-sm">
                             <p className="font-medium text-slate-900">
-                              {format(
-                                new Date(booking.time_slots.start_time),
-                                "MMM d, yyyy",
+                              {formatShortDateAEST(
+                                booking.time_slots.start_time,
                               )}
                             </p>
                             <p className="text-slate-500">
-                              {format(
-                                new Date(booking.time_slots.start_time),
-                                "h:mm a",
-                              )}{" "}
-                              -{" "}
-                              {format(
-                                new Date(booking.time_slots.end_time),
-                                "h:mm a",
-                              )}
+                              {formatTimeAEST(booking.time_slots.start_time)} -{" "}
+                              {formatTimeAEST(booking.time_slots.end_time)}
                             </p>
                           </div>
                         </td>
@@ -403,34 +604,42 @@ export default function AdminBookingsClient({
                           </span>
                         </td>
                         <td className="px-6 py-4">
+                          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded-full flex items-center gap-1 w-fit">
+                            <Globe className="w-3 h-3" />
+                            {booking.country || "N/A"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
                           {booking.notes ? (
                             <div
                               className="max-w-[200px] truncate text-xs text-slate-500 italic"
                               title={booking.notes}
                             >
-                              "{booking.notes}"
+                              &quot;{booking.notes}&quot;
                             </div>
                           ) : (
                             <span className="text-slate-300 text-xs">-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-center">
-                          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded-full">
-                            {booking.timezone
-                              ? booking.timezone.replace(/_/g, " ")
-                              : "N/A"}
-                          </span>
-                        </td>
                         <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() =>
-                              handleDeleteBooking(booking.id, booking.slot_id)
-                            }
-                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                            title="Cancel Booking"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => openRescheduleModal(booking)}
+                              className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                              title="Reschedule Booking"
+                            >
+                              <RefreshCw className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteBooking(booking.id, booking.slot_id)
+                              }
+                              className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              title="Cancel Booking"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -454,6 +663,9 @@ export default function AdminBookingsClient({
                   <Plus className="w-5 h-5 text-blue-500" />
                   Generate Slots
                 </h3>
+                <p className="text-xs text-slate-400 mb-4">
+                  Times are in Australian Eastern Time (AEST/AEDT)
+                </p>
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
@@ -554,9 +766,37 @@ export default function AdminBookingsClient({
                     )}
                   </button>
                   <p className="text-[10px] text-slate-400 text-center">
-                    Note: Weekends are automatically skipped by the system.
+                    Note: Weekends are automatically skipped. Times in AEST.
                   </p>
                 </div>
+              </div>
+
+              {/* Maintenance Section */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm mt-6">
+                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2 text-sm">
+                  <Trash2 className="w-4 h-4 text-slate-400" />
+                  Maintenance
+                </h3>
+                <p className="text-xs text-slate-500 mb-4">
+                  Keep your database clean by removing old, unbooked time slots.
+                </p>
+                <button
+                  onClick={handleCleanup}
+                  disabled={isCleaning}
+                  className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
+                >
+                  {isCleaning ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4" />
+                      Cleanup Old Slots
+                    </>
+                  )}
+                </button>
+                <p className="text-[10px] text-slate-400 text-center mt-3">
+                  Deletes unbooked slots older than 7 days.
+                </p>
               </div>
             </div>
 
@@ -629,8 +869,8 @@ export default function AdminBookingsClient({
                           ></div>
                           <div>
                             <p className="font-bold text-slate-900 text-sm">
-                              {format(new Date(slot.start_time), "h:mm a")} -{" "}
-                              {format(new Date(slot.end_time), "h:mm a")}
+                              {formatTimeAEST(slot.start_time)} -{" "}
+                              {formatTimeAEST(slot.end_time)}
                             </p>
                             <p className="text-[10px] text-slate-400 flex items-center gap-1">
                               {slot.is_booked ? (
@@ -673,6 +913,156 @@ export default function AdminBookingsClient({
                 )}
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Reschedule Modal */}
+      <AnimatePresence>
+        {rescheduleModal.open && rescheduleModal.booking && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() =>
+              setRescheduleModal((prev) => ({ ...prev, open: false }))
+            }
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <RefreshCw className="w-5 h-5 text-blue-500" />
+                    Reschedule Booking
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Move <strong>{rescheduleModal.booking.user_name}</strong>
+                    &apos;s appointment to a new time
+                  </p>
+                </div>
+                <button
+                  onClick={() =>
+                    setRescheduleModal((prev) => ({ ...prev, open: false }))
+                  }
+                  className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-slate-400" />
+                </button>
+              </div>
+
+              {/* Current Booking Info */}
+              <div className="p-6 border-b border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
+                  Current Time
+                </p>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                  <p className="font-bold text-red-700">
+                    {formatFullDateTimeAEST(
+                      rescheduleModal.booking.time_slots.start_time,
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* Date Picker */}
+              <div className="p-6 border-b border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
+                  Select New Date
+                </p>
+                <input
+                  type="date"
+                  value={format(rescheduleModal.selectedDate, "yyyy-MM-dd")}
+                  min={format(new Date(), "yyyy-MM-dd")}
+                  onChange={(e) => {
+                    const date = new Date(e.target.value + "T00:00:00");
+                    fetchRescheduleSlots(date);
+                  }}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                />
+              </div>
+
+              {/* Available Slots */}
+              <div className="p-6">
+                <p className="text-xs font-bold text-slate-400 uppercase mb-3">
+                  Available Slots (AEST)
+                </p>
+
+                {rescheduleModal.loadingSlots ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                  </div>
+                ) : rescheduleModal.availableSlots.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-slate-400 text-sm">
+                      {rescheduleModal.selectedDate
+                        ? "No available slots for this date. Pick a date above."
+                        : "Select a date to see available slots."}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
+                    {rescheduleModal.availableSlots.map((slot) => (
+                      <button
+                        key={slot.id}
+                        onClick={() =>
+                          setRescheduleModal((prev) => ({
+                            ...prev,
+                            selectedNewSlotId: slot.id,
+                          }))
+                        }
+                        className={`p-3 rounded-xl text-sm font-semibold transition-all ${
+                          rescheduleModal.selectedNewSlotId === slot.id
+                            ? "bg-blue-600 text-white shadow-lg"
+                            : "bg-slate-50 text-slate-700 hover:bg-blue-50 hover:text-blue-600"
+                        }`}
+                      >
+                        {formatTimeAEST(slot.start_time)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="p-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  onClick={() =>
+                    setRescheduleModal((prev) => ({ ...prev, open: false }))
+                  }
+                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReschedule}
+                  disabled={
+                    !rescheduleModal.selectedNewSlotId ||
+                    rescheduleModal.submitting
+                  }
+                  className="px-6 py-2 text-sm font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                >
+                  {rescheduleModal.submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Rescheduling...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      Confirm Reschedule
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
