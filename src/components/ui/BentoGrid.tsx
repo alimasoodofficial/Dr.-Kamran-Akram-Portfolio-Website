@@ -50,7 +50,7 @@ export default function BentoGrid() {
           desc="Access my collection of eBooks, courses, and free guides for students and professionals."
           btnText="Download eBooks"
           bgClass="bg-[#E67E22]" // Applied requested orange
-          href="https://drive.google.com/drive/folders/1hV2F-YhNjBxhKJf3raLBCtQq9BH-BqA1"
+          href="/coming-soon"
         />
         <StripCard
           icon="fa-solid fa-award"
