@@ -53,11 +53,11 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
           {/* Bottom Page (Content) */}
           <div className="absolute inset-0 bg-[#fdfaf3] rounded-2xl shadow-inner p-6 flex flex-col justify-between border border-slate-200 overflow-hidden">
             <div className="relative z-10 flex flex-col h-full">
-              <div className="mb-4">
-                <span className="text-[10px] uppercase tracking-widest text-[#E67E22] font-bold">
+              <div className="">
+                <span className="text-sm uppercase tracking-widest text-[#E67E22] font-bold">
                   Abstract
                 </span>
-                <p className="text-slate-600 text-justify  text-sm line-clamp-6 mb-4  leading-relaxed">
+                <p className="text-slate-600 text-justify  text-xs line-clamp-6 mb-4  leading-relaxed">
                 "{summary}"
               </p>
               </div>
