@@ -23,7 +23,7 @@ export default function ResumeHeader() {
       {/* Name & Title */}
       <div>
         <h1 className="text-4xl md:text-6xl font-heading font-bold text-slate-900 dark:text-white mb-2">
-          Dr. Muhammad <span className="text-sky-600">Kamran</span>
+          Dr. Muhammad <span className="text-green-600">Kamran</span>
         </h1>
         <p className="text-lg text-slate-500 dark:text-slate-400 font-medium font-body">
           Agricultural Scientist & Data Analyst

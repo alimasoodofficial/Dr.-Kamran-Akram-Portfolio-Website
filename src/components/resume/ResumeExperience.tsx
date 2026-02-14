@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const experiences = [
   {
@@ -80,8 +80,8 @@ const experiences = [
       </div>
     ),
     icon: "fa-cow",
-    link: "View Award News →",
-    url: "https://www.brecorder.com/news/414266",
+    // link: "View Award News →",
+    // url: "https://www.brecorder.com/news/414266",
     active: false,
   },
   {
@@ -104,13 +104,49 @@ const experiences = [
 ];
 
 export default function ResumeExperience() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-50% 0px -50% 0px", // Trigger when element is in the center of viewport
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = parseInt(
+            entry.target.getAttribute("data-index") || "-1",
+          );
+          if (index >= 0) {
+            setActiveIndex(index);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
+
+    // Observe all experience cards
+    const cards = document.querySelectorAll("[data-experience-card]");
+    cards.forEach((card) => observer.observe(card));
+
+    return () => {
+      cards.forEach((card) => observer.unobserve(card));
+    };
+  }, []);
+
   return (
     <section id="experience" className="mb-20">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">
           Experience
         </h2>
-        <div className="w-16 h-1 bg-sky-600 mx-auto mt-4 rounded-full"></div>
+        <div className="w-16 h-1 bg-orange-600 mx-auto mt-4 rounded-full"></div>
       </div>
 
       <div className="relative space-y-12">
@@ -119,9 +155,13 @@ export default function ResumeExperience() {
 
         {experiences.map((exp, index) => {
           const isEven = index % 2 === 0;
+          const isActive = activeIndex === index;
+
           return (
             <div
               key={index}
+              data-experience-card
+              data-index={index}
               className={`relative md:flex justify-between items-center group ${isEven ? "md:flex-row-reverse" : ""}`}
             >
               {/* Space Holder */}
@@ -129,8 +169,8 @@ export default function ResumeExperience() {
 
               {/* Icon */}
               <div
-                className={`absolute left-[20px] md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center z-10 
-                            ${exp.active ? "bg-sky-600 text-white" : "bg-white dark:bg-slate-800 text-slate-400"}`}
+                className={`absolute left-[20px] md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center z-10 transition-all duration-300
+                            ${isActive ? "bg-orange-600 text-white" : "bg-white dark:bg-slate-800 text-slate-400"}`}
               >
                 <i className={`fa-solid ${exp.icon} text-sm`}></i>
               </div>
@@ -142,7 +182,7 @@ export default function ResumeExperience() {
                     {exp.title}
                   </h3>
                   <span
-                    className={`text-xs font-bold px-2 py-1 rounded ${exp.active ? "text-sky-600 bg-sky-600/10" : "text-slate-400 bg-slate-100 dark:bg-slate-800"}`}
+                    className={`text-xs font-bold px-2 py-1 rounded ${exp.active ? "text-orange-600 bg-orange-600/10" : "text-slate-400 bg-slate-100 dark:bg-slate-800"}`}
                   >
                     {exp.period}
                   </span>
@@ -158,7 +198,7 @@ export default function ResumeExperience() {
                     href={exp.url || "#"}
                     target={exp.url ? "_blank" : undefined}
                     rel={exp.url ? "noopener noreferrer" : undefined}
-                    className="text-sky-600 text-xs font-semibold mt-2 inline-block hover:underline"
+                    className="text-orange-600 text-xs font-semibold mt-2 inline-block hover:underline"
                   >
                     {exp.link || "Read More →"}
                   </a>
