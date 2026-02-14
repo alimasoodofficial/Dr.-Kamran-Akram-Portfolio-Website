@@ -86,7 +86,7 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
           </div>
 
           {/* Top Page (Cover) */}
-          <div className="top-page absolute inset-0 bg-[#2C3E50] rounded-2xl flex flex-col justify-between p-8 cursor-pointer shadow-2xl border-l-[12px] border-[#1A252F] z-20 origin-left transition-transform duration-700 ease-in-out [backface-visibility:hidden]">
+          <div className="top-page absolute inset-0 bg-[#16293c] rounded-2xl flex flex-col justify-between p-8 cursor-pointer shadow-2xl border-l-[12px] border-[#1A252F] z-20 origin-left transition-transform duration-700 ease-in-out [backface-visibility:hidden]">
             {/* Cover Design Elements */}
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
 
@@ -96,14 +96,14 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
                 <span className="text-[#E67E22] font-mono text-xs tracking-[0.2em]">
                   {category}
                 </span>
-                <h2 className="text-sm md:text-md font-serif font-bold !text-white">
+                <h2 className="text-md font-inter font-bold text-justify !text-white">
                   {title}
                 </h2>
               </div>
             </div>
 
-            <div className="relative z-10 flex items-end justify-between border-t border-white/10 pt-4">
-              <div className="text-white/60">
+            <div className="relative z-10 flex flex-col items-end justify-between border-t border-white/10 pt-4">
+              <div className="text-orange-400">
                 <p className="text-[10px] uppercase tracking-widest mb-1">
                   Author
                 </p>

@@ -89,6 +89,7 @@ const ConsultationGrid: React.FC<ConsultationGridProps> = ({
       bgClass: "bg-[#f0f7ff] dark:bg-blue-950/90", // Light Blue
       accentColor: "#2563eb", // Blue-600
       spanClass: "col-span-1 lg:col-span-2",
+      
     },
     {
       title: "Scholarships",

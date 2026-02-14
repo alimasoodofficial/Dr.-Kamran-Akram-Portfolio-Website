@@ -8,6 +8,7 @@ export default function Articles() {
     <>
       <Banner
         title="Read/Download My Research Articles"
+        description="Explore a comprehensive collection of my research publications, journal articles, and academic contributions available for reading and download."
         showLottie={true}
         lottieSrc="/lotties/articles.lottie"
       >

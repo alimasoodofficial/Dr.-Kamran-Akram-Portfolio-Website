@@ -70,7 +70,7 @@ const ArticlesSection: React.FC = () => {
 
   return (
     <section>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-20 justify-items-center items-center md:w-11/12 lg:w-9/12 mx-auto py-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-20 justify-items-center items-center md:w-11/12 lg:w-9/12 mx-auto py-16 px-2">
         {articles.map((article) => (
           <SketchbookCard
             key={article.id}

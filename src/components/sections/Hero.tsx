@@ -17,13 +17,12 @@ export default function Hero() {
           playsInline
           preload="none"
           className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.pexels.com/photos/12869244/pexels-photo-12869244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          
         >
           <source
             src="https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/dr%20kamran%20akram.mp4"
             type="video/mp4"
           />
-          Your browser does not support the video tag.
         </video>
         {/* Premium Gradient Overlay for blending and high readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)] via-transparent to-[var(--background)]"></div>

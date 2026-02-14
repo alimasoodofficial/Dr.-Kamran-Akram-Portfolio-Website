@@ -86,7 +86,9 @@ export const ImageCard = ({
   bgImage,
   overlayColor,
   heightClass = "h-[460px]",
+  imgSrc,
 }: any) => (
+  
   <CardWrapper
     className={`${heightClass} bg-cover bg-center flex flex-col justify-end text-white`}
     // Using inline style for dynamic background images
@@ -94,12 +96,15 @@ export const ImageCard = ({
       backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}), url('${bgImage}')`,
     }}
   >
+      <Link href="/free-resources/articles">
+
     <div className="relative z-10">
       <span className="block text-lg font-medium mb-1 opacity-90">
         {category}
       </span>
       <h3 className="text-xl font-bold leading-tight">{title}</h3>
     </div>
+    </Link>
   </CardWrapper>
 );
 
