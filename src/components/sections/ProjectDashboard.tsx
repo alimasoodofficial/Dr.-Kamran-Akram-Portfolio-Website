@@ -358,14 +358,14 @@ export default function ProjectDashboard() {
   return (
     <section className="relative w-full py-10 overflow-hidden">
       <Image
-        src="https://images.pexels.com/photos/9227508/pexels-photo-9227508.jpeg"
+        src="https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/Dr%20Muhammad%20Kamran%20-%20Projects.jpg"
         alt="Project Management Background"
         fill
-        className="object-cover opacity-20 pointer-events-none"
+        className="object-cover  opacity-20 pointer-events-none"
         priority
       />
       {/* Premium Glassmorphic Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f8fafc]/60 via-[#f0f9ff]/60 to-[#f0fdf4]/60 backdrop-blur-[2px]" />
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-[#f8fafc]/60 via-[#f0f9ff]/60 to-[#f0fdf4]/60 backdrop-blur-[2px]" /> */}
 
       <style
         dangerouslySetInnerHTML={{
