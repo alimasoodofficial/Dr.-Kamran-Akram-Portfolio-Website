@@ -43,7 +43,7 @@ export const PROJECTS_DATA = [
     description:
       "A global platform advancing data literacy and scientific communication through the Data Ambassadors Program. We offer analytics services, training, dashboards, and digital solutions for a data-driven future.",
     image:
-      "https://dataexperts360.com/wp-content/uploads/2025/06/data-expert-360-3d-logo.jpg",
+      "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/data-expert-360-3d-logo.webp",
     icon: Database,
     reverse: false,
     links: [
@@ -100,12 +100,12 @@ export const PROJECTS_DATA = [
   },
   {
     id: "triisum",
-    title: "Triisum Tourism",
+    title: "Triisum ",
     subtitle: "Sustainability-Focused Travel Marketplace",
     description:
       "A sustainability-focused tourism marketplace powered by Eco Ambassadors who promote responsible travel. Connecting travellers with eco-experiences and community-led adventures that protect local culture.",
     image:
-      "https://images.pexels.com/photos/33784883/pexels-photo-33784883.jpeg",
+      "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/triisum.jpg",
     icon: Compass,
     reverse: true,
     links: [
@@ -162,7 +162,7 @@ export const PROJECTS_DATA = [
     description:
       "A comprehensive hub providing agri-tech solutions, advisory services, and expert connections for smart farming. We bridge the gap between technology and the field for sustainable on-ground impact.",
     image:
-      "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop",
+      "https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/iStock-1326644171.jpg",
     icon: Wheat,
     reverse: false,
     links: [
@@ -221,7 +221,7 @@ const FeatureCard = ({ icon: Icon, title, description, index }: any) => (
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
     viewport={{ once: true }}
-    className="bg-white dark:bg-teal-900 p-6 rounded-2xl shadow-lg bg-card hover:bg-accent/5 transition-all duration-300"
+    className="bg-gradient-to-br from-gray-50 to-teal-300 hover:scale-105 dark:bg-gradient-to-br dark:from-teal-900 dark:to-teal-500 p-6 rounded-2xl shadow-lg bg-card transition-all duration-300"
   >
     <div className="flex items-start gap-4">
       <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-primary bg-primary/10 group-hover:bg-primary transition-colors ">
@@ -249,7 +249,7 @@ const ProjectSection = ({ project }: { project: any }) => (
           initial={{ opacity: 0, x: project.reverse ? 50 : -50 }}
           whileInView={{ opacity: 1, x: 0 }}
         >
-          <div className="relative rounded-2xl overflow-hidden border border-border/50 shadow-xl shadow-primary/5 h-72 md:h-96">
+          <div className="relative rounded-2xl overflow-hidden   shadow-xl shadow-primary/5 h-72 md:h-96">
             <Image
               src={project.image}
               alt={project.title}
@@ -271,7 +271,7 @@ const ProjectSection = ({ project }: { project: any }) => (
           <h2 className="text-3xl my-2 md:text-5xl font-bold  font-display text-foreground">
             {project.title}
           </h2>
-          <p className="text-lg text-muted-foreground text-justify dark:text-white leading-relaxed">
+          <p className="text-lg text-justify dark:text-white leading-relaxed">
             {project.description}
           </p>
           <div className="flex flex-wrap gap-4">

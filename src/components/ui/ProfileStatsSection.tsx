@@ -58,12 +58,12 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({
             </div>
 
             {/* Main Title */}
-            <h2 className="text-3xl font-heading sm:text-4xl lg:text-5xl font-bold  tracking-wide leading-tight mb-6">
+            <h2 className="text-3xl font-heading sm:text-4xl lg:text-6xl font-bold  tracking-wide leading-tight mb-6">
               {title}
             </h2>
 
             {/* Description */}
-            <p className="text-lg   leading-relaxed mb-12 max-w-3xl">
+            <p className="text-lg text-justify  leading-relaxed mb-12 max-w-3xl">
               {description}
             </p>
 

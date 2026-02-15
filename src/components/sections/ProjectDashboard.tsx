@@ -36,6 +36,7 @@ const PROJECT_CARDS_DATA = {
       icon: Leaf,
       accentColor: "bg-[#d1fae5]", // bg-green-light
       iconColor: "text-[#10b981]", // text-secondary (approx)
+      teamText: "Eco Synergy",
       features: [
         { label: "Task Board", type: "board" },
         { label: "Sustainability", type: "chart" },
@@ -48,6 +49,7 @@ const PROJECT_CARDS_DATA = {
       icon: Database,
       accentColor: "bg-[#dbeafe]", // bg-blue-light
       iconColor: "text-[#3b82f6]", // text-blue
+      teamText: "Data Insights",
       features: [
         { label: "Data Dashboard", type: "chart" },
         { label: "Progress", type: "progress" },
@@ -60,6 +62,7 @@ const PROJECT_CARDS_DATA = {
       icon: Recycle,
       accentColor: "bg-[#d1fae5]",
       iconColor: "text-[#10b981]",
+      teamText: "Green Outreach",
       features: [
         { label: "Task Board", type: "board" },
         { label: "Outreach Chart", type: "chart" },
@@ -74,6 +77,7 @@ const PROJECT_CARDS_DATA = {
       icon: Wheat,
       accentColor: "bg-[#d1fae5]",
       iconColor: "text-[#10b981]",
+      teamText: "Agri Innovation",
       features: [
         { label: "Task List", type: "board" },
         { label: "Crop Yield", type: "chart" },
@@ -86,6 +90,7 @@ const PROJECT_CARDS_DATA = {
       icon: GraduationCap,
       accentColor: "bg-[#ccfbf1]", // bg-teal-light
       iconColor: "text-[#0d9488]", // text-primary
+      teamText: "Digital Skills",
       features: [
         { label: "Training Modules", type: "progress" },
         { label: "Community", type: "chart" },
@@ -98,6 +103,7 @@ const PROJECT_CARDS_DATA = {
       icon: Microscope,
       accentColor: "bg-[#ffedd5]", // bg-orange-light
       iconColor: "text-[#f97316]", // text-orange
+      teamText: "Science Hub",
       features: [
         { label: "Content Calendar", type: "calendar" },
         { label: "Audience Reach", type: "chart" },
@@ -179,36 +185,42 @@ const MOBILE_CARDS = [
     subtitle: "Eco-Tourism",
     color: "bg-[#d1fae5]",
     initial: "T",
+    teamText: "Eco Synergy",
   },
   {
     title: "DATA EXPERTS 360",
     subtitle: "Analytics",
     color: "bg-[#dbeafe]",
     initial: "D",
+    teamText: "Data Insights",
   },
   {
     title: "ECO AMBASSADORS",
     subtitle: "Sustainability",
     color: "bg-[#d1fae5]",
     initial: "E",
+    teamText: "Green Outreach",
   },
   {
     title: "AGRI EXPERTS 360",
     subtitle: "Agriculture",
     color: "bg-[#d1fae5]",
     initial: "A",
+    teamText: "Agri Innovation",
   },
   {
     title: "DATA AMBASSADORS",
     subtitle: "Training",
     color: "bg-[#ccfbf1]",
     initial: "D",
+    teamText: "Digital Skills",
   },
   {
     title: "BEYOND THE LAB",
     subtitle: "Science",
     color: "bg-[#ffedd5]",
     initial: "B",
+    teamText: "Science Hub",
   },
 ];
 
@@ -306,7 +318,9 @@ const ProjectCard = ({ data }: { data: any }) => {
       <div className="flex items-center justify-between pt-2 border-t border-[#f1f5f9]">
         <div className="flex items-center gap-1.5">
           <Users className="w-4 h-4 text-[#0d9488]" />
-          <span className="text-[9px] text-[#64748b]">Team Collaboration</span>
+          <span className="text-[9px] text-[#64748b]">
+            {data.teamText || "Team Collaboration"}
+          </span>
         </div>
         <div className="flex items-center gap-1">
           <CheckCircle2 className="w-3.5 h-3.5 text-[#10b981]" />
