@@ -7,7 +7,7 @@ const educations = [
         institution: "University of Queensland",
         years: "2018 - 2023",
         description: "Research focused on understanding why some cattle are more susceptible to buffalo flies.",
-        highlight: true
+        highlight: false
     },
     {
         degree: "M.Phil. Microbiology",
@@ -37,9 +37,7 @@ export default function ResumeEducation() {
                         : 'bg-slate-50   dark:bg-gradient-to-br from-teal-800 to-slate-800 border-slate-200 dark:border-slate-800 hover:border-sky-600/50 hover:shadow-md'
                     }`}>
                     
-                    {edu.highlight && (
                          <div className="absolute -right-6 -top-6 w-32 h-32 bg-sky-600/20 rounded-full"></div>
-                    )}
 
                     <p className={`text-xs font-bold uppercase tracking-wider mb-3 ${edu.highlight ? 'text-sky-500' : 'text-slate-400'}`}>
                         {edu.years}
