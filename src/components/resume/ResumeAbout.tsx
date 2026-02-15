@@ -5,7 +5,7 @@ export default function ResumeAbout() {
   const tags = ["PhD Animal Sciences", "Data Analysis", "Microbiology", "Science Communication"];
 
   return (
-    <section id="about" className="bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-10 shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden mb-20">
+    <section id="about" className="bg-white   dark:bg-gradient-to-r from-teal-950 to-teal-800 rounded-3xl p-8 md:p-10 shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden mb-20">
         <div className="absolute top-0 right-0 w-32 h-32 bg-green-600/5 rounded-bl-full -mr-8 -mt-8 pointer-events-none"></div>
         
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3 font-heading">

@@ -176,7 +176,7 @@ export default function ResumeExperience() {
               </div>
 
               {/* Content Card */}
-              <div className="ml-12 md:ml-0 md:w-[calc(50%-2rem)] bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition hover:-translate-y-1">
+              <div className="ml-12 md:ml-0 md:w-[calc(50%-2rem)] bg-slate-50   dark:bg-gradient-to-br from-teal-950 to-teal-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition hover:-translate-y-1">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                     {exp.title}

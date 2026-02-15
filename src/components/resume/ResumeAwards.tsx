@@ -67,30 +67,30 @@ export default function ResumeAwards() {
             href={award.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col group cursor-pointer"
+            className="bg-slate-50   dark:bg-gradient-to-br from-teal-900 to-slate-950 p-6 rounded-xl    shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col group cursor-pointer"
           >
-            <div className="flex items-start gap-4 mb-3">
+            <div className="flex flex-col items-center justify-center gap-4 ">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-xl ${award.color}`}
               >
                 <i className={`fa-solid ${award.icon}`}></i>
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
+                <h4 className="font-bold text-center text-sm text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
                   {award.title}
                 </h4>
               </div>
             </div>
             {award.description && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs text-center text-slate-500 dark:text-slate-400 leading-relaxed">
                 {award.description}
               </p>
             )}
-            <div className="mt-auto pt-3">
+            {/* <div className="mt-auto pt-3">
               <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold group-hover:underline">
                 View Certificate →
               </span>
-            </div>
+            </div> */}
           </a>
         ))}
       </div>

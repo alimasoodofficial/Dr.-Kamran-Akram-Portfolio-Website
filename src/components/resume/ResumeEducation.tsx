@@ -34,7 +34,7 @@ export default function ResumeEducation() {
                 <div key={index} className={`p-8 rounded-2xl border shadow-sm transition duration-300 relative overflow-hidden group 
                     ${edu.highlight 
                         ? 'bg-slate-900 text-white border-slate-900 hover:scale-[1.02]' 
-                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-sky-600/50 hover:shadow-md'
+                        : 'bg-slate-50   dark:bg-gradient-to-br from-teal-800 to-slate-800 border-slate-200 dark:border-slate-800 hover:border-sky-600/50 hover:shadow-md'
                     }`}>
                     
                     {edu.highlight && (
