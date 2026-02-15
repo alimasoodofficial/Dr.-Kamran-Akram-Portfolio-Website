@@ -57,7 +57,7 @@ export default function RootLayout({
         <ThemeProviderWrapper>
           <Preloader />
           <Navbar />
-          <BackgroundGrid className="dark:opacity-10 " />
+          {/* <BackgroundGrid className="dark:opacity-50 " /> */}
           <ResearchGame />
           <Suspense fallback={<Loading />}>{children}</Suspense>
           <Footer />
