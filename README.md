@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dr. Kamran Akram � Portfolio Website
 
-## Getting Started
+A modern, high-performance portfolio and consultancy site built with Next.js (App Router), Supabase, and Tailwind CSS.
+Includes a Gallery system with Admin CRUD, Calendly integration, and secure admin authentication.
 
-First, run the development server:
+## Work Structure
+- `src/app`: App Router routes, API handlers, and page layouts (including `admin`, `gallery`, `consulting`, `projects`, and more).
+- `src/components`: Reusable UI and page sections (admin, forms, layout, loaders, providers, resume, sections, ui).
+- `src/lib`: Shared utilities and services (Supabase clients, auth helpers, email, and common utilities).
+- `src/data`: Static content and navigation data.
+- `src/types`: Shared TypeScript types.
+- `public`: Static assets.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies
+- Framework: Next.js 16 (App Router), React 19, TypeScript
+- Styling: Tailwind CSS v4, tw-animate-css, styled-components
+- UI/UX: Radix UI, Framer Motion, Motion One, GSAP, Lenis
+- 3D/Media: Three.js, @react-three/fiber, Spline, Lottie
+- Forms/Date: React Hook Form, React Day Picker, React Datepicker, date-fns
+- Auth/DB/Storage: Supabase (Auth, Database, Storage, RLS)
+- Email: Nodemailer
+- Utilities: clsx, class-variance-authority, tailwind-merge
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Integrations
+- Supabase Storage (gallery images)

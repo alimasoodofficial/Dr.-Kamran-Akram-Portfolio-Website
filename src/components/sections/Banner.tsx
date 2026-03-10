@@ -17,11 +17,18 @@ interface BannerProps {
   showLottie?: boolean;
   showBreadcrumb?: boolean;
   className?: string;
+  containerClass?: string;
   bannerClass?: string;
+  lottieWidth?: number;
+  showVideo?: boolean;
+  videoSrc?: string;
+  videoOverlay?: string; // e.g. "bg-black/40"
+  videoProps?: React.VideoHTMLAttributes<HTMLVideoElement>;
 
   // 🆕 Optional gradient customization props
   gradientColors?: string[];
   animationSpeed?: number;
+  children?: React.ReactNode;
 }
 
 export default function Banner({
@@ -34,9 +41,16 @@ export default function Banner({
   showLottie = false,
   showBreadcrumb = true,
   className = "",
+  containerClass = "",
   bannerClass = "",
+  lottieWidth = 300,
+  showVideo = false,
+  videoSrc = "",
+  videoOverlay = "",
+  videoProps = {},
   gradientColors,
   animationSpeed,
+  children,
 }: BannerProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -45,27 +59,47 @@ export default function Banner({
   const hasVisual = showImage || showLottie;
 
   // 🪄 Default gradient settings
- const { theme } = useTheme();
-const [mounted, setMounted] = useState(false);
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-useEffect(() => {
-  setMounted(true);
-}, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-if (!mounted) return null;
+  if (!mounted) return null;
 
-const gradientSettings = {
-  colors:
-    gradientColors || ["#97ABFF", "#123597"],
-  animationSpeed: animationSpeed || 6,
-};
+  const gradientSettings = {
+    colors: gradientColors || ["#e3eeff", "#f3e7e9", "#e3eeff"],
+    animationSpeed: animationSpeed || 6,
+  };
 
   return (
-    <section className="container-bg-color pt-28 pb-16 px-4 md:px-28">
+    <section
+      className={`relative overflow-hidden  container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}
+    >
+      {/* 📹 Background Video */}
+      {showVideo && videoSrc && (
+        <>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            {...videoProps}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+          {videoOverlay && (
+            <div className={`absolute inset-0 z-1 ${videoOverlay}`} />
+          )}
+        </>
+      )}
+
       <div
-        className={`container mx-auto flex ${
+        className={`relative z-10 container mx-auto flex ${
           hasVisual
-            ? "flex-col md:flex-row items-center gap-8"
+            ? "flex-col md:flex-row items-center gap-8 rounded-lg"
             : "flex-col items-center text-center lg:w-1/2"
         } ${bannerClass}`}
       >
@@ -84,26 +118,38 @@ const gradientSettings = {
           <GradientText
             colors={gradientSettings.colors}
             animationSpeed={gradientSettings.animationSpeed}
-            className="text-4xl md:text-5xl font-bold mb-4 font-heading"
+            className="text-4xl  md:text-5xl font-black pb-4 font-heading"
           >
             {title}
           </GradientText>
 
-          <p className="text-lg md:text-xl font-body">{description}</p>
+          <p className="text-lg md:text-xl font-body text-white">
+            {description}
+          </p>
+          {children && <div className="mt-6">{children}</div>}
         </div>
 
         {/* 🎨 Visual Section */}
         {hasVisual && (
           <div className="md:w-1/2 flex justify-center items-center">
             {showLottie ? (
-              <LottiePlayer src={lottieSrc} height={300} width={300} />
+              <LottiePlayer
+                src={lottieSrc}
+                height={lottieWidth}
+                width={lottieWidth}
+              />
             ) : (
               showImage &&
               (isExternal ? (
-                <img
+                <Image
                   src={finalImageSrc}
                   alt={imageAlt}
+                  width={500}
+                  height={500}
+                  priority
                   className={`object-cover ${className}`}
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                 />
               ) : (
                 <Image

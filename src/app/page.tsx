@@ -1,19 +1,28 @@
 import GradientText from "@/components/ui/GradientText";
 import Hero from "@/components/sections/Hero";
 import Button from "@/components/ui/Button";
-import Cards from "@/components/ui/Cards";
 import Spline from "@/components/ui/Spline";
-import { techLogos } from "@/components/sections/LogoLoopDetails";
-import LogoLoop from "@/components/ui/LogoLoop";
 import Image from "next/image";
-import ThemeBackground from "@/components/ui/ThemeBackground";
+import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
+import ScrollRevealText from "@/components/ui/ScrollRevealText";
+import HelpCardsHome from "@/components/ui/HelpCardsHome";
+import ImageBackground from "@/components/ui/ImageBgContainer";
+import {
+  TrueFocus,
+  SlantedGrid,
+  CursorReveal,
+  CircularGallery,
+} from "@/components/home/DynamicHomeComponents";
 
 export default function HomePage() {
+  const aboutText =
+    "I am Dr Muhammad Kamran, a scientist, data storyteller, and dreamer who believes that meaningful change begins with curiosity. My journey started in a small village in Pakistan where simple questions about animals and nature slowly turned into a lifelong fascination with science and technology. That curiosity carried me across cities, continents, and disciplines until I found myself in Brisbane, exploring how data can reveal the invisible patterns that shape life, health, and sustainability.";
+
   return (
     <>
-      <div className="overflow-hidden relative">
+      <div className="overflow-hidden">
         <Hero />
-        <Spline
+        {/* <Spline
           className="
       absolute 
       right-0 
@@ -25,174 +34,103 @@ export default function HomePage() {
       -mt-60
       overflow-hidden
     "
-        />
+        /> */}
       </div>
 
-        <ThemeBackground >
-      <div className="relative overflow-hidden py-20 transition-all">
-        <LogoLoop
-          logos={techLogos}
-          speed={120}
-          direction="left"
-          logoHeight={60}
-          gap={40}
-          pauseOnHover
-          scaleOnHover
-          fadeOut
-          // fadeOutColor="#000000"
-          ariaLabel="Technology partners"
-        />
+      <div className=" overflow-hidden    transition-all">
+        <LogoLoopDetails />
       </div>
-        <section className="md:w-9/12  flex flex-col md:flex-row align-center justify-center px-5 md:px-0 py-20 mx-auto gap-10 ">
-          <div className="flex flex-col gap-5 duration-300">
-            <h2 className="font-heading text-4xl md:text-7xl mb-12 ">
-              How Can <br />{" "}
-              <span>
-                <GradientText
-                  colors={["#ff8800", "#8a2be2", "#007aff"]}
-                  animationSpeed={6}
-                  className=" "
-                >
-                  I Help You?
-                </GradientText>
-              </span>
+      <section>
+        <HelpCardsHome />
+      </section>
+
+      {/* About Me Section */}
+      <section className="flex flex-col items-center justify-center  rounded-2xl  pt-10 md:pt-20 pb-20  ">
+        {/* Main content container */}
+
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 md:gap-16 lg:gap-x-32 max-w-7xl mx-auto px-6 py-12 md:py-20">
+          {/* 🧠 Left Side: Text */}
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl  md:text-3xl font-bold mb-4 text-[var(--foreground)]">
+              <TrueFocus
+                sentence="About Me"
+                manualMode={false}
+                blurAmount={5}
+                borderColor="#10b981"
+                animationDuration={1}
+                pauseBetweenAnimations={1}
+              />
             </h2>
-            <Cards
-              title="Consulting"
-              description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-              svgSrc="/icons/cog.svg"
-              link="/consulting"
-              className="card hover:shadow-lg  hover:bg-orange-300 
- "
-            />
-            <Cards
-              title="Consulting"
-              description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
-              svgSrc="/icons/cog.svg"
-              link="/consulting"
-              className="card hover:shadow-lg hover:bg-green-300 "
-            />
-          </div>
 
-          <div className="flex flex-col gap-5 duration-300">
-            <Cards
-              title="YouTube"
-              description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
-              svgSrc="/icons/cog.svg"
-              link="#"
-              className="card hover:shadow-lg hover:bg-red-300 "
-            />
-
-            <Cards
-              title="Courses"
-              description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
-              svgSrc="/icons/cog.svg"
-              link="/academy"
-              className="card hover:shadow-lg hover:bg-purple-300 "
-            />
-            <Cards
-              title="....and more!"
-              svgSrc="/icons/cog.svg"
-              link="/newsletter"
-              className="card hover:shadow-lg hover:bg-yellow-300 "
-              buttonText="Subscribe"
-            />
-          </div>
-        </section>
-
-        {/* About Me Section */}
-        <section className="flex flex-col items-center justify-center mx-5 rounded-2xl  pt-10 md:pt-20 pb-20 px-6 md:px-16 lg:px-24">
-          {/* Main content container */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-16 lg:gap-32 max-w-7xl mx-auto">
-            {/* 🧠 Left Side: Text */}
-            <div className="flex-1 text-center card bg-container py-10 px-5 md:text-left ">
-              <GradientText
-                colors={["#ff8800", "#8a2be2", "#007aff"]}
-                animationSpeed={6}
-                className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6"
-              >
-                About Me
-              </GradientText>
-
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed font-body text-[var(--foreground)]  mx-auto pt-5 md:mx-0">
-                I am Dr Muhammad Kamran, a scientist, data storyteller, and
-                dreamer who believes that meaningful change begins with
-                curiosity. My journey started in a small village in Pakistan
-                where simple questions about animals and nature slowly turned
-                into a lifelong fascination with science and technology. That
-                curiosity carried me across cities, continents, and disciplines
-                until I found myself in Brisbane, exploring how data can reveal
-                the invisible patterns that shape life, health, and
-                sustainability.
-                <br />
-                <br />
-                At the University of Queensland I completed my PhD in Animal
-                Sciences, studying how cattle and buffalo interact with
-                parasitic flies and how technology can help farmers protect
-                animal welfare. Now I work as a Data Analyst at Neogen
-                Australasia, turning complex genetic datasets into insights that
-                guide smarter agricultural decisions. At the same time I serve
-                as a Red Meat Industry Ambassador with Meat & Livestock
-                Australia, helping bridge science and community through
-                education, innovation, and storytelling.
-                <br />
-                <br />
-                Beyond research I build ventures that connect people, knowledge,
-                and opportunity. Through <strong>Data Experts 360</strong> I
-                mentor future data leaders and design tools that bring research
-                closer to real-world problems. <strong>Agri Experts 360</strong>{" "}
-                extends this vision into agritech learning and gamified
-                education, while <strong>Triisum</strong>, my eco-tourism
-                startup, explores how nature and entrepreneurship can coexist to
-                inspire purposeful living. Together these initiatives reflect
-                who I am — a scientist who creates, a creator who cares, and a
-                lifelong learner who believes that impact grows when science
-                meets humanity.
-              </p>
-            </div>
-
-            {/* 🖼️ Right Side: Images */}
-            <div className="flex-1 flex flex-col items-center gap-6 w-full md:w-auto">
-              <Image
-                src="https://imkamran.com/wp-content/uploads/2023/12/Dr-Kamran-Akram.webp"
-                alt="Dr Kamran Akram"
-                width={500}
-                height={100}
-                className="object-contain rounded-tl-[80px] rounded-br-[20px] shadow-lg w-full "
-              />
-              <Image
-                src="https://imkamran.com/wp-content/uploads/2023/10/8016967c-b9d1-45ad-833e-439fb291c783.jpg"
-                alt="Dr Kamran Working"
-                width={400}
-                height={100}
-                className="object-contain rounded-bl-[80px] rounded-tr-[20px] shadow-lg w-full "
+            <div className="bg-gray-50 dark:bg-emerald-950/20 backdrop-blur-md border border-white/10 dark:border-emerald-500/10 p-10 rounded-2xl">
+              <ScrollRevealText
+                text={aboutText}
+                className="text-sm md:text-2xl text-justify"
               />
             </div>
           </div>
 
-          {/* 🌐 CTA Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mt-12">
-            <Button
-              href="/newsletter"
-              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-            >
-              Join My Newsletter
-            </Button>
-            <Button
-              href="/academy"
-              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-            >
-              Join My Academy
-            </Button>
-            <Button
-              href="/consulting"
-              className="btn-gradient text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
-            >
-              Work With Me
-            </Button>
+          {/* 🖼️ Right Side: Visual Content */}
+          <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm md:max-w-none">
+            <div className="w-full  flex justify-center items-center">
+              <CursorReveal />
+            </div>
           </div>
-        </section>
-      </ThemeBackground>
+        </div>
+
+        {/* 🌐 CTA Buttons */}
+        <div className="flex flex-wrap justify-center gap-4 mt-12">
+          <Button
+            href="/newsletter"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+          >
+            Join My Newsletter
+          </Button>
+          <Button
+            href="/academy"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+          >
+            Join My Academy
+          </Button>
+          <Button
+            href="/consulting"
+            className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
+          >
+            Work With Me
+          </Button>
+        </div>
+      </section>
+
+      <section>
+        <SlantedGrid />
+      </section>
+
+      <section>
+        <ImageBackground />
+      </section>
+
+      <section className="py-10">
+        <div>
+          <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
+            <GradientText
+              colors={["#10b981", "#064e3b", "#34d399"]}
+              animationSpeed={6}
+              className=""
+            >
+              {" "}
+              My Snapshot Story
+            </GradientText>
+          </h2>
+        </div>
+        <div style={{ height: "600px", position: "relative" }}>
+          <CircularGallery
+            bend={8}
+            borderRadius={0.05}
+            scrollEase={0.02}
+            scrollSpeed={4}
+          />
+        </div>
+      </section>
     </>
   );
 }

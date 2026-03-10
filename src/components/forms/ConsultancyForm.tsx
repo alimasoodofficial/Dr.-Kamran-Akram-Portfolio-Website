@@ -5,6 +5,82 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const COUNTRIES = [
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Argentina",
+  "Australia",
+  "Austria",
+  "Bangladesh",
+  "Belgium",
+  "Brazil",
+  "Canada",
+  "Chile",
+  "China",
+  "Colombia",
+  "Czech Republic",
+  "Denmark",
+  "Egypt",
+  "Ethiopia",
+  "Finland",
+  "France",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Hungary",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Japan",
+  "Jordan",
+  "Kenya",
+  "Kuwait",
+  "Lebanon",
+  "Libya",
+  "Malaysia",
+  "Mexico",
+  "Morocco",
+  "Netherlands",
+  "New Zealand",
+  "Nigeria",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palestine",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Saudi Arabia",
+  "Singapore",
+  "South Africa",
+  "South Korea",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Thailand",
+  "Tunisia",
+  "Turkey",
+  "UAE",
+  "United Kingdom",
+  "United States",
+  "Vietnam",
+  "Yemen",
+  "Other",
+];
+
 type FormInputs = {
   name: string;
   email: string;
@@ -12,6 +88,7 @@ type FormInputs = {
   message: string;
   date: Date;
   time: string;
+  country: string;
 };
 
 export default function ConsultancyForm() {
@@ -20,7 +97,12 @@ export default function ConsultancyForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormInputs>();
+    setValue,
+  } = useForm<FormInputs>({
+    defaultValues: {
+      country: "",
+    },
+  });
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
@@ -80,9 +162,17 @@ export default function ConsultancyForm() {
   return (
     <section className="w-full bg-white dark:bg-[#0b0c12] py-16 px-4">
       <div className="max-w-2xl mx-auto bg-gray-50 dark:bg-[#12121a] shadow-xl rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-3xl font-heading font-bold text-center mb-8">
+        <h2 className="text-3xl font-heading font-bold text-center mb-4">
           Book a Consultation
         </h2>
+
+        {/* Australian Timezone Notice */}
+        <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded-xl p-3 mb-8 text-center">
+          <p className="text-sm text-indigo-700 dark:text-indigo-300">
+            ⏰ All times are in{" "}
+            <strong>Australian Eastern Time (AEST/AEDT)</strong>
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Full Name */}
@@ -139,6 +229,32 @@ export default function ConsultancyForm() {
             )}
           </div>
 
+          {/* Country */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Country</label>
+            <select
+              {...register("country", {
+                required: "Please select your country",
+              })}
+              className="w-full p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select your country
+              </option>
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            {errors.country && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.country.message}
+              </p>
+            )}
+          </div>
+
           {/* Date Picker */}
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -158,7 +274,7 @@ export default function ConsultancyForm() {
           {/* Time Dropdown */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              Select Time
+              Select Time (AEST)
             </label>
             <select
               {...register("time", { required: "Please select a time" })}
