@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, ChevronRight, ArrowLeft } from "lucide-react";
+import { CalendarDays, ChevronRight, ArrowLeft, Mail } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -90,81 +90,95 @@ export default async function NewsletterDetailPage({
   );
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* ── Hero Image ───────────────────────────────────────────────── */}
-      {newsletter.hero_image_url && (
-        <div className="relative w-full h-[55vh] max-h-[600px] overflow-hidden">
-          <Image
-            src={newsletter.hero_image_url}
-            alt={newsletter.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          {/* gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent" />
-        </div>
-      )}
-
-      {/* ── Article ─────────────────────────────────────────────────── */}
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
-
-        {/* Back link */}
-        <Link
-          href="/newsletter"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-10 group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          All Newsletters
-        </Link>
-
-        {/* Breadcrumb / Meta */}
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 uppercase tracking-widest mb-5">
-          <CalendarDays className="w-3.5 h-3.5" />
-          <span>{formattedDate}</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span>Newsletter</span>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight mb-5">
-          {newsletter.title}
-        </h1>
-
-        {/* Subtitle */}
-        {newsletter.subtitle && (
-          <p className="text-xl text-slate-500 font-light leading-relaxed mb-8 border-l-4 border-slate-200 pl-4 italic">
-            {newsletter.subtitle}
-          </p>
+    <main className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-300">
+      {/* ── Hero section ───────────────────────────────────────────────── */}
+      <div className="relative">
+        {newsletter.hero_image_url ? (
+          <div className="relative w-full h-[60vh] max-h-[700px] overflow-hidden">
+            <Image
+              src={newsletter.hero_image_url}
+              alt={newsletter.title}
+              fill
+              priority
+              className="object-cover"
+              unoptimized
+            />
+            {/* gradient overlay tailored for light/dark mode */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-[#0B1120] via-slate-50/50 dark:via-[#0B1120]/60 to-transparent" />
+          </div>
+        ) : (
+          <div className="w-full h-[40vh] max-h-[400px] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 relative overflow-hidden">
+             <div className="absolute inset-0 bg-slate-50 dark:bg-[#0B1120] bg-opacity-40 dark:bg-opacity-80" />
+          </div>
         )}
+      </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px flex-1 bg-slate-100" />
-          <span className="text-xs text-slate-300 font-medium uppercase tracking-widest">
-            ✦
-          </span>
-          <div className="h-px flex-1 bg-slate-100" />
-        </div>
-
-        {/* Body */}
-        <div className="prose prose-slate prose-lg max-w-none text-slate-700 leading-[1.85] whitespace-pre-wrap">
-          {newsletter.content}
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-sm text-slate-400">
-            Published on{" "}
-            <time dateTime={newsletter.updated_at}>{formattedDate}</time>
-          </p>
+      {/* ── Article Container ───────────────────────────────────────── */}
+      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 -mt-32 sm:-mt-48">
+        
+        {/* Content Card */}
+        <div className="bg-white dark:bg-slate-900/90 backdrop-blur-md rounded-[2.5rem] shadow-xl dark:shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-slate-800 p-8 sm:p-14 lg:p-20">
+          
+          {/* Back link */}
           <Link
             href="/newsletter"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors mb-12 group uppercase tracking-widest bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-full w-max"
           >
-            Browse more newsletters
-            <ChevronRight className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Back to Issues
           </Link>
+
+          {/* Header section (meta + title + subtitle) */}
+          <header className="mb-14 sm:mb-20">
+            <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6">
+              <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-full">
+                <CalendarDays className="w-4 h-4" />
+                <span>{formattedDate}</span>
+              </div>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <div className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 px-3 py-1.5 rounded-full">
+                <Mail className="w-4 h-4" />
+                <span>Newsletter</span>
+              </div>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.15] tracking-tight mb-8">
+              {newsletter.title}
+            </h1>
+
+            {newsletter.subtitle && (
+              <p className="text-xl sm:text-2xl text-slate-500 dark:text-slate-400 font-light leading-relaxed border-l-4 border-blue-500 dark:border-blue-500/50 pl-6 italic">
+                {newsletter.subtitle}
+              </p>
+            )}
+          </header>
+
+          {/* Divider */}
+          <div className="flex items-center gap-6 mb-16 opacity-50">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
+            <span className="text-xl text-slate-300 dark:text-slate-600">✦</span>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
+          </div>
+
+          {/* Body content */}
+          <div className="prose prose-slate dark:prose-invert prose-lg sm:prose-xl max-w-none text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap selection:bg-blue-200 dark:selection:bg-blue-900/50">
+            {newsletter.content}
+          </div>
+
+          {/* Footer */}
+          <footer className="mt-24 pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
+              <CalendarDays className="w-4 h-4" />
+              Published on <time dateTime={newsletter.updated_at}>{formattedDate}</time>
+            </p>
+            <Link
+              href="/newsletter"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl dark:shadow-none"
+            >
+              Browse more issues
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </footer>
         </div>
       </div>
     </main>

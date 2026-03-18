@@ -3,7 +3,7 @@ import Banner from "@/components/sections/Banner";
 import SubscribeForm from "@/components/forms/SubscribeForm";
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronRight, Mail } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -34,83 +34,105 @@ export default async function NewsletterPage() {
   const newsletters = await getPublishedNewsletters();
 
   return (
-    <div className="min-h-screen pb-20 bg-slate-50/50">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-300">
       <Banner
         title="Newsletter"
         description="Stay updated with the latest insights and tech trends from Dr. Kamran Akram."
-        gradientColors={["white", "#7ebcf6ff"]}
+        gradientColors={["#ffffff", "#7ebcf6", "#dcbaff"]}
         showImage={false}
         className="w-auto h-[300px]"
       />
 
-      <div className="max-w-6xl mx-auto px-4 mt-12 space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 space-y-24">
         {/* Subscription Section */}
-        <section className="flex flex-col items-center">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Subscribe Today</h2>
-            <p className="text-slate-500">Join over 1,000+ readers and get insights delivered to your inbox.</p>
+        <section className="relative px-6 py-16 bg-white dark:bg-slate-900/40 rounded-3xl shadow-sm border border-slate-200/50 dark:border-slate-800/80 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 max-w-5xl mx-auto">
+          {/* Subtle background decoration */}
+          <div className="absolute top-0 right-0 -m-32 w-64 h-64 bg-blue-500/10 dark:bg-blue-400/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 -m-32 w-64 h-64 bg-purple-500/10 dark:bg-purple-400/5 rounded-full blur-3xl" />
+
+          <div className="relative z-10 flex-1 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
+              <Mail className="w-4 h-4" />
+              <span>Weekly Insights</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
+              Get ideas delivered straight to your inbox
+            </h2>
+            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto md:mx-0">
+              Join the growing community of readers. Exclusive content, deep-dives, and trends in the tech space.
+            </p>
           </div>
-          <SubscribeForm />
+          <div className="relative z-10 w-full md:w-auto">
+            <SubscribeForm />
+          </div>
         </section>
 
         {/* Newsletter List Section */}
         <section className="space-y-12">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold text-slate-900">Latest Issues</h2>
-            <div className="h-px flex-1 bg-slate-200" />
+          <div className="flex items-center gap-6">
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Latest Issues
+            </h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 dark:from-slate-800 to-transparent" />
           </div>
 
           {newsletters.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
-               <p className="text-slate-400">No issues published yet. Check back soon!</p>
+            <div className="text-center py-24 bg-white dark:bg-slate-900/20 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+              <Mail className="w-12 h-12 md:w-16 md:h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">No issues published yet</h3>
+              <p className="text-slate-500 dark:text-slate-500">Check back soon for our first newsletter!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {newsletters.map((nl) => (
-                <Link 
-                  key={nl.id} 
+                <Link
+                  key={nl.id}
                   href={`/newsletter/${nl.id}`}
-                  className="group flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  className="group flex flex-col bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200/60 dark:border-slate-800 shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                 >
-                  <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-56 w-full overflow-hidden">
                     {nl.hero_image_url ? (
-                      <Image 
-                        src={nl.hero_image_url} 
-                        alt={nl.title} 
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        unoptimized
-                      />
+                      <>
+                        <Image
+                          src={nl.hero_image_url}
+                          alt={nl.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          unoptimized
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </>
                     ) : (
-                      <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                        No Image
+                      <div className="w-full h-full bg-slate-100 dark:bg-slate-800/50 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-slate-200 dark:group-hover:bg-slate-800 transition-colors">
+                        <Mail className="w-8 h-8 opacity-50 mb-2" />
+                        <span className="text-xs uppercase tracking-widest font-semibold opacity-50">No Image</span>
                       </div>
                     )}
                   </div>
-                  
-                  <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">
                       <CalendarDays className="w-3.5 h-3.5" />
-                      {new Date(nl.updated_at).toLocaleDateString("en-AU", { 
-                        day: 'numeric', 
-                        month: 'short', 
-                        year: 'numeric' 
+                      {new Date(nl.updated_at).toLocaleDateString("en-AU", {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
                       })}
                     </div>
-                    
-                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-2 line-clamp-2">
+
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-3 line-clamp-2 leading-snug">
                       {nl.title}
                     </h3>
-                    
+
                     {nl.subtitle && (
-                      <p className="text-slate-500 text-sm line-clamp-3 mb-6">
+                      <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-3 mb-8 leading-relaxed">
                         {nl.subtitle}
                       </p>
                     )}
-                    
-                    <div className="mt-auto flex items-center text-sm font-bold text-blue-600">
-                      Read more
-                      <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+
+                    <div className="mt-auto flex items-center text-sm font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors w-max">
+                      Read article
+                      <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1.5 transition-transform duration-300" />
                     </div>
                   </div>
                 </Link>
