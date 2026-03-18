@@ -221,15 +221,16 @@ const FeatureCard = ({ icon: Icon, title, description, index }: any) => (
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
     viewport={{ once: true }}
-    className="bg-gradient-to-br from-gray-50 to-teal-300 hover:scale-105 dark:bg-gradient-to-br dark:from-teal-900 dark:to-teal-500 p-6 rounded-2xl shadow-lg bg-card transition-all duration-300"
+    className="group relative bg-white/40 dark:bg-emerald-950/20 backdrop-blur-md border border-emerald-100/30 dark:border-emerald-500/10 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
   >
-    <div className="flex items-start gap-4">
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-primary bg-primary/10 group-hover:bg-primary transition-colors ">
-        <Icon size={24} />
+    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="relative flex items-start gap-4">
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-inner">
+        <Icon size={28} />
       </div>
-      <div>
-        <h4 className="text-lg font-semibold text-card-foreground ">{title}</h4>
-        <p className="text-sm  dark:text-white">{description}</p>
+      <div className="flex-1">
+        <h4 className="text-lg font-bold text-foreground group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">{title}</h4>
+        <p className="text-sm text-muted-foreground dark:text-slate-50 mt-1 leading-relaxed">{description}</p>
       </div>
     </div>
   </motion.div>
@@ -238,62 +239,74 @@ const FeatureCard = ({ icon: Icon, title, description, index }: any) => (
 const ProjectSection = ({ project }: { project: any }) => (
   <section
     id={project.id}
-    className="py-20 border-b border-border/20 last:border-0"
+    className="py-24 relative overflow-hidden"
   >
-    <div className="container mx-auto px-6">
+    <div className="container mx-auto px-6 relative z-10">
       <div
-        className={`flex flex-col ${project.reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-12 items-center mb-16`}
+        className={`flex flex-col ${project.reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-12 lg:gap-20 items-center mb-16`}
       >
         <motion.div
           className="w-full lg:w-1/2"
-          initial={{ opacity: 0, x: project.reverse ? 50 : -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
         >
-          <div className="relative rounded-2xl overflow-hidden   shadow-xl shadow-primary/5 h-72 md:h-96">
+          <div className="group relative rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-500/10 h-80 md:h-[450px] border border-emerald-500/20">
             <Image
               src={project.image}
               alt={project.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
               placeholder="blur"
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
             />
-            <div className="absolute bottom-6 left-6 p-3 bg-primary text-primary-foreground rounded-xl shadow-lg z-10">
-              <project.icon size={28} />
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute bottom-6 left-6 p-4 bg-white/90 dark:bg-emerald-950/90 backdrop-blur-md text-emerald-600 dark:text-emerald-400 rounded-2xl shadow-xl z-20 transition-all duration-500 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100">
+              <project.icon size={32} />
             </div>
           </div>
         </motion.div>
 
-        <div className="w-full lg:w-1/2 space-y-6">
-          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider ">
-            {project.subtitle}
-          </span>
-          <h2 className="text-3xl my-2 md:text-5xl font-bold  font-display text-foreground">
-            {project.title}
-          </h2>
-          <p className="text-lg text-justify dark:text-white leading-relaxed">
+        <motion.div 
+          className="w-full lg:w-1/2 space-y-8"
+          initial={{ opacity: 0, x: project.reverse ? -30 : 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="space-y-4">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em]">
+              <Sparkles size={14} className="animate-pulse" />
+              {project.subtitle}
+            </span>
+            <h2 className="text-4xl md:text-6xl font-bold font-heading text-foreground tracking-tight">
+              {project.title}
+            </h2>
+          </div>
+          <p className="text-xl text-muted-foreground dark:text-slate-50 leading-relaxed font-light text-justify border-l-4 border-emerald-500/30 pl-6">
             {project.description}
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-5">
             {project.links.map((link: any, idx: number) => (
               <a
                 key={idx}
                 href={link.url}
-                className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${link.type === "website" ? "bg-primary text-primary-foreground hover:opacity-90" : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"}`}
+                className={`group inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 ${link.type === "website" ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50" : "bg-white dark:bg-emerald-950/30 text-foreground border border-emerald-500/20 hover:bg-emerald-500/5 backdrop-blur-sm"}`}
               >
                 {link.type === "linkedin" ? (
-                  <Linkedin size={16} />
+                  <Linkedin size={18} className="group-hover:rotate-[360deg] transition-transform duration-700" />
                 ) : (
-                  <ExternalLink size={16} />
+                  <ExternalLink size={18} className="group-hover:scale-110 transition-transform" />
                 )}
                 {link.label}
               </a>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {project.features.map((feature: any, idx: number) => (
           <FeatureCard key={idx} {...feature} index={idx} />
         ))}

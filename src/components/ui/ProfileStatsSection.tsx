@@ -72,12 +72,12 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({
               {stats.map((stat, index) => (
                 <div 
                   key={index} 
-                  className="bg-[#F3F4F1] card rounded-2xl p-6 lg:p-8 flex flex-col justify-center items-start transition-transform hover:-translate-y-1"
+                  className="bg-white/50 dark:bg-emerald-950/20 backdrop-blur-md border border-emerald-100/50 dark:border-emerald-500/10 rounded-2xl p-6 lg:p-8 flex flex-col justify-center items-start transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/5"
                 >
-                  <span className="text-3xl sm:text-4xl font-extrabold  block mb-2">
+                  <span className="text-3xl sm:text-4xl font-extrabold block mb-2 bg-gradient-to-br from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
                     {stat.number}
                   </span>
-                  <span className="text-sm sm:text-base font-medium  leading-tight">
+                  <span className="text-sm sm:text-base font-medium text-muted-foreground dark:text-emerald-100/70 leading-tight">
                     {stat.label}
                   </span>
                 </div>
