@@ -56,13 +56,13 @@ export default function HomePage() {
                 sentence="About Me"
                 manualMode={false}
                 blurAmount={5}
-                borderColor="#10b981"
+                borderColor="var(--primary)"
                 animationDuration={1}
                 pauseBetweenAnimations={1}
               />
             </h2>
 
-            <div className="bg-gray-50 dark:bg-emerald-950/20 backdrop-blur-md border border-white/10 dark:border-emerald-500/10 p-10 rounded-2xl">
+            <div className="green-glass p-10 rounded-2xl">
               <ScrollRevealText
                 text={aboutText}
                 className="text-sm md:text-2xl text-justify"
@@ -113,7 +113,7 @@ export default function HomePage() {
         <div>
           <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
             <GradientText
-              colors={["#10b981", "#064e3b", "#34d399"]}
+              colors={["#10b981", "#34d399", "#86efac"]}
               animationSpeed={6}
               className=""
             >

@@ -21,7 +21,7 @@ export default function FreeResourcesPage() {
       href: "/free-resources/articles",
       icon: <FaNewspaper className="w-8 h-8" />,
       imagePlaceholder: "ARTICLE_IMAGE_PLACEHOLDER",
-      gradient: "from-orange-500 via-red-500 to-pink-500",
+      gradient: "from-emerald-500 via-green-500 to-teal-500",
     },
     {
       title: "E-Books & Guides",

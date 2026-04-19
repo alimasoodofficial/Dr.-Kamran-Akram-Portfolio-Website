@@ -201,7 +201,7 @@ export default function TimelineCarousel() {
               className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 shadow-lg z-20 hover:scale-110 flex-shrink-0 ${
                 activeIndex === 0
                   ? "bg-gray-600 opacity-50 cursor-not-allowed"
-                  : "bg-[#f59e0b] hover:bg-[#d97706] cursor-pointer"
+                  : "bg-emerald-500 hover:bg-emerald-600 cursor-pointer"
               }`}
             >
               <svg
@@ -229,7 +229,7 @@ export default function TimelineCarousel() {
               className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 shadow-lg z-20 hover:scale-110 flex-shrink-0 ${
                 activeIndex === TIMELINE_DATA.length - 1
                   ? "bg-gray-600 opacity-50 cursor-not-allowed"
-                  : "bg-[#172716]/50 hover:bg-[#f59e0b] text-white hover:text-black cursor-pointer"
+                  : "bg-[#172716]/50 hover:bg-emerald-500 text-white hover:text-black cursor-pointer"
               }`}
             >
               <svg
@@ -259,14 +259,14 @@ export default function TimelineCarousel() {
                 <div
                   key={index}
                   onClick={() => scrollToIndex(index)}
-                  className="shrink-0 snap-center rounded-xl p-6 flex flex-col shadow-lg transition-all duration-500 border w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white/100 dark:bg-[#111319]/60 border-transparent hover:border-[#f59e0b]/30"
+                  className="shrink-0 snap-center rounded-xl p-6 flex flex-col shadow-lg transition-all duration-500 border w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white/100 dark:bg-[#111319]/60 border-transparent hover:border-emerald-500/30"
                 >
                   {/* Year Badge + Icon */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="px-3 py-1 rounded-full border text-xs font-medium tracking-wide backdrop-blur-sm transition-all duration-300 whitespace-nowrap border-[#10b981]/50 bg-blue-600  text-gray-200">
                       {item.yearRange}
                     </div>
-                    <div className="p-2 rounded-lg transition-all duration-300  bg-yellow-600 text-white">
+                    <div className="p-2 rounded-lg transition-all duration-300  bg-emerald-600 text-white">
                       {item.icon}
                     </div>
                   </div>

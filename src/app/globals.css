@@ -8,88 +8,90 @@
   --font-body: var(--font-poppins), sans-serif;
   --font-inter: var(--font-inter), sans-serif;
 
-  /* 🎨 Theme Colors */
-  --color-primary: #10b981; /* Vibrant Emerald */
-  --color-secondary: #ecfdf5; /* Very Light Mint */
-  --color-accent: #34d399; /* Bright Spring Green */
-  --color-dark: #111827;
-  --color-light: #f3f4f6;
-  --color-blue-primary: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
-  --color-container: #ecfdf5; /* Secondary/Section Backgrounds */
-  --color-primary-foreground: #ffffff;
-  --color-secondary-foreground: #022c22;
-  --color-accent-foreground: #022c22;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  --color-card-foreground: #022c22;
-  --color-muted-foreground: rgba(6, 78, 59, 0.7);
-
-  /* ✨ Dark Theme Extended Palette */
-  --color-dark-bg: #022c22;
-  --color-dark-card: #0d614b;
-  --color-dark-text: #ecfdf5;
-  --color-dark-muted: rgba(236, 253, 245, 0.7);
-  --color-dark-border: rgba(255, 255, 255, 0.1);
-
-  /* 🟠 Action Colors (Requested Orange) */
-  --color-action: #e67e22;
-  --color-action-hover: #d35400;
-  --color-action-soft: #fdf2e9;
+  /* 🎨 Modern Green Theme Colors */
+  --color-primary: #10b981; 
+  --color-primary-dark: #059669;
+  --color-secondary: #f0fdf4;
+  --color-accent: #34d399;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-green-soft: #f0fdf4;
+  --color-green-deep: #064e3b;
+  --color-green-glow: rgba(16, 185, 129, 0.2);
 
   /* 🌈 Animation */
   --animate-float: float 3s ease-in-out infinite;
   --animate-shake: shake 0.2s ease-in-out 0s 2;
 
   @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 
   @keyframes shake {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-4px);
-    }
-    75% {
-      transform: translateX(4px);
-    }
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
   }
 }
 
-/* 🌞 Default Light Theme */
+/* 🌞 Modern Green Light Theme */
 :root {
-  --background: #ffffff;
+  --background: #f8faf9; /* Near white with green shade */
   --foreground: #022c22;
-  --color-heading: #172c22;
+  --color-heading: #111827;
+  --primary: #10b981;
+  --secondary: #f0fdf4;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+}
+
+/* 🌙 Modern Green Dark Theme */
+.dark {
+  --background: #010403; /* Near-black green background */
+  --foreground: #ecfdf5;
+  --color-heading: #f9fafb;
+  --primary: #10b981;
+  --secondary: #064e3b;
+  --card: #040d0a;
+  --border: #0d2a22;
+  --muted: #0d2a22;
+  --muted-foreground: #94a3b8;
+}
+
+/* 🛠 Newly Created Modern Green Classes */
+.green-bg-main { background-color: var(--background); }
+.green-text-main { color: var(--foreground); }
+.green-text-primary { color: var(--primary); }
+.green-bg-primary { background-color: var(--primary); color: white; }
+.green-bg-secondary { background-color: var(--secondary); color: var(--foreground); }
+.green-border { border: 1px solid var(--border); }
+.green-card {
+  background-color: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+.green-card:hover {
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+  transform: translateY(-2px);
+}
+.green-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+.dark .green-glass {
+  background: rgba(6, 20, 16, 0.6);
 }
 
 /* Base Typography */
-h1,
-h2 {
-  color: var(--color-heading);
-}
-
-/* 🌙 Dark Theme */
-.dark {
-  --background: #021b15;
-  --foreground: var(--color-dark-text);
-  --color-heading: #ecfdf5;
-}
-
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6 {
+h1, h2, h3, h4, h5, h6 {
   color: var(--color-heading);
 }
 
@@ -98,18 +100,20 @@ body {
   @apply font-body antialiased;
   background: var(--background);
   color: var(--foreground);
-  transition:
-    background-color 0.4s ease,
-    color 0.4s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* 🧱 Container Background */
-.container-bg-color {
-  /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
-  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+.dark body {
+  background: radial-gradient(circle at top center, #06241c 0%, #010403 100%) no-repeat fixed;
 }
+
+/* 🧱 Container Background (Modernized) */
+.container-bg-color {
+  background: linear-gradient(to right, #f0fdf4 0%, #d1fae5 50%, var(--background) 100%);
+}
+
 .dark .container-bg-color {
-  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+  background: radial-gradient(circle at top, #04110d 0%, var(--background) 100%);
 }
 
 /* 🪄 Card Style (for dark + light) */
@@ -152,23 +156,23 @@ body {
 }
 
 .btn-action {
-  background-color: var(--color-action);
+  background-color: var(--primary);
   color: #ffffff;
   transition: all 0.3s ease;
 }
 
 .btn-action:hover {
-  background-color: var(--color-action-hover);
+  background-color: var(--color-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .bg-action {
-  background-color: var(--color-action);
+  background-color: var(--primary);
 }
 
 .bg-action-soft {
-  background-color: var(--color-action-soft);
+  background-color: var(--secondary);
 }
 
 /* 🎢 Floating Animation */

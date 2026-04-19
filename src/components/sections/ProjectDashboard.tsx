@@ -34,8 +34,8 @@ const PROJECT_CARDS_DATA = {
       title: "TRIISUM",
       subtitle: "Eco-Tourism, Sustainability Focused",
       icon: Leaf,
-      accentColor: "bg-[#d1fae5]", // bg-green-light
-      iconColor: "text-[#10b981]", // text-secondary (approx)
+      accentColor: "bg-green-100",
+      iconColor: "text-green-700",
       teamText: "Eco Synergy",
       features: [
         { label: "Task Board", type: "board" },
@@ -47,8 +47,8 @@ const PROJECT_CARDS_DATA = {
       title: "DATA EXPERTS 360",
       subtitle: "Data, Analytics, Consulting",
       icon: Database,
-      accentColor: "bg-[#dbeafe]", // bg-blue-light
-      iconColor: "text-[#3b82f6]", // text-blue
+      accentColor: "bg-emerald-100",
+      iconColor: "text-emerald-700",
       teamText: "Data Insights",
       features: [
         { label: "Data Dashboard", type: "chart" },
@@ -60,8 +60,8 @@ const PROJECT_CARDS_DATA = {
       title: "ECO AMBASSADORS",
       subtitle: "Sustainability, Environment, Outreach",
       icon: Recycle,
-      accentColor: "bg-[#d1fae5]",
-      iconColor: "text-[#10b981]",
+      accentColor: "bg-teal-100",
+      iconColor: "text-teal-700",
       teamText: "Green Outreach",
       features: [
         { label: "Task Board", type: "board" },
@@ -75,8 +75,8 @@ const PROJECT_CARDS_DATA = {
       title: "AGRI EXPERTS 360",
       subtitle: "Agriculture, Agri-Tech, Education",
       icon: Wheat,
-      accentColor: "bg-[#d1fae5]",
-      iconColor: "text-[#10b981]",
+      accentColor: "bg-green-100",
+      iconColor: "text-green-600",
       teamText: "Agri Innovation",
       features: [
         { label: "Task List", type: "board" },
@@ -88,8 +88,8 @@ const PROJECT_CARDS_DATA = {
       title: "DATA AMBASSADORS",
       subtitle: "Training, Capacity Building, Youth & Community",
       icon: GraduationCap,
-      accentColor: "bg-[#ccfbf1]", // bg-teal-light
-      iconColor: "text-[#0d9488]", // text-primary
+      accentColor: "bg-emerald-50",
+      iconColor: "text-emerald-600",
       teamText: "Digital Skills",
       features: [
         { label: "Training Modules", type: "progress" },
@@ -101,8 +101,8 @@ const PROJECT_CARDS_DATA = {
       title: "BEYOND THE LAB",
       subtitle: "Science Communication, Research Translation",
       icon: Microscope,
-      accentColor: "bg-[#ffedd5]", // bg-orange-light
-      iconColor: "text-[#f97316]", // text-orange
+      accentColor: "bg-teal-50",
+      iconColor: "text-teal-600",
       teamText: "Science Hub",
       features: [
         { label: "Content Calendar", type: "calendar" },
@@ -118,63 +118,63 @@ const STEPS = [
     icon: Lightbulb,
     label: "Idea",
     angle: -110,
-    color: "bg-[#fef9c3] text-[#f59e0b]",
+    color: "bg-green-100 text-green-700",
     radius: 220,
   },
   {
     icon: LayoutGrid,
     label: "Planning",
     angle: -65,
-    color: "bg-[#dbeafe] text-[#3b82f6]",
+    color: "bg-emerald-100 text-emerald-700",
     radius: 230,
   },
   {
     icon: Users,
     label: "Team Building",
     angle: -30,
-    color: "bg-[#ccfbf1] text-[#0d9488]",
+    color: "bg-teal-100 text-teal-700",
     radius: 240,
   },
   {
     icon: Video,
     label: "Meetings",
     angle: 5,
-    color: "bg-[#f3e8ff] text-[#a855f7]",
+    color: "bg-green-50 text-green-600",
     radius: 225,
   },
   {
     icon: ListChecks,
     label: "Task Execution",
     angle: 40,
-    color: "bg-[#d1fae5] text-[#10b981]",
+    color: "bg-emerald-50 text-emerald-600",
     radius: 235,
   },
   {
     icon: BarChart3,
     label: "KPI Tracking",
     angle: 75,
-    color: "bg-[#ffedd5] text-[#f97316]",
+    color: "bg-teal-50 text-teal-600",
     radius: 225,
   },
   {
     icon: Clock,
     label: "Deadlines",
     angle: 110,
-    color: "bg-[#ccfbf1] text-[#0d9488]",
+    color: "bg-green-100 text-green-800",
     radius: 230,
   },
   {
     icon: Handshake,
     label: "Stakeholder\nManagement",
     angle: 150,
-    color: "bg-[#dbeafe] text-[#3b82f6]",
+    color: "bg-emerald-100 text-emerald-800",
     radius: 225,
   },
   {
     icon: Package,
     label: "Delivery",
     angle: 200,
-    color: "bg-[#d1fae5] text-[#10b981]",
+    color: "bg-teal-100 text-teal-800",
     radius: 220,
   },
 ];
@@ -235,11 +235,11 @@ const FeatureBlock = ({ feature }: { feature: any }) => {
           <div className="flex gap-1">
             <div className="w-3.5 h-3.5 rounded bg-emerald-600 opacity-20"></div>
             <div className="w-3.5 h-3.5 rounded bg-emerald-500 opacity-30"></div>
-            <div className="w-3.5 h-3.5 rounded bg-amber-500 opacity-40"></div>
+            <div className="w-3.5 h-3.5 rounded bg-emerald-500 opacity-40"></div>
           </div>
           <div className="flex gap-1">
             <div className="w-3.5 h-3.5 rounded bg-blue-500 opacity-20"></div>
-            <div className="w-3.5 h-3.5 rounded bg-orange-500 opacity-20"></div>
+            <div className="w-3.5 h-3.5 rounded bg-emerald-500 opacity-20"></div>
           </div>
         </div>
       );
@@ -250,7 +250,7 @@ const FeatureBlock = ({ feature }: { feature: any }) => {
           <div className="w-2.5 h-2 bg-emerald-600 opacity-30 rounded-sm"></div>
           <div className="w-2.5 h-4 bg-emerald-500 opacity-40 rounded-sm"></div>
           <div className="w-2.5 h-7 bg-emerald-600 opacity-50 rounded-sm"></div>
-          <div className="w-2.5 h-3 bg-amber-500 opacity-40 rounded-sm"></div>
+          <div className="w-2.5 h-3 bg-emerald-500 opacity-40 rounded-sm"></div>
         </div>
       );
       break;
@@ -461,7 +461,7 @@ export default function ProjectDashboard() {
                     <div className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900 dark:to-emerald-950 rounded-3xl flex items-center justify-center shadow-xl animate-float border border-emerald-500/20">
                       <Rocket className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <Sparkles className="absolute -top-2 -right-2 w-4 h-4 text-amber-500 animate-pulse" />
+                    <Sparkles className="absolute -top-2 -right-2 w-4 h-4 text-emerald-500 animate-pulse" />
                   </div>
                 </div>
                 <h1 className="text-[10px] md:text-sm lg:text-lg font-black text-foreground leading-tight tracking-[0.1em] uppercase">

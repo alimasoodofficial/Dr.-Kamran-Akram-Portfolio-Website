@@ -188,7 +188,7 @@ export default function ResearchGamePopup() {
                   <Stat
                     val={`${score}/${TARGET_GOOD}`}
                     label="Score"
-                    color={score < 3 ? "text-orange-800" : "text-blue-500"}
+                    color={score < 3 ? "text-emerald-800" : "text-blue-500"}
                     animate={true}
                   />
                   <Stat
@@ -200,7 +200,7 @@ export default function ResearchGamePopup() {
                   <Stat
                     val={`${strikes}`}
                     label="Strikes"
-                    color={strikes > 0 ? "text-orange-400" : "text-white"}
+                    color={strikes > 0 ? "text-emerald-400" : "text-white"}
                     animate={true}
                   />
                 </div>

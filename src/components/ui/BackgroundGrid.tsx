@@ -19,7 +19,7 @@ const BackgroundGrid: React.FC<BackgroundGridProps> = ({ className }) => {
         "bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)]",
         
         // Dark mode: CHANGED from #ffffff (solid white) to rgba(255,255,255,0.1) (transparent white)
-        // This prevents the grid from overpowering the orange glow
+        // This prevents the grid from overpowering the green glow
         "dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)]",
         
         "bg-[size:6rem_4rem]",
@@ -28,7 +28,7 @@ const BackgroundGrid: React.FC<BackgroundGridProps> = ({ className }) => {
     >
       {/* Radial gradient overlay */}
       {/* Added pointer-events-none to prevent blocking clicks */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#ffb347,transparent)]" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(16,185,129,0.15),transparent)]" />
     </div>
   );
 };

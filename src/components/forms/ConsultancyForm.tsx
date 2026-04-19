@@ -320,7 +320,7 @@ export default function ConsultancyForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 mt-4 bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90 transition-transform duration-300 hover:scale-[1.02] disabled:opacity-50"
+            className="w-full py-3 mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:opacity-90 transition-transform duration-300 hover:scale-[1.02] disabled:opacity-50"
           >
             {loading ? "Booking..." : "Book Consultation"}
           </button>

@@ -5,8 +5,8 @@ import Link from "next/link";
 export default function FreeResourcesCTA() {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-      <div className="relative rounded-3xl bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 p-[2px] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 animate-gradient-x"></div>
+        <div className="relative rounded-3xl bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 p-[2px] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 animate-gradient-x"></div>
         <div className="relative bg-white dark:bg-gray-800 rounded-3xl p-12 text-center space-y-6">
           <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
             Can't find what you're looking for?
@@ -17,7 +17,7 @@ export default function FreeResourcesCTA() {
           </p>
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
           >
             Get in Touch
           </Link>

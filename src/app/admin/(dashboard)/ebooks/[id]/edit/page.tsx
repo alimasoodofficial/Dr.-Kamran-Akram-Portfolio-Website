@@ -119,7 +119,7 @@ export default function EditEbook({ params }: PageProps) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function EditEbook({ params }: PageProps) {
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   required
                   placeholder="Ebook Title"
                 />
@@ -164,7 +164,7 @@ export default function EditEbook({ params }: PageProps) {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   placeholder="Description..."
                 />
               </div>
@@ -176,7 +176,7 @@ export default function EditEbook({ params }: PageProps) {
                 <input
                   value={fileUrl}
                   onChange={(e) => setFileUrl(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   placeholder="https://..."
                 />
               </div>
@@ -229,7 +229,7 @@ export default function EditEbook({ params }: PageProps) {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center gap-2 shadow-lg shadow-orange-500/20 transition-all font-medium"
+              className="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all font-medium"
             >
               <Save className="w-4 h-4" />
               {saving ? "Updating..." : "Update Ebook"}

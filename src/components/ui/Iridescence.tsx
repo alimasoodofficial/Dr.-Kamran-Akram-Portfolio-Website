@@ -115,13 +115,30 @@ export default function Iridescence({
     const mesh = new Mesh(gl, { geometry, program });
     resize();
 
-    let animateId: number;
+    let animateId: number = 0;
+    let isVisible = false;
+
     const update = (t: number) => {
-      animateId = requestAnimationFrame(update);
+      if (!isVisible) return;
       program.uniforms.uTime.value = t * 0.001;
       renderer.render({ scene: mesh });
+      animateId = requestAnimationFrame(update);
     };
-    animateId = requestAnimationFrame(update);
+
+    const scrollObserver = new IntersectionObserver(
+      ([entry]) => {
+        const currentlyVisible = entry.isIntersecting;
+        if (currentlyVisible && !isVisible) {
+          isVisible = true;
+          animateId = requestAnimationFrame(update);
+        } else if (!currentlyVisible && isVisible) {
+          isVisible = false;
+          cancelAnimationFrame(animateId);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    scrollObserver.observe(ctn);
     ctn.appendChild(gl.canvas);
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -141,6 +158,7 @@ export default function Iridescence({
       window.removeEventListener("resize", resize);
       if (mouseReact) ctn.removeEventListener("mousemove", handleMouseMove);
       observer.disconnect();
+      scrollObserver.disconnect();
       ctn.removeChild(gl.canvas);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };

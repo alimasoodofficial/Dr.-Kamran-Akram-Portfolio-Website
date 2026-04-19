@@ -43,14 +43,15 @@ export const InfoCard = ({
     className={`${bgClass} ${textColor} min-h-[320px] flex flex-col justify-between`}
   >
     
-    <div className="flex flex-col justify-between">
-      <h3 className="text-lg md:text-4xl  font-bold mb-2">{title}</h3>
-      <h3 className="text-2xl  font-heading mb-3">{subtitle}</h3>
-      <p className="text-sm md:text-lg  leading-relaxed">{desc}</p>
+    <div className="flex flex-col justify-between text-white">
+      <h3 className="text-lg md:text-4xl  font-bold mb-2 !text-white">{title}</h3>
+      <h3 className="text-2xl  font-heading mb-3 !text-white">{subtitle}</h3>
+      <p className="text-sm md:text-lg  leading-relaxed text-white/90">{desc}</p>
     </div>
-    <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
+    <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
       <Link
         href={href}
+        className="text-white w-full h-full flex items-center"
       >
        <i className="fa-solid fa-arrow-right px-2"></i>
         {btnText}
@@ -75,7 +76,7 @@ export const  StripCard = ({
     <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
       <i className={`${icon} text-xl`}></i>
     </div>
-    <h3 className="text-lg font-semibold">{text}</h3>
+    <h3 className="text-lg font-semibold !text-white">{text}</h3>
   </CardWrapper>
 );
 
@@ -96,13 +97,13 @@ export const ImageCard = ({
       backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}), url('${bgImage}')`,
     }}
   >
-      <Link href="/free-resources/articles">
+      <Link href="/free-resources/articles" className="text-white">
 
-    <div className="relative z-10">
-      <span className="block text-lg font-medium mb-1 opacity-90">
+    <div className="relative z-10 text-white">
+      <span className="block text-lg font-medium mb-1 opacity-90 text-white">
         {category}
       </span>
-      <h3 className="text-xl font-bold leading-tight">{title}</h3>
+      <h3 className="text-xl font-bold leading-tight !text-white">{title}</h3>
     </div>
     </Link>
   </CardWrapper>
@@ -110,11 +111,11 @@ export const ImageCard = ({
 
 // --- 4. Center Stat Card (Action) ---
 export const CenterStatCard = () => (
-  <CardWrapper className="bg-[#E67E22] flex flex-col justify-center items-center text-center text-white">
-    <h3 className="text-4xl font-bold mb-1">10+</h3>
-    <p className="font-medium mb-6">Years of Experience</p>
-    <div className="bg-black/10 w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
-    <Link href="/consulting">
+  <CardWrapper className="bg-[#042f2e] flex flex-col justify-center items-center text-center text-white">
+    <h3 className="text-4xl font-bold mb-1 !text-white">10+</h3>
+    <p className="font-medium mb-6 text-white/90">Years of Experience</p>
+    <div className="bg-white/10 hover:bg-white/20 transition-colors w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
+    <Link href="/consulting" className="text-white">
       <i className="fa-solid fa-hand-holding-dollar"></i> Hire for Consulting
     </Link>
     </div>

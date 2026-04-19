@@ -440,7 +440,7 @@ export default function AdminBookingsClient({
               <ExternalLink className="w-4 h-4" />
               View Public Page
             </Link>
-            <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
               🇦🇺 Australian Eastern Time
             </span>
           </div>
@@ -865,7 +865,7 @@ export default function AdminBookingsClient({
                       >
                         <div className="flex items-center gap-4">
                           <div
-                            className={`w-2 h-2 rounded-full ${slot.is_booked ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-emerald-500 shadow-lg shadow-emerald-500/20"}`}
+                            className={`w-2 h-2 rounded-full ${slot.is_booked ? "bg-emerald-500 shadow-lg shadow-emerald-500/20" : "bg-emerald-500 shadow-lg shadow-emerald-500/20"}`}
                           ></div>
                           <div>
                             <p className="font-bold text-slate-900 text-sm">
@@ -875,7 +875,7 @@ export default function AdminBookingsClient({
                             <p className="text-[10px] text-slate-400 flex items-center gap-1">
                               {slot.is_booked ? (
                                 <>
-                                  <AlertCircle className="w-2 h-2 text-amber-500" />
+                                  <AlertCircle className="w-2 h-2 text-emerald-500" />
                                   Booked by Client
                                 </>
                               ) : (

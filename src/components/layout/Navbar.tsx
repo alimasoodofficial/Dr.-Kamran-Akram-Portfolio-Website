@@ -19,21 +19,7 @@ export default function Navbar() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav
-      className="
-      fixed top-4 left-1/2 -translate-x-1/2
-      w-11/12 
-      z-50
-      backdrop-blur-xl backdrop-saturate-150
-      bg-white/10 dark:bg-[#0b0c12]/40
-      border border-white/10
-      text-[var(--foreground)]
-      rounded-full
-      shadow-[0_0_20px_rgba(0,0,0,0.25)]
-      transition-all duration-500
-      
-    "
-    >
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-11/12 z-50 green-glass rounded-full shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all duration-500">
       <div className="flex items-center justify-between px-5 py-3 md:py-4 ">
         {/* Logo */}
         <Link
@@ -41,7 +27,7 @@ export default function Navbar() {
           className="text-xl font-heading font-bold flex items-center gap-1"
         >
           <span className="text-2xl text-black dark:text-white">mk.</span>
-          <span className="hidden md:block text-[#E67E22] dark:text-purple-500 transition-colors duration-300">
+          <span className="hidden md:block text-primary dark:text-emerald-500 transition-colors duration-300">
             |
           </span>
           <span className="font-extralight font-body hidden md:block text-black dark:text-white ">
@@ -55,7 +41,7 @@ export default function Navbar() {
           <div className="group relative px-3 py-2">
             <Link href="/free-resources" > 
             
-            <button className="flex items-center gap-1 transition-colors hover:text-[#E67E22] cursor-pointer">
+            <button className="flex items-center gap-1 transition-colors hover:text-primary cursor-pointer">
               Free Resources
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +84,7 @@ export default function Navbar() {
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
                     <div
-                      className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-[#f59e0b] to-[#d97706]"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}
+                      className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}
                     >
                       {item.icon &&
                       (item.icon.trim().startsWith("/") ||
@@ -136,7 +122,7 @@ export default function Navbar() {
 
           {/* About Me Mega Dropdown */}
           <div className="group relative px-3 py-2">
-            <button className="flex items-center gap-1 transition-colors hover:text-[#E67E22] font-medium">
+            <button className="flex items-center gap-1 transition-colors hover:text-primary font-medium">
               About Me
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -219,8 +205,8 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 transition-all hover:text-[#E67E22] hover:scale-110 ${
-                    isActive ? "text-blue-600" : ""
+                  className={`px-3 py-2 transition-all hover:text-primary hover:scale-110 ${
+                    isActive ? "text-primary font-bold" : ""
                   }`}
                 >
                   {link.label}
@@ -233,13 +219,19 @@ export default function Navbar() {
         <div className="flex items-center gap-4 ml-auto">
           <ThemeToggle />
 
-          <Button
-            type="button"
+          <Link
             href="/newsletter"
-            className="hidden lg:block  text-white font-black tracking-wide "
+            className="group/sub hidden lg:flex items-center relative overflow-hidden px-8 py-2 rounded-3xl bg-primary text-white font-black tracking-wide hover:bg-primary-dark transition-all duration-300 hover:scale-105 shadow-lg shadow-primary/20"
           >
-            Subscribe
-          </Button>
+            <span className="relative z-10">Subscribe</span>
+            <Image
+              src="/cow-face.png"
+              alt=""
+              width={80}
+              height={80}
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 object-cover rounded-full opacity-0 translate-x-4 scale-75 transition-all duration-300 ease-out group-hover/sub:opacity-100 group-hover/sub:translate-x-[-4px] group-hover/sub:scale-100 pointer-events-none"
+            />
+          </Link>
 
           {/* 🍔 Mobile Menu Button */}
           <button
@@ -299,8 +291,8 @@ export default function Navbar() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className={`text-2xl font-black tracking-wide hover:text-[#E67E22] transition-colors px-2 py-1 ${
-                        isActive ? "text-[#E67E22]" : ""
+                      className={`text-2xl font-black tracking-wide hover:text-primary transition-colors px-2 py-1 ${
+                        isActive ? "text-primary" : ""
                       }`}
                     >
                       {link.label}
@@ -369,7 +361,7 @@ export default function Navbar() {
                     className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                   >
                     <div
-                      className={`w-10 h-10 ${item.bgColor || "bg-gradient-to-br from-[#f59e0b] to-[#d97706]"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}
+                      className={`w-10 h-10 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}
                     >
                       {item.icon &&
                       (item.icon.trim().startsWith("/") ||

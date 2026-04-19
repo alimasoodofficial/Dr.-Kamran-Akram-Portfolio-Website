@@ -264,6 +264,7 @@ class App {
   screen!: ScreenSize;
   viewport!: Viewport;
   raf: number = 0;
+  isPaused: boolean = true;
 
   boundOnResize!: () => void;
   boundOnWheel!: (e: Event) => void;
@@ -294,7 +295,7 @@ class App {
     this.onResize();
     this.createGeometry();
     this.createMedias(items, bend, borderRadius);
-    this.update();
+    // Remove the immediate update calls
     this.addEventListeners();
   }
 
@@ -368,10 +369,7 @@ class App {
   }
 
   onWheel(e: Event) {
-    const wheelEvent = e as WheelEvent;
-    const delta = wheelEvent.deltaY || (wheelEvent as any).wheelDelta || (wheelEvent as any).detail;
-    this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
-    this.onCheckDebounce();
+    // Scroll disabled as per user request
   }
 
   onCheck() {
@@ -401,6 +399,8 @@ class App {
   }
 
   update() {
+    if (this.isPaused) return;
+
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
     if (this.medias) {
@@ -411,6 +411,17 @@ class App {
     this.raf = window.requestAnimationFrame(this.update.bind(this));
   }
 
+  play() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    this.update();
+  }
+
+  pause() {
+    this.isPaused = true;
+    if (this.raf) window.cancelAnimationFrame(this.raf);
+  }
+
   addEventListeners() {
     this.boundOnResize = this.onResize.bind(this);
     this.boundOnWheel = this.onWheel.bind(this);
@@ -418,7 +429,7 @@ class App {
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     window.addEventListener('resize', this.boundOnResize);
-    window.addEventListener('wheel', this.boundOnWheel);
+    // window.addEventListener('wheel', this.boundOnWheel); // Scroll disabled
     window.addEventListener('mousedown', this.boundOnTouchDown);
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
@@ -430,7 +441,7 @@ class App {
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
-    window.removeEventListener('wheel', this.boundOnWheel);
+    // window.removeEventListener('wheel', this.boundOnWheel);
     window.removeEventListener('mousedown', this.boundOnTouchDown);
     window.removeEventListener('mousemove', this.boundOnTouchMove);
     window.removeEventListener('mouseup', this.boundOnTouchUp);
@@ -470,7 +481,24 @@ export default function CircularGallery({
       scrollSpeed,
       scrollEase
     });
-    return () => app.destroy();
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          app.play();
+        } else {
+          app.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+      app.destroy();
+    };
   }, [items, bend, borderRadius, scrollSpeed, scrollEase]);
 
   return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing" ref={containerRef} />;

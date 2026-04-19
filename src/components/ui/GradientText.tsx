@@ -29,14 +29,25 @@ export default function GradientText({
   yoyo = true,
 }: GradientTextProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
 
   const animationDuration = animationSpeed * 1000;
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   useAnimationFrame((time) => {
-    if (isPaused) {
+    if (isPaused || !isVisible) {
       lastTimeRef.current = null;
       return;
     }
@@ -113,6 +124,7 @@ export default function GradientText({
 
   return (
     <motion.span
+      ref={containerRef}
       className={`relative inline-block font-black transition-shadow duration-500 cursor-pointer ${showBorder ? "rounded-[1.25rem] py-1 px-2" : ""} ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

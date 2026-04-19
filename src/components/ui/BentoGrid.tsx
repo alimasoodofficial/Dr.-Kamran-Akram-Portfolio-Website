@@ -10,13 +10,13 @@ export default function BentoGrid() {
           subtitle="Animal Sciences"
           desc="Translating complex research into practical knowledge for farmers, students, and communities."
           btnText="View Publications"
-          bgClass="bg-[#064e3b] "
+          bgClass="bg-[#022c22]"
           href="https://scholar.google.com.au/citations?user=lBBycJgAAAAJ&hl"
         />
         <StripCard
           icon="fa-solid fa-microphone-lines"
           text="Science Communicator"
-          bgClass="bg-[#E67E22]"
+          bgClass="bg-[#10b981]"
         />
       </div>
 
@@ -26,7 +26,7 @@ export default function BentoGrid() {
           category="Specialization"
           title="Advancing Veterinary Science & Agriculture Projects"
           bgImage="https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"
-          overlayColor="rgba(2, 44, 34, 0.75) 0%, rgba(6, 78, 59, 0.5) 35%, rgba(16, 185, 129, 1) 100%"
+          overlayColor="rgba(2, 44, 34, 0.8) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%"
         />
       </div>
 
@@ -37,7 +37,7 @@ export default function BentoGrid() {
           category="Research"
           title="MPhil Microbiology & Data Analysis"
           bgImage="https://images.unsplash.com/photo-1587355760421-b9de3226a046?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0MDZ8MHwxfHNlYXJjaHwyMnx8cmVzZWFyY2h8ZW58MHx8fHwxNzY3Mjk4OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080"
-          overlayColor="rgba(6, 78, 59, 0.5) 0%, rgba(204, 126, 41, 1) 100%"
+          overlayColor="rgba(6, 78, 59, 0.7) 0%, rgba(5, 150, 105, 0.8) 100%"
           heightClass="h-[240px]"
         />
       </div>
@@ -49,13 +49,13 @@ export default function BentoGrid() {
           subtitle="Free Resources"
           desc="Access my collection of eBooks, courses, and free guides for students and professionals."
           btnText="Download eBooks"
-          bgClass="bg-[#E67E22]" // Applied requested orange
+          bgClass="bg-emerald-600" 
           href="/coming-soon"
         />
         <StripCard
           icon="fa-solid fa-award"
           text="MLA Red Meat Industry Ambassador"
-          bgClass="bg-[#34d399]"
+          bgClass="bg-emerald-500"
         />
       </div>
     </div>

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Breadcrumb from "../ui/Breadcrumb";
 import LottiePlayer from "../ui/LottiePlayer";
-import GradientText from "../ui/GradientText";
 import { useEffect, useState } from "react";
 interface BannerProps {
   title?: string;
@@ -68,15 +67,14 @@ export default function Banner({
 
   if (!mounted) return null;
 
-  const gradientSettings = {
-    colors: gradientColors || ["#e3eeff", "#f3e7e9", "#e3eeff"],
-    animationSpeed: animationSpeed || 6,
-  };
 
   return (
     <section
-      className={`relative overflow-hidden  container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}
+      className={`relative overflow-hidden container-bg-color pt-28 pb-16 px-4 md:px-28 ${containerClass}`}
     >
+      {/* ✨ Aesthetic Pattern Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03] dark:opacity-[0.05] pointer-events-none"></div>
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--background)] to-transparent pointer-events-none"></div>
       {/* 📹 Background Video */}
       {showVideo && videoSrc && (
         <>
@@ -115,15 +113,11 @@ export default function Banner({
             </div>
           )}
 
-          <GradientText
-            colors={gradientSettings.colors}
-            animationSpeed={gradientSettings.animationSpeed}
-            className="text-4xl  md:text-5xl font-black pb-4 font-heading"
-          >
+          <h1 className="text-4xl md:text-5xl font-black pb-4 font-heading bg-clip-text text-transparent bg-gradient-to-r from-[#10b981] via-[#34d399] to-[#059669]">
             {title}
-          </GradientText>
+          </h1>
 
-          <p className="text-lg md:text-xl font-body text-white">
+          <p className="text-lg md:text-xl font-body text-slate-700 dark:text-emerald-50/80">
             {description}
           </p>
           {children && <div className="mt-6">{children}</div>}

@@ -38,7 +38,7 @@ export default function ResourceCard({
                 >
                   {icon}
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                   {title}
                 </h2>
               </div>
@@ -49,10 +49,10 @@ export default function ResourceCard({
               </p>
 
               {/* CTA Button */}
-              <div className="flex items-center gap-3 text-transparent bg-gradient-to-r from-orange-600 to-purple-600 bg-clip-text font-semibold group-hover:gap-5 transition-all duration-300">
+              <div className="flex items-center gap-3 text-transparent bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text font-semibold group-hover:gap-5 transition-all duration-300">
                 <span className="text-lg">Explore Now</span>
                 <svg
-                  className="w-6 h-6 text-orange-600 group-hover:translate-x-2 transition-transform duration-300"
+                  className="w-6 h-6 text-emerald-600 group-hover:translate-x-2 transition-transform duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

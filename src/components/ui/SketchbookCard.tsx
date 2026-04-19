@@ -54,7 +54,7 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
           <div className="absolute inset-0 bg-[#fdfaf3] rounded-2xl shadow-inner p-6 flex flex-col justify-between border border-slate-200 overflow-hidden">
             <div className="relative z-10 flex flex-col h-full">
               <div className="">
-                <span className="text-sm uppercase tracking-widest text-[#E67E22] font-bold">
+                <span className="text-sm uppercase tracking-widest text-primary font-bold">
                   Abstract
                 </span>
                 <p className="text-slate-600 text-justify  text-xs line-clamp-6 mb-4  leading-relaxed">
@@ -91,9 +91,9 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
 
             <div className="relative z-10">
-              <div className="w-12 h-1 bg-[#E67E22] mb-4" />
+              <div className="w-12 h-1 bg-primary mb-4" />
               <div className="space-y-1">
-                <span className="text-[#E67E22] font-mono text-xs tracking-[0.2em]">
+                <span className="text-primary font-mono text-xs tracking-[0.2em]">
                   {category}
                 </span>
                 <h2 className="text-md font-inter font-bold text-justify !text-white">
@@ -103,7 +103,7 @@ const SketchbookCard: React.FC<SketchbookCardProps> = ({
             </div>
 
             <div className="relative z-10 flex flex-col items-end justify-between border-t border-white/10 pt-4">
-              <div className="text-orange-400">
+              <div className="text-emerald-400">
                 <p className="text-[10px] uppercase tracking-widest mb-1">
                   Author
                 </p>

@@ -120,7 +120,7 @@ function CreativePricing({
             <div className="relative p-6">
               {tier.popular && (
                 <div
-                  className="absolute -top-2 -right-2 bg-amber-400 text-zinc-900 
+                  className="absolute -top-2 -right-2 bg-emerald-400 text-zinc-900 
                                      px-3 py-1 rounded-full rotate-12 text-sm border-2 border-zinc-900"
                 >
                   Popular!
@@ -180,11 +180,11 @@ function CreativePricing({
                   "hover:translate-x-[-2px] hover:translate-y-[-2px]",
                   tier.popular
                     ? [
-                        "bg-amber-400 text-zinc-900",
-                        "hover:bg-amber-300",
-                        "active:bg-amber-400",
-                        "dark:hover:bg-amber-300",
-                        "dark:active:bg-amber-400",
+                        "bg-emerald-400 text-zinc-900",
+                        "hover:bg-emerald-300",
+                        "active:bg-emerald-400",
+                        "dark:hover:bg-emerald-300",
+                        "dark:active:bg-emerald-400",
                       ]
                     : [
                         "bg-zinc-50 dark:bg-zinc-800",

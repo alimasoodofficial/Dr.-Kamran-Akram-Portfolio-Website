@@ -104,7 +104,7 @@ export default function AdminDashboard() {
       value: stats.bookings,
       icon: Calendar,
       href: "/admin/bookings",
-      color: "bg-orange-500",
+      color: "bg-emerald-500",
     },
   ];
 

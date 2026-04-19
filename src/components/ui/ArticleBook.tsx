@@ -112,7 +112,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
                 {/* {readTime} */}
                 <button
                   onClick={handleReadClick}
-                  className={`bg-[#E67E22] px-5 py-2 rounded-full text-xs font-bold text-white shadow-xl transform transition-all duration-500 delay-100 hover:bg-[#D35400] hover:text-white ${buttonOpacity}`}
+                  className={`bg-primary px-5 py-2 rounded-full text-xs font-bold text-white shadow-xl transform transition-all duration-500 delay-100 hover:bg-emerald-700 hover:text-white ${buttonOpacity}`}
                 >
                   Read More
                 </button>
@@ -137,7 +137,7 @@ const ArticleBook: React.FC<ArticleBookProps> = ({
           >
             <button
               onClick={handleReadClick}
-              className={`bg-[#E67E22] px-5 py-2 rounded-full text-xs font-bold text-white shadow-xl transform transition-all duration-500 delay-100 hover:bg-[#D35400] hover:text-white ${buttonOpacity}`}
+              className={`bg-primary px-5 py-2 rounded-full text-xs font-bold text-white shadow-xl transform transition-all duration-500 delay-100 hover:bg-emerald-700 hover:text-white ${buttonOpacity}`}
             >
               Read Article
             </button>

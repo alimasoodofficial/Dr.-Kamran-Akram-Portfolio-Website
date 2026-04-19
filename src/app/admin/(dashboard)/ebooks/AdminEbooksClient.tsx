@@ -80,7 +80,7 @@ export default function AdminEbooksClient({
           </Link>
           <Link
             href="/admin/ebooks/new"
-            className="flex items-center text-xs md:text-sm gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-orange-500/20"
+            className="flex items-center text-xs md:text-sm gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
           >
             <Plus className="w-3 h-3 md:w-5 md:h-5" />
             <span>Add Ebook</span>
@@ -96,7 +96,7 @@ export default function AdminEbooksClient({
             placeholder="Search ebooks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400"
           />
         </div>
       </div>

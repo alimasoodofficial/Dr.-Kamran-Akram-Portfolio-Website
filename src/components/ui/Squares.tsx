@@ -87,7 +87,24 @@ const Squares: React.FC<SquaresProps> = ({
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    let isVisible = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const currentlyVisible = entry.isIntersecting;
+        if (currentlyVisible && !isVisible) {
+          isVisible = true;
+          requestRef.current = requestAnimationFrame(updateAnimation);
+        } else if (!currentlyVisible && isVisible) {
+          isVisible = false;
+          if (requestRef.current) cancelAnimationFrame(requestRef.current);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(canvas);
+
     const updateAnimation = () => {
+      if (!isVisible) return;
       const effectiveSpeed = Math.max(speed, 0.1);
       switch (direction) {
         case 'right':
@@ -147,6 +164,7 @@ const Squares: React.FC<SquaresProps> = ({
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
+      observer.disconnect();
     };
   }, [direction, speed, borderColor, hoverFillColor, squareSize]);
 
