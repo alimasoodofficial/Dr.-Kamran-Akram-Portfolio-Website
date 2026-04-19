@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Breadcrumb() {
+export default function Breadcrumb({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
 
@@ -11,7 +11,7 @@ export default function Breadcrumb() {
     <nav className="text-sm mb-4">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link href="/" className="hover:underline text-blue-200 ">
+          <Link href="/" className={`hover:underline ${className || "text-green-800"}`}>
             Home
           </Link>
         </li>
@@ -20,7 +20,7 @@ export default function Breadcrumb() {
           const isLast = index === segments.length - 1;
 
           return (
-            <li key={href} className="flex items-center gap-2">
+            <li key={href} className={`flex items-center gap-2 ${className || "text-gray-500"}`}>
               <span>/</span>
               {isLast ? (
                 <span className="font-medium capitalize">
@@ -29,7 +29,7 @@ export default function Breadcrumb() {
               ) : (
                 <Link
                   href={href}
-                  className="hover:underline text-blue-600 capitalize"
+                  className={`hover:underline capitalize ${className || "text-blue-600"}`}
                 >
                   {segment.replace(/-/g, " ")}
                 </Link>

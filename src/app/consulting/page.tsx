@@ -14,8 +14,11 @@ export default function ConsultingPage() {
         showImage={false}
         showVideo={true}
         showBreadcrumb={true}
-        containerClass="!px-0 text-white "
-        bannerClass="backdrop-blur-lg p-5 bg-[#0b0c12]/40 transition-all duration-500 ease-in-out shadow-[0_0_20px_rgba(0,0,0,0.25)] rounded-2xl "
+        containerClass="!px-0  "
+        bannerClass="backdrop-blur-lg p-5  bg-[#0b0c12]/40 transition-all duration-500 ease-in-out shadow-[0_0_20px_rgba(0,0,0,0.25)] rounded-2xl "
+        titleClass="!text-white"
+        descriptionClass="text-white/90"
+        breadcrumbClass="text-white"
         videoSrc="https://www.pexels.com/download/video/8188999/"
         videoOverlay=""
         videoProps={{ autoPlay: true, loop: true, muted: true }}
@@ -36,7 +39,7 @@ export default function ConsultingPage() {
       </section>
 
       {/* 💬 How It Works */}
-      <section className="w-full bg-gray-50 dark:bg-gray-900 py-16  text-center pr-4 md:px-0">
+      <section className="w-full  py-16  text-center pr-4 md:px-0">
         <h2 className="text-5xl font-heading font-bold mb-8 text-gray-900 dark:text-white">
           💬 How It Works
         </h2>

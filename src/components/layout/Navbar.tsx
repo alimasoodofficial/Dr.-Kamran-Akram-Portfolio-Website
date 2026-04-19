@@ -63,7 +63,7 @@ export default function Navbar() {
               className="invisible opacity-0 group-hover:visible group-hover:opacity-100
               transition-all duration-300 ease-in-out
               absolute top-full left-0 mt-4 
-              bg-white dark:bg-[#1a1b26] border border-gray-100 dark:border-gray-700
+              bg-white dark:bg-gradient-to-br dark:from-teal-950 dark:to-teal-900 border border-gray-100 dark:border-gray-700
               rounded-2xl shadow-2xl backdrop-blur-lg p-6 z-50 min-w-[800px]"
             >
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
@@ -221,7 +221,7 @@ export default function Navbar() {
 
           <Link
             href="/newsletter"
-            className="group/sub hidden lg:flex items-center relative overflow-hidden px-8 py-2 rounded-3xl bg-primary text-white font-black tracking-wide hover:bg-primary-dark transition-all duration-300 hover:scale-105 shadow-lg shadow-primary/20"
+            className="group/sub hidden lg:flex items-center relative overflow-hidden px-8 py-2 rounded-3xl bg-gradient-to-b from-emerald-500 to-teal-800 text-white font-black tracking-wide hover:from-emerald-600 hover:to-teal-900 transition-all duration-300 hover:scale-105 shadow-lg shadow-emerald-500/25"
           >
             <span className="relative z-10">Subscribe</span>
             <Image
@@ -402,7 +402,7 @@ export default function Navbar() {
             <Button
               href="/newsletter"
               onClick={() => setIsOpen(false)}
-              className="w-full  tracking-wide text-white text-center text-sm font-black py-3"
+              className="w-full tracking-wide text-white text-center text-sm font-black py-3 !bg-gradient-to-b !from-emerald-500 !to-teal-800 hover:!from-emerald-600 hover:!to-teal-900 shadow-emerald-500/25"
             >
               Subscribe
             </Button>

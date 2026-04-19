@@ -20,7 +20,7 @@ export default function FreeResourcesPage() {
         "Explore my published research articles and academic publications. Access peer-reviewed papers on various topics including data science, microbiology, and educational research. Stay updated with the latest findings and scholarly contributions.",
       href: "/free-resources/articles",
       icon: <FaNewspaper className="w-8 h-8" />,
-      imagePlaceholder: "ARTICLE_IMAGE_PLACEHOLDER",
+      imagePlaceholder: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=1470&auto=format&fit=crop",
       gradient: "from-emerald-500 via-green-500 to-teal-500",
     },
     {
@@ -29,7 +29,7 @@ export default function FreeResourcesPage() {
         "Download comprehensive e-books and practical guides designed to help you master complex topics. From technical tutorials to professional development resources, find valuable content to accelerate your learning journey.",
       href: "/coming-soon",
       icon: <FaBook className="w-8 h-8" />,
-      imagePlaceholder: "EBOOK_IMAGE_PLACEHOLDER",
+      imagePlaceholder: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1374&auto=format&fit=crop",
       gradient: "from-blue-500 via-purple-500 to-indigo-500",
     },
     {
@@ -38,7 +38,7 @@ export default function FreeResourcesPage() {
         "Access a curated collection of tools, templates, and resources to enhance your productivity. Discover utilities, calculators, and frameworks that simplify your work and boost efficiency in your projects.",
       href: "/coming-soon",
       icon: <FaTools className="w-8 h-8" />,
-      imagePlaceholder: "TOOLS_IMAGE_PLACEHOLDER",
+      imagePlaceholder: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop",
       gradient: "from-green-500 via-teal-500 to-cyan-500",
     },
   ];

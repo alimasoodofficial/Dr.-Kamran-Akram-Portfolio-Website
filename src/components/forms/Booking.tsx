@@ -257,7 +257,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className=" bg-gradient-to-br from-green-100 via-white to-green-50 dark:from-gray-900 dark:via-green-900 dark:to-teal-900">
+    <div className=" ">
       <Toaster position="top-center" />
 
       <div className="max-w-7xl mx-auto py-12 ">
@@ -372,7 +372,7 @@ export default function BookingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 h-fit sticky top-8"
+            className="bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 h-fit sticky top-8"
           >
             <AnimatePresence mode="wait">
               {bookingSuccess ? (

@@ -147,11 +147,12 @@ export default function GradientText({
         </motion.span>
       )}
       <motion.span
-        className="inline-block relative z-2 text-transparent bg-clip-text"
+        className="inline-block relative z-2 text-transparent bg-clip-text py-[0.1em] -my-[0.1em]"
         style={{
           ...gradientStyle,
           backgroundPosition,
           WebkitBackgroundClip: "text",
+          backgroundClip: "text",
         }}
       >
         {children}

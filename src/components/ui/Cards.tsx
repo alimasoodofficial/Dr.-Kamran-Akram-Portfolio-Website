@@ -21,7 +21,7 @@ export default function Cards({
   return (
     <div 
       className={`group green-card hover:bg-secondary dark:hover:bg-primary/10 transition-all duration-500 
-      flex flex-col items-start gap-4 px-6 py-10 rounded-2xl shadow-sm ${className}`}
+      flex flex-col items-start gap-4 px-6 py-10 rounded-2xl ${className}`}
     >
       {/* Font Awesome Icon */}
       {iconClassName && (

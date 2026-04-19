@@ -9,14 +9,14 @@
   --font-inter: var(--font-inter), sans-serif;
 
   /* 🎨 Modern Green Theme Colors */
-  --color-primary: #10b981; 
+  --color-primary: #10b981;
   --color-primary-dark: #059669;
   --color-secondary: #f0fdf4;
   --color-accent: #34d399;
-  
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   --color-green-soft: #f0fdf4;
   --color-green-deep: #064e3b;
   --color-green-glow: rgba(16, 185, 129, 0.2);
@@ -26,20 +26,38 @@
   --animate-shake: shake 0.2s ease-in-out 0s 2;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-4px);
+    }
+
+    75% {
+      transform: translateX(4px);
+    }
   }
 }
 
 /* 🌞 Modern Green Light Theme */
 :root {
-  --background: #f8faf9; /* Near white with green shade */
+  --background: #f8faf9;
+  /* Near white with green shade */
   --foreground: #022c22;
   --color-heading: #111827;
   --primary: #10b981;
@@ -52,7 +70,8 @@
 
 /* 🌙 Modern Green Dark Theme */
 .dark {
-  --background: #010403; /* Near-black green background */
+  --background: #010403;
+  /* Near-black green background */
   --foreground: #ecfdf5;
   --color-heading: #f9fafb;
   --primary: #10b981;
@@ -64,41 +83,88 @@
 }
 
 /* 🛠 Newly Created Modern Green Classes */
-.green-bg-main { background-color: var(--background); }
-.green-text-main { color: var(--foreground); }
-.green-text-primary { color: var(--primary); }
-.green-bg-primary { background-color: var(--primary); color: white; }
-.green-bg-secondary { background-color: var(--secondary); color: var(--foreground); }
-.green-border { border: 1px solid var(--border); }
+.green-bg-main {
+  background-color: var(--background);
+}
+
+.green-text-main {
+  color: var(--foreground);
+}
+
+.green-text-primary {
+  color: var(--primary);
+}
+
+.green-bg-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.green-bg-secondary {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.green-border {
+  border: 1px solid var(--border);
+}
+
 .green-card {
   background-color: var(--card);
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+  /* Light mode: Modern drop shadow */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
+
+.dark .green-card {
+  /* Dark mode: Green glow effect */
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
 .green-card:hover {
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
-  transform: translateY(-2px);
+  transform: translateY(-5px);
+  /* Light mode hover: Intensify shadow */
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15), 0 15px 20px -10px rgba(0, 0, 0, 0.1);
 }
+
+.dark .green-card:hover {
+  /* Dark mode hover: Intensify green glow */
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.4), 0 0 10px rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
 .green-glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(16, 185, 129, 0.1);
 }
+
 .dark .green-glass {
   background: rgba(6, 20, 16, 0.6);
 }
 
 /* Base Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--color-heading);
 }
 
 /* ✅ Global Body */
 body {
   @apply font-body antialiased;
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, #dcfce7 0%, transparent 45%),
+    radial-gradient(circle at bottom right, #dcfce7 0%, transparent 45%),
+    var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
   transition: background-color 0.4s ease, color 0.4s ease;
 }
@@ -119,22 +185,27 @@ body {
 /* 🪄 Card Style (for dark + light) */
 .card {
   @apply rounded-2xl transition-shadow duration-300;
-  background-color: #d1fae5; /* Pale Sage */
+  background-color: #d1fae5;
+  /* Pale Sage */
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
   transition-property:
     color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-duration: 500ms;
   transition-timing-function: ease-in-out;
 }
+
 .muted {
-  color: rgba(6, 78, 59, 0.7); /* 70% of Heading Color */
+  color: rgba(6, 78, 59, 0.7);
+  /* 70% of Heading Color */
 }
+
 .dark .card {
   background-color: var(--color-dark-card);
   border: 1px solid var(--color-dark-border);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   color: white;
 }
+
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -179,11 +250,14 @@ body {
 .bouncer {
   animation: upDown 2s infinite ease-in-out;
 }
+
 @keyframes upDown {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -192,11 +266,13 @@ body {
 canvas {
   max-width: 100vw !important;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -212,9 +288,11 @@ canvas {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -264,18 +342,14 @@ canvas {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 
-  mask-image: radial-gradient(
-    circle var(--size) at var(--x) var(--y),
-    transparent 0%,
-    transparent 60%,
-    black 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle var(--size) at var(--x) var(--y),
-    transparent 0%,
-    transparent 60%,
-    black 100%
-  );
+  mask-image: radial-gradient(circle var(--size) at var(--x) var(--y),
+      transparent 0%,
+      transparent 60%,
+      black 100%);
+  -webkit-mask-image: radial-gradient(circle var(--size) at var(--x) var(--y),
+      transparent 0%,
+      transparent 60%,
+      black 100%);
 }
 
 .Scard {
@@ -286,6 +360,7 @@ canvas {
     transform 0.3s,
     box-shadow 0.3s;
 }
+
 .dark .Scard {
   background: #064e3b;
   box-shadow: 20px 20px 0 #10b981;
@@ -295,19 +370,15 @@ canvas {
   0% {
     transform: translateX(0);
   }
+
   100% {
-    transform: translateX(-50%); /* Adjust based on the number of copies */
+    transform: translateX(-50%);
+    /* Adjust based on the number of copies */
   }
 }
 
 .glassy {
-  @apply backdrop-blur-xl backdrop-saturate-150
-      bg-white/10 dark:bg-[#0b0c12]/40
-      border border-white/10
-      text-[var(--foreground)]
-      rounded-2xl
-      shadow-[0_0_20px_rgba(0,0,0,0.25)]
-      transition-all duration-500;
+  @apply backdrop-blur-xl backdrop-saturate-150 bg-white/10 dark:bg-[#0b0c12]/40 border border-white/10 text-[var(--foreground)] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.25)] transition-all duration-500;
 }
 
 .animate-infinite-scroll {
@@ -325,6 +396,7 @@ canvas {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -334,6 +406,7 @@ canvas {
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -353,6 +426,7 @@ canvas {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -363,12 +437,15 @@ canvas {
 .animate-fadeInUp {
   animation: fadeInUp 0.6s ease-out forwards;
 }
+
 @layer utilities {
+
   /* The Keyframes */
   @keyframes scroll-left {
     0% {
       transform: translateX(0);
     }
+
     100% {
       transform: translateX(-50%);
     }
@@ -378,6 +455,7 @@ canvas {
     0% {
       transform: translateX(-50%);
     }
+
     100% {
       transform: translateX(0);
     }
@@ -402,6 +480,7 @@ canvas {
   from {
     transform: perspective(1000px) rotateY(-360deg);
   }
+
   to {
     transform: perspective(1000px) rotateY(0deg);
   }
@@ -411,9 +490,11 @@ canvas {
   10% {
     filter: brightness(1);
   }
+
   50% {
     filter: brightness(0.3);
   }
+
   90% {
     filter: brightness(1);
   }
@@ -428,14 +509,16 @@ canvas {
   transform: perspective(1000px);
   animation: autoRun3d 20s linear infinite;
   will-change: transform;
-  --radius: 180px; /* Default mobile radius */
+  --radius: 180px;
+  /* Default mobile radius */
 }
 
 @media (min-width: 768px) {
   .card-3d {
     width: 500px;
     height: 300px;
-    --radius: 320px; /* PC radius */
+    --radius: 320px;
+    /* PC radius */
   }
 }
 
@@ -475,4 +558,75 @@ canvas {
 .card-3d:hover,
 .card-3d:hover div {
   animation-play-state: paused !important;
+}
+
+/* --- Bento Card Premium Gradients --- */
+.bento-card-green {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background-image:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
+}
+
+.dark .bento-card-green {
+  background: linear-gradient(135deg, #064e3b 0%, #010403 100%);
+  background-image:
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  box-shadow: none;
+}
+
+.bento-card-teal {
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  background-image:
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(20, 184, 166, 0.15);
+}
+
+.dark .bento-card-teal {
+  background: linear-gradient(135deg, #134e4a 0%, #010403 100%);
+  background-image:
+    radial-gradient(circle at bottom left, rgba(20, 184, 166, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #134e4a 0%, #042f2e 100%);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: none;
+}
+
+.bento-card-emerald {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  background-image:
+    radial-gradient(circle at center top, rgba(255, 255, 255, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
+}
+
+.dark .bento-card-emerald {
+  background: linear-gradient(135deg, #065f46 0%, #011c16 100%);
+  background-image:
+    radial-gradient(circle at center top, rgba(16, 185, 129, 0.1) 0%, transparent 60%),
+    linear-gradient(135deg, #065f46 0%, #011c16 100%);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  box-shadow: none;
+}
+
+.bento-card-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #010403 100%);
+  background-image:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, #0f172a 0%, #010403 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .bento-card-dark {
+  background: linear-gradient(135deg, #010403 0%, #000000 100%);
+  background-image:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #010403 0%, #000000 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }

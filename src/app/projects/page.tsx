@@ -24,7 +24,7 @@ export default function ProjectsEntryPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background transition-colors duration-300 overflow-hidden">
+    <main className="min-h-screen  transition-colors duration-300 overflow-hidden">
       {/* Hero Section */}
      
 
@@ -60,7 +60,7 @@ export default function ProjectsEntryPage() {
       </div>
 
       {/* Practical Projects & Ventures List */}
-      <section className="relative py-20 bg-muted/30 dark:bg-muted/5">
+      <section className="relative py-20 ">
         <div className="container mx-auto px-6 mb-16 text-center">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Detailed Case Studies</h2>
           <p className="text-muted-foreground text-lg">Exploring the impact and implementation of key initiatives.</p>

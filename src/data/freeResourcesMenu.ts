@@ -17,7 +17,7 @@ export const freeResources: FreeResourceItem[] = [
   {
     title: "Newsletter",
     description: "Weekly insights to boost your learning.",
-    href: "/coming-soon",
+    href: "/newsletter",
     icon: "fa-solid fa-envelope",
   },
   {

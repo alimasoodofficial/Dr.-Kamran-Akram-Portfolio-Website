@@ -5,13 +5,13 @@ import GradientText from './GradientText'
 function HelpCardsHome() {
   return (
     <div>
-      <section className="flex flex-col md:flex-row align-center justify-center w-full py-20 mx-auto gap-10 bg-gradient-to-br from-secondary via-background to-secondary dark:from-background dark:via-card dark:to-background px-6 md:px-12 border-y green-border">
+      <section className="flex flex-col md:flex-row align-center justify-center w-full py-20 mx-auto gap-10 px-6 md:px-12 border-y green-border">
         <div className="flex flex-col gap-5 duration-500">
           <h2 className="font-heading text-4xl md:text-7xl mb-12 green-text-main">
             How Can <br />{" "}
             <span>
               <GradientText
-                colors={["#10b981", "#34d399", "#dcfce7"]}
+                colors={["#48cea1ff", "#34d399", "#039d7eff"]}
                 animationSpeed={6}
                 className=" "
               >
@@ -24,14 +24,14 @@ function HelpCardsHome() {
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
             iconClassName="fa-solid fa-chalkboard-user"
             link="/consulting"
-            className="hover:shadow-lg !bg-primary !text-white"
+            className="!bg-primary !text-white"
           />
           <Cards
             title="Projects"
             description="I help creators and entrepreneurs build scalable online businesses through practical strategies."
             iconClassName="fa-solid fa-diagram-project"
             link="/projects"
-            className="hover:shadow-lg"
+            className=""
           />
         </div>
 
@@ -41,7 +41,7 @@ function HelpCardsHome() {
             description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
             iconClassName="fa-solid fa-play"
             link="free-resources"
-            className="hover:shadow-lg"
+            className=""
           />
 
           <Cards
@@ -49,13 +49,13 @@ function HelpCardsHome() {
             description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
             iconClassName="fa-solid fa-graduation-cap"
             link="#"
-            className="hover:shadow-lg !bg-primary !text-white"
+            className="!bg-primary !text-white"
           />
           <Cards
             title="Website Newsletter"
             iconClassName="fa-solid fa-envelope"
             link="/newsletter"
-            className="hover:shadow-lg"
+            className=""
             buttonText="Subscribe"
           />
         </div>

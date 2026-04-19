@@ -55,7 +55,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
         }`}
       >
         <div className="p-6 border-b border-slate-800 flex items-center justify-center">
-          <h4 className="text-2xl font-bold !bg-white bg-clip-text text-transparent">
+          <h4 className="text-2xl font-bold !text-white">
             Admin Panel
           </h4>
         </div>
@@ -71,7 +71,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                    ? "bg-teal-600 text-white shadow-lg shadow-teal-500/20"
                     : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
               >
@@ -98,7 +98,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-slate-400 bg-red-600/50 text-white hover:bg-red-500/10 hover:text-red-500 transition-colors cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Sign Out</span>

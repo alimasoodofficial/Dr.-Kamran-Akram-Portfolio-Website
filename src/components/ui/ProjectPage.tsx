@@ -348,7 +348,7 @@ export const ProjectBanner = () => (
 );
 
 export const ProjectsPage = () => (
-  <div className="bg-background">
+  <div className="">
     <div id="projects">
       {PROJECTS_DATA.map((project) => (
         <ProjectSection key={project.id} project={project} />

@@ -111,10 +111,7 @@ class Media {
         varying vec2 vUv;
         void main() {
           vUv = uv;
-          vec3 p = position;
-          // Distortion effect based on movement speed
-          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragment: `
@@ -201,8 +198,6 @@ class Media {
     }
 
     this.speed = scroll.current - scroll.last;
-    this.program.uniforms.uTime.value += 0.04;
-    this.program.uniforms.uSpeed.value = this.speed;
 
     const planeOffset = this.plane.scale.x / 2;
     const viewportOffset = this.viewport.width / 2;
@@ -400,6 +395,10 @@ class App {
 
   update() {
     if (this.isPaused) return;
+
+    if (!this.isDown) {
+      this.scroll.target += (this.scrollSpeed * 0.01);
+    }
 
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';

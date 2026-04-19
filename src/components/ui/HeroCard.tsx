@@ -111,7 +111,7 @@ export const ImageCard = ({
 
 // --- 4. Center Stat Card (Action) ---
 export const CenterStatCard = () => (
-  <CardWrapper className="bg-[#042f2e] flex flex-col justify-center items-center text-center text-white">
+  <CardWrapper className="bento-card-dark flex flex-col justify-center items-center text-center text-white">
     <h3 className="text-4xl font-bold mb-1 !text-white">10+</h3>
     <p className="font-medium mb-6 text-white/90">Years of Experience</p>
     <div className="bg-white/10 hover:bg-white/20 transition-colors w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">

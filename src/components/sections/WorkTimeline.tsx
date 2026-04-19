@@ -33,7 +33,7 @@ export default function WorkTimeline() {
         
         accentColorClass=" card"
         // accentBgClass="bg-blue-900"
-        containerClassName="gradient-to-b from-[#fdf2e9] via-[#04ec8f] to-[#e9fdf2] dark:bg-gray-900"
+        containerClassName="gradient-to-b from-[#fdf2e9] via-[#04ec8f] to-[#e9fdf2] "
       />
     </main>
   );

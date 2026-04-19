@@ -34,7 +34,7 @@ export default async function NewsletterPage() {
   const newsletters = await getPublishedNewsletters();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-300">
+    <div className="min-h-screen pb-24 transition-colors duration-300">
       <Banner
         title="Newsletter"
         description="Stay updated with the latest insights and tech trends from Dr. Kamran Akram."
