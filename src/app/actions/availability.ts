@@ -124,8 +124,7 @@ export async function removeBlockedDate(id: string) {
 export async function saveDateOverride(
   date: string,
   type: "standard" | "off" | "custom",
-  startTime?: string,
-  endTime?: string
+  customRangesString?: string
 ) {
   if (!(await verifyAdminSession())) {
     return { success: false, error: "Unauthorized access: Admin privileges required." };
@@ -142,7 +141,7 @@ export async function saveDateOverride(
     return { success: true };
   }
 
-  const reason = type === "off" ? "OFF" : `CUSTOM:${startTime}-${endTime}`;
+  const reason = type === "off" ? "OFF" : `CUSTOM:${customRangesString}`;
 
   const { data: existing } = await supabase
     .from("blocked_dates")
@@ -186,37 +185,6 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
     return []; 
   }
 
-  let start_time = "";
-  let end_time = "";
-  let is_override_enabled = false;
-
-  // If there is a custom hours override, parse it
-  if (block && block.reason && block.reason.startsWith("CUSTOM:")) {
-    const timesPart = block.reason.substring(7); // e.g. "09:00-12:30"
-    const [customStart, customEnd] = timesPart.split("-");
-    if (customStart && customEnd) {
-      start_time = customStart;
-      end_time = customEnd;
-      is_override_enabled = true;
-    }
-  }
-
-  // If no custom override exists, fallback to standard weekly schedule
-  if (!is_override_enabled) {
-    const { data: availability, error: availError } = await supabase
-      .from("availability")
-      .select("id, day_of_week, start_time, end_time, is_enabled")
-      .eq("day_of_week", dayOfWeek)
-      .single();
-
-    if (availError || !availability || availability.is_enabled === false) {
-      return [];
-    }
-
-    start_time = availability.start_time;
-    end_time = availability.end_time;
-  }
-
   const startOfDayObj = new Date(year, month - 1, day, 0, 0, 0);
   const endOfDayObj   = new Date(year, month - 1, day, 23, 59, 59);
 
@@ -232,8 +200,68 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
     return [];
   }
 
-  const [sH, sM] = start_time.split(":").map(Number);
-  const [eH, eM] = end_time.split(":").map(Number);
+  // If there is a custom hours override (possibly with multiple ranges), parse it
+  if (block && block.reason && block.reason.startsWith("CUSTOM:")) {
+    const rangesPart = block.reason.substring(7); // e.g. "09:00-11:00,14:00-16:00"
+    const ranges = rangesPart.split(",");
+    
+    const availableSlots: any[] = [];
+    
+    for (const range of ranges) {
+      const [customStart, customEnd] = range.split("-");
+      if (!customStart || !customEnd) continue;
+
+      const [sH, sM] = customStart.split(":").map(Number);
+      const [eH, eM] = customEnd.split(":").map(Number);
+
+      const workStart = new Date(year, month - 1, day, sH, sM);
+      const workEnd   = new Date(year, month - 1, day, eH, eM);
+
+      let currentSlotStart = workStart;
+
+      while (isBefore(currentSlotStart, workEnd)) {
+        const currentSlotEnd = addMinutes(currentSlotStart, durationMinutes);
+
+        if (isBefore(workEnd, currentSlotEnd)) break;
+
+        const isOverlapping = (existingBookedSlots || []).some(slot => {
+          const slotStart = new Date(slot.start_time);
+          const slotEnd   = new Date(slot.end_time);
+          return isBefore(currentSlotStart, slotEnd) && isBefore(slotStart, currentSlotEnd);
+        });
+
+        const startTimeStr = format(currentSlotStart, "HH:mm:ss");
+        const endTimeStr   = format(currentSlotEnd,   "HH:mm:ss");
+
+        availableSlots.push({
+          id: startTimeStr,
+          date: dateString,
+          start_time: startTimeStr,
+          end_time:   endTimeStr,
+          duration:   durationMinutes,
+          is_booked:  isOverlapping,
+        });
+
+        currentSlotStart = addMinutes(currentSlotStart, 30);
+      }
+    }
+    
+    return availableSlots;
+  }
+
+  // Fallback to standard weekly schedule
+  const { data: availability, error: availError } = await supabase
+    .from("availability")
+    .select("id, day_of_week, start_time, end_time, is_enabled")
+    .eq("day_of_week", dayOfWeek)
+    .single();
+
+  if (availError || !availability || availability.is_enabled === false) {
+    return [];
+  }
+
+  const [sH, sM] = availability.start_time.split(":").map(Number);
+  const [eH, eM] = availability.end_time.split(":").map(Number);
 
   const workStart = new Date(year, month - 1, day, sH, sM);
   const workEnd   = new Date(year, month - 1, day, eH, eM);
