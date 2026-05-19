@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { AvailabilitySlot, BlockedDate, getTimeSlots } from "@/app/actions/availability";
 import { createBooking, Booking } from "@/app/actions/bookings";
+import { createConsultingCheckoutSession } from "@/app/actions/payments";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -123,28 +124,54 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
       return;
     }
 
+    const packageName = selectedPlan?.name || (formData.duration === 60 ? "Deep-Dive" : "Quick-Fire");
+
     setIsSubmitting(true);
     try {
-      const result = await createBooking({
-        full_name: formData.fullName,
-        email: formData.email,
-        phone: "",
-        message: formData.notes,
-        date: format(selectedDate, "yyyy-MM-dd"),
-        time_slot: selectedTime,
-        platform: formData.platform,
-        duration: formData.duration,
-        service: "Professional Consultation",
-      });
-
-      if (result.success) {
-        setStep("success");
-      } else {
-        toast({
-          title: "Booking Failed",
-          description: result.error || "Something went wrong.",
-          variant: "destructive",
+      if (packageName === "Quick Chat") {
+        const result = await createBooking({
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: "",
+          message: formData.notes,
+          date: format(selectedDate, "yyyy-MM-dd"),
+          time_slot: selectedTime,
+          platform: formData.platform,
+          duration: formData.duration,
+          service: "Professional Consultation",
         });
+
+        if (result.success) {
+          setStep("success");
+        } else {
+          toast({
+            title: "Booking Failed",
+            description: result.error || "Something went wrong.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        const origin = window.location.origin;
+        const result = await createConsultingCheckoutSession({
+          fullName: formData.fullName,
+          email: formData.email,
+          platform: formData.platform,
+          duration: formData.duration,
+          notes: formData.notes,
+          date: format(selectedDate, "yyyy-MM-dd"),
+          time_slot: selectedTime,
+          packageName,
+        }, origin);
+
+        if (result.success && result.url) {
+          window.location.href = result.url;
+        } else {
+          toast({
+            title: "Payment Error",
+            description: result.error || "Could not initiate payment session.",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       toast({
