@@ -10,16 +10,23 @@ export interface TimeSlot {
 
 export interface Booking {
   id: string;
-  slot_id: string;
+  slot_id: string | null;
   user_name: string;
   user_email: string;
   country: string;
+  meeting_platform: "Zoom" | "Google Meet" | "Meeting";
+  duration_minutes: 30 | 60;
+  meeting_link: string | null;
+  status: "pending" | "confirmed" | "cancelled";
+  start_time: string;
+  end_time: string;
+  message: string | null;
   notes: string | null;
   created_at: string;
 }
 
 export interface BookingWithSlot extends Booking {
-  time_slots: TimeSlot;
+  time_slots?: TimeSlot;
 }
 
 // API request/response types

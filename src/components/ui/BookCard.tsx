@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./Button2";
+import { Button } from "./shadcn/button";
 interface BookCardProps {
   title?: string;
   imageSrc?: string;

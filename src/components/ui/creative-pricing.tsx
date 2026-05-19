@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/Button2";
+import { Button } from "@/components/ui/shadcn/button";
 import { Check, Pencil, Star, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";

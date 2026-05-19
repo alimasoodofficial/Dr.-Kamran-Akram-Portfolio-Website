@@ -5,12 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const folder = (formData.get("folder") as string) || "heroes";
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const url = await uploadHeroImage(file);
+    const url = await uploadHeroImage(file, folder);
     return NextResponse.json({ url });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Upload error";

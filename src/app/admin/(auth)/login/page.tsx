@@ -30,7 +30,8 @@ export default function AdminLogin() {
           });
 
           if (res.ok) {
-            router.replace("/admin/gallery");
+            document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=604800; SameSite=Lax; Secure`;
+            router.replace("/admin");
             return;
           }
         }
@@ -65,6 +66,7 @@ export default function AdminLogin() {
       });
 
       if (!res.ok) {
+        document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         let errorMsg = `Not authorized as admin (${res.status})`;
         try {
           const body = await res.json();
@@ -74,11 +76,12 @@ export default function AdminLogin() {
         throw new Error(errorMsg);
       }
       
+      document.cookie = `sb-access-token=${token}; path=/; max-age=604800; SameSite=Lax; Secure`;
       toast.success("Welcome back, Dr. Kamran!", { 
         duration: 3000,
         icon: '👋' 
       });
-      router.push("/admin/gallery");
+      router.push("/admin");
     } catch (error: any) {
       setErr(error.message);
       toast.error(error.message);
@@ -108,19 +111,19 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#05060f] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/[0.05] blur-[120px] rounded-full"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-purple-600/[0.05] blur-[120px] rounded-full"></div>
       </div>
 
       {/* Back to Website */}
       <Link 
         href="/"
-        className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors group z-50 text-sm font-medium"
+        className="absolute top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors group z-50 text-sm font-medium"
       >
-        <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:bg-white/10 transition-colors">
+        <div className="p-2 bg-white rounded-lg border border-slate-200 group-hover:border-slate-300 transition-colors shadow-sm">
           <ArrowLeft className="w-4 h-4" />
         </div>
         <span>Back to Website</span>
@@ -133,21 +136,21 @@ export default function AdminLogin() {
         className="w-full max-w-md relative pt-12 md:pt-0"
       >
         {/* Decorative Ring */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl blur opacity-10"></div>
         
-        <div className="relative bg-[#0b0c14]/80 backdrop-blur-xl border border-white/10 p-10 rounded-3xl shadow-2xl">
+        <div className="relative bg-white border border-slate-200 p-10 rounded-3xl shadow-xl shadow-blue-900/5">
           <div className="text-center mb-10">
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
-              className="inline-block p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl border border-white/5 mb-6"
+              className="inline-block p-4 bg-blue-50 rounded-2xl border border-blue-100 mb-6 shadow-sm"
             >
-              <Lock className="w-8 h-8 text-blue-400" />
+              <Lock className="w-8 h-8 text-blue-600" />
             </motion.div>
-            <h2 className="text-3xl font-bold tracking-tight font-inter !text-white mb-2">
+            <h2 className="text-3xl font-bold tracking-tight font-inter text-slate-900 mb-2">
               Management Portal
             </h2>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-500 text-sm">
               Enter your credentials to access the dashboard
             </p>
           </div>
@@ -159,9 +162,9 @@ export default function AdminLogin() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3"
+                  className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3"
                 >
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                   {err}
                 </motion.div>
               )}
@@ -171,7 +174,7 @@ export default function AdminLogin() {
               {/* Email Field */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                  <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                 </div>
                 <input
                   type="email"
@@ -179,14 +182,14 @@ export default function AdminLogin() {
                   placeholder="Admin Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
+                  className="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all"
                 />
               </div>
 
               {/* Password Field */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                  <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -194,17 +197,18 @@ export default function AdminLogin() {
                   placeholder="Access Key"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-12 pr-12 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-mono"
+                  className="block w-full pl-12 pr-14 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-white transition-colors"
+                  className="absolute inset-y-2 right-2 px-3 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 group/eye"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <EyeOff className="h-5 w-5 group-hover/eye:scale-110 transition-transform" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <Eye className="h-5 w-5 group-hover/eye:scale-110 transition-transform" />
                   )}
                 </button>
               </div>
@@ -213,7 +217,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="group relative w-full flex items-center justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.2)] hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="group relative w-full flex items-center justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoggingIn ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -226,8 +230,8 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          <div className="mt-8 text-center pt-8 border-t border-white/5">
-            <p className="text-slate-500 text-xs uppercase tracking-widest font-semibold italic">
+          <div className="mt-8 text-center pt-8 border-t border-slate-100">
+            <p className="text-slate-400 text-xs uppercase tracking-widest font-semibold italic">
               Authorized Personnel Only
             </p>
           </div>
@@ -236,3 +240,4 @@ export default function AdminLogin() {
     </div>
   );
 }
+

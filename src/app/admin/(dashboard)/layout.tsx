@@ -35,14 +35,18 @@ export default function AdminDashboardLayout({
         });
 
         if (!res.ok) {
+          document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           await supabaseClient.auth.signOut();
           router.replace("/admin/login");
           return;
         }
 
+        // Set the access token cookie for server actions/routes
+        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=604800; SameSite=Lax; Secure`;
         setIsLoading(false);
       } catch (error) {
         console.error("Auth check failed:", error);
+        document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         router.replace("/admin/login");
       }
     }
@@ -64,11 +68,17 @@ export default function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 relative">
+    <div className="min-h-screen bg-slate-50 relative text-slate-900">
+      {/* Background Decor */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/[0.03] blur-[120px] rounded-full"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-purple-600/[0.03] blur-[120px] rounded-full"></div>
+      </div>
+
       {/* Mobile Top Bar */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-slate-900 text-white fixed top-0 w-full z-40">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
-          Admin Panel
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-xl border-b border-slate-200 text-slate-900 fixed top-0 w-full z-40">
+        <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          Admin Portal
         </h2>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}

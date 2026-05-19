@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseService } from "@/lib/supabaseService";
+import { cookies } from "next/headers";
 
 type AdminValidationResult =
   | { ok: true; userId: string }
@@ -38,5 +39,30 @@ export async function validateAdminRequest(
   }
 
   return { ok: true, userId: data.user.id };
+}
+
+export async function verifyAdminSession(): Promise<boolean> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sb-access-token")?.value;
+    if (!token) return false;
+
+    const supabaseService = getSupabaseService();
+    const { data, error } = await supabaseService.auth.getUser(token);
+    if (error || !data.user) return false;
+
+    const { data: profile, error: profileErr } = await supabaseService
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profileErr || !profile?.is_admin) return false;
+
+    return true;
+  } catch (e) {
+    console.error("Error in verifyAdminSession:", e);
+    return false;
+  }
 }
 

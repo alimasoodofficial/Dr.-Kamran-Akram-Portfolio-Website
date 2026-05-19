@@ -3,11 +3,37 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, ChevronRight, ArrowLeft, Mail } from "lucide-react";
+import { 
+    CalendarDays, 
+    ChevronRight, 
+    ArrowLeft, 
+    Mail, 
+    ExternalLink, 
+    Share2, 
+    Twitter, 
+    Linkedin, 
+    Link2, 
+    Clock,
+    User
+} from "lucide-react";
+import ShareButtons from "@/components/newsletter/ShareButtons";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+type SectionType = "paragraph" | "list" | "image" | "embed";
+
+interface NewsletterSection {
+    id: string;
+    type: SectionType;
+    heading: string;
+    description: string;
+    imageUrl?: string;
+    linkUrl?: string;
+    embedCode?: string;
+    buttons?: { label: string; url: string }[];
+}
+
 type Newsletter = {
   id: string;
   title: string;
@@ -51,7 +77,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: newsletter.title,
+    title: `${newsletter.title} | Newsletter`,
     description: newsletter.subtitle ?? `Read the latest newsletter from Dr. Kamran Akram.`,
     openGraph: {
       title: newsletter.title,
@@ -62,13 +88,81 @@ export async function generateMetadata({
       type: "article",
       publishedTime: newsletter.updated_at,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: newsletter.title,
-      description: newsletter.subtitle ?? "",
-      images: newsletter.hero_image_url ? [newsletter.hero_image_url] : [],
-    },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Component: Section Renderer
+// ---------------------------------------------------------------------------
+function SectionRenderer({ section }: { section: NewsletterSection }) {
+    return (
+        <div className="space-y-6 mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {section.heading && (
+                <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                    {section.heading}
+                </h2>
+            )}
+
+            {section.type === "paragraph" && (
+                <div className="prose prose-slate dark:prose-invert prose-lg max-w-none text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap font-medium">
+                    {section.description}
+                </div>
+            )}
+
+            {section.type === "list" && (
+                <ul className="space-y-4">
+                    {section.description.split('\n').filter(line => line.trim()).map((item, i) => (
+                        <li key={i} className="flex items-start gap-4 text-lg text-slate-600 dark:text-slate-400 font-medium">
+                            <span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            {section.type === "image" && section.imageUrl && (
+                <div className="space-y-4">
+                    <div className="relative aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-100 dark:border-slate-800">
+                        <Image
+                            src={section.imageUrl}
+                            alt={section.heading || "Newsletter Image"}
+                            fill
+                            className="object-cover"
+                            quality={95}
+                        />
+                    </div>
+                    {section.description && (
+                        <p className="text-sm text-slate-500 dark:text-slate-500 italic text-center font-medium">
+                            {section.description}
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {section.type === "embed" && section.embedCode && (
+                <div 
+                    className="rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800"
+                    dangerouslySetInnerHTML={{ __html: section.embedCode }} 
+                />
+            )}
+
+            {section.buttons && section.buttons.length > 0 && (
+                <div className="flex flex-wrap gap-4 pt-4">
+                    {section.buttons.map((btn, i) => (
+                        <Link
+                            key={i}
+                            href={btn.url}
+                            target="_blank"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-emerald-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-slate-200 dark:shadow-emerald-900/20"
+                        >
+                            {btn.label}
+                            <ExternalLink className="w-4 h-4" />
+                        </Link>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -85,102 +179,139 @@ export default async function NewsletterDetailPage({
   if (!newsletter) notFound();
 
   const formattedDate = new Date(newsletter.updated_at).toLocaleDateString(
-    "en-AU",
+    "en-US",
     { day: "numeric", month: "long", year: "numeric" }
   );
 
+  // Handle structured vs legacy content
+  let sections: NewsletterSection[] = [];
+  try {
+    const parsed = JSON.parse(newsletter.content);
+    sections = Array.isArray(parsed) ? parsed : [{ id: "1", type: "paragraph", heading: "", description: newsletter.content }];
+  } catch (e) {
+    sections = [{ id: "1", type: "paragraph", heading: "", description: newsletter.content }];
+  }
+
+  // Calculate a mock read time based on length
+  const wordCount = sections.reduce((acc, s) => acc + (s.description?.split(/\s+/).length || 0), 0);
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-300">
-      {/* ── Hero section ───────────────────────────────────────────────── */}
-      <div className="relative">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] pb-32 font-sans">
+      {/* ── Immersive Hero Background ─────────────────────────────────── */}
+      <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden">
         {newsletter.hero_image_url ? (
-          <div className="relative w-full h-[60vh] max-h-[700px] overflow-hidden">
-            <Image
-              src={newsletter.hero_image_url}
-              alt={newsletter.title}
-              fill
-              priority
-              className="object-cover"
-              unoptimized
-            />
-            {/* gradient overlay tailored for light/dark mode */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-[#0B1120] via-slate-50/50 dark:via-[#0B1120]/60 to-transparent" />
-          </div>
+          <Image
+            src={newsletter.hero_image_url}
+            alt={newsletter.title}
+            fill
+            priority
+            className="object-cover scale-105 animate-slow-zoom"
+            quality={100}
+          />
         ) : (
-          <div className="w-full h-[40vh] max-h-[400px] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 relative overflow-hidden">
-             <div className="absolute inset-0 bg-slate-50 dark:bg-[#0B1120] bg-opacity-40 dark:bg-opacity-80" />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900" />
         )}
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* ── Article Container ───────────────────────────────────────── */}
-      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 -mt-32 sm:-mt-48">
-        
-        {/* Content Card */}
-        <div className="bg-white dark:bg-slate-900/90 backdrop-blur-md rounded-[2.5rem] shadow-xl dark:shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-slate-800 p-8 sm:p-14 lg:p-20">
+      {/* ── Overlapping Content Card ─────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-6 -mt-64 relative z-20">
+        <div className="bg-white dark:bg-[#111827] rounded-[3.5rem] p-8 md:p-16 lg:p-24 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-white/20">
           
-          {/* Back link */}
-          <Link
-            href="/newsletter"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors mb-12 group uppercase tracking-widest bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-full w-max"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Issues
-          </Link>
-
-          {/* Header section (meta + title + subtitle) */}
-          <header className="mb-14 sm:mb-20">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6">
-              <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-full">
-                <CalendarDays className="w-4 h-4" />
-                <span>{formattedDate}</span>
-              </div>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <div className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 px-3 py-1.5 rounded-full">
-                <Mail className="w-4 h-4" />
-                <span>Newsletter</span>
-              </div>
+          {/* Top Metadata */}
+          <div className="flex flex-wrap items-center gap-6 mb-10">
+            <span className="inline-flex items-center px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-emerald-500/20">
+              Special Edition
+            </span>
+            <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+              <Clock className="w-3.5 h-3.5" />
+              {readTime} min read
             </div>
+          </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.15] tracking-tight mb-8">
+          {/* Title Section */}
+          <div className="space-y-8 mb-16">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tighter max-w-4xl">
               {newsletter.title}
             </h1>
-
+            
             {newsletter.subtitle && (
-              <p className="text-xl sm:text-2xl text-slate-500 dark:text-slate-400 font-light leading-relaxed border-l-4 border-blue-500 dark:border-blue-500/50 pl-6 italic">
-                {newsletter.subtitle}
-              </p>
+                <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl border-l-4 border-emerald-500 pl-8">
+                    {newsletter.subtitle}
+                </p>
             )}
-          </header>
-
-          {/* Divider */}
-          <div className="flex items-center gap-6 mb-16 opacity-50">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
-            <span className="text-xl text-slate-300 dark:text-slate-600">✦</span>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
           </div>
 
-          {/* Body content */}
-          <div className="prose prose-slate dark:prose-invert prose-lg sm:prose-xl max-w-none text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap selection:bg-blue-200 dark:selection:bg-blue-900/50">
-            {newsletter.content}
+          {/* Sections */}
+          <div className="space-y-4">
+              {sections.map(section => (
+                  <SectionRenderer key={section.id} section={section} />
+              ))}
           </div>
 
-          {/* Footer */}
-          <footer className="mt-24 pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
-              <CalendarDays className="w-4 h-4" />
-              Published on <time dateTime={newsletter.updated_at}>{formattedDate}</time>
-            </p>
-            <Link
-              href="/newsletter"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl dark:shadow-none"
-            >
-              Browse more issues
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </footer>
+          {/* Article Footer with Share & Meta */}
+          <div className="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-10">
+                <div className="space-y-1">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">Published</span>
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white text-sm font-black">
+                        <CalendarDays className="w-4 h-4 text-emerald-500" />
+                        {formattedDate}
+                    </div>
+                </div>
+                <div className="space-y-1">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">Author</span>
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white text-sm font-black">
+                        <User className="w-4 h-4 text-emerald-500" />
+                        Dr. Muhammad Kamran
+                    </div>
+                </div>
+            </div>
+
+            {/* Share Options */}
+            <ShareButtons title={newsletter.title} />
+          </div>
+
+          {/* Premium Subscription CTA */}
+          <div className="mt-32">
+              <div className="relative overflow-hidden bg-slate-900 rounded-[3rem] p-8 md:p-16 text-center space-y-8">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 blur-[100px] translate-y-1/2 -translate-x-1/2" />
+                  
+                  <div className="relative z-10 space-y-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
+                        <Mail className="w-4 h-4 text-emerald-400" />
+                        Join the Inner Circle
+                    </div>
+                    <h3 className="text-3xl md:text-5xl font-black text-white leading-tight">Stay ahead of the curve</h3>
+                    <p className="text-slate-400 max-w-xl mx-auto text-lg">
+                        Get these exclusive insights delivered directly to your inbox every week. Join over 5,000+ industry leaders.
+                    </p>
+                    <div className="pt-4">
+                        <Link
+                            href="/newsletter"
+                            className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-500 text-white font-black uppercase tracking-widest text-xs rounded-full hover:bg-emerald-600 transition-all shadow-2xl shadow-emerald-500/20"
+                        >
+                            Subscribe Now
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                  </div>
+              </div>
+
+              <div className="mt-16 flex items-center justify-between px-4">
+                  <Link href="/newsletter" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-emerald-500 transition-colors">
+                      <ArrowLeft className="w-4 h-4" />
+                      Back to all issues
+                  </Link>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                      © {new Date().getFullYear()} Dr. Kamran Akram
+                  </p>
+              </div>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

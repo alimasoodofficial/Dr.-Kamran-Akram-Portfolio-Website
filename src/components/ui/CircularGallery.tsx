@@ -1,6 +1,6 @@
 "use client";
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type GL = Renderer['gl'];
 
@@ -38,6 +38,7 @@ interface MediaProps {
   viewport: Viewport;
   bend: number;
   borderRadius?: number;
+  texture?: Texture;
 }
 
 class Media {
@@ -76,6 +77,7 @@ class Media {
     viewport,
     bend,
     borderRadius = 0,
+    texture
   }: MediaProps) {
     this.geometry = geometry;
     this.gl = gl;
@@ -88,15 +90,16 @@ class Media {
     this.viewport = viewport;
     this.bend = bend;
     this.borderRadius = borderRadius;
-    this.createShader();
+    this.createShader(texture);
     this.createMesh();
     this.onResize();
   }
 
-  createShader() {
-    const texture = new Texture(this.gl, {
+  createShader(existingTexture?: Texture) {
+    const texture = existingTexture || new Texture(this.gl, {
       generateMipmaps: true
     });
+    
     this.program = new Program(this.gl, {
       depthTest: false,
       depthWrite: false,
@@ -106,8 +109,6 @@ class Media {
         attribute vec2 uv;
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
-        uniform float uTime;
-        uniform float uSpeed;
         varying vec2 vUv;
         void main() {
           vUv = uv;
@@ -120,6 +121,7 @@ class Media {
         uniform vec2 uPlaneSizes;
         uniform sampler2D tMap;
         uniform float uBorderRadius;
+        uniform float uOpacity;
         varying vec2 vUv;
         
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -142,27 +144,35 @@ class Media {
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
           
-          gl_FragColor = vec4(color.rgb, alpha);
+          gl_FragColor = vec4(color.rgb, alpha * uOpacity);
         }
       `,
       uniforms: {
         tMap: { value: texture },
         uPlaneSizes: { value: [0, 0] },
         uImageSizes: { value: [0, 0] },
-        uSpeed: { value: 0 },
-        uTime: { value: 100 * Math.random() },
-        uBorderRadius: { value: this.borderRadius }
+        uBorderRadius: { value: this.borderRadius },
+        uOpacity: { value: 0 }
       },
       transparent: true
     });
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = this.image;
-    img.onload = () => {
-      texture.image = img;
-      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-    };
+    if (!existingTexture) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = this.image;
+      img.onload = () => {
+        texture.image = img;
+        this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+        this.program.uniforms.uOpacity.value = 1;
+      };
+    } else if (existingTexture.image) {
+      this.program.uniforms.uImageSizes.value = [
+        (existingTexture.image as HTMLImageElement).naturalWidth || (existingTexture.image as HTMLImageElement).width,
+        (existingTexture.image as HTMLImageElement).naturalHeight || (existingTexture.image as HTMLImageElement).height
+      ];
+      this.program.uniforms.uOpacity.value = 1;
+    }
   }
 
   createMesh() {
@@ -260,6 +270,7 @@ class App {
   viewport!: Viewport;
   raf: number = 0;
   isPaused: boolean = true;
+  textureCache: Map<string, Texture> = new Map();
 
   boundOnResize!: () => void;
   boundOnWheel!: (e: Event) => void;
@@ -290,8 +301,10 @@ class App {
     this.onResize();
     this.createGeometry();
     this.createMedias(items, bend, borderRadius);
-    // Remove the immediate update calls
     this.addEventListeners();
+    
+    // Initial centering
+    this.initialCentering();
   }
 
   createRenderer() {
@@ -322,12 +335,31 @@ class App {
     });
   }
 
-  createMedias(items: string[] | undefined, bend: number, borderRadius: number) {
-    // Colorful placeholders (removed grayscale parameter)
-    const defaultItems = Array.from({ length: 12 }, (_, i) => `https://picsum.photos/seed/${i + 1}/800/600`);
+  async createMedias(items: string[] | undefined, bend: number, borderRadius: number) {
+    // User requested to use original.webp for all images
+    const defaultImage = "/images/original.webp";
+    const defaultItems = Array.from({ length: 12 }, () => defaultImage);
     const galleryItems = items && items.length ? items : defaultItems;
     
     this.mediasImages = galleryItems.concat(galleryItems);
+    
+    // Pre-load all unique images and create textures
+    const uniqueImages = Array.from(new Set(this.mediasImages));
+    await Promise.all(uniqueImages.map(url => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = url;
+        img.onload = () => {
+          const tex = new Texture(this.gl, { generateMipmaps: true });
+          tex.image = img;
+          this.textureCache.set(url, tex);
+          resolve();
+        };
+        img.onerror = () => resolve(); // Silently fail and continue
+      });
+    }));
+
     this.medias = this.mediasImages.map((image, index) => {
       return new Media({
         geometry: this.planeGeometry,
@@ -340,9 +372,23 @@ class App {
         screen: this.screen,
         viewport: this.viewport,
         bend,
-        borderRadius
+        borderRadius,
+        texture: this.textureCache.get(image)
       });
     });
+    
+    this.initialCentering();
+  }
+
+  initialCentering() {
+    if (this.medias.length > 0) {
+      const width = this.medias[0].width;
+      const totalWidth = width * this.medias.length;
+      // Center the first half of items
+      this.scroll.target = (totalWidth / 4); 
+      this.scroll.current = this.scroll.target;
+      this.scroll.last = this.scroll.target;
+    }
   }
 
   onTouchDown(e: MouseEvent | TouchEvent) {
@@ -428,7 +474,6 @@ class App {
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     window.addEventListener('resize', this.boundOnResize);
-    // window.addEventListener('wheel', this.boundOnWheel); // Scroll disabled
     window.addEventListener('mousedown', this.boundOnTouchDown);
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
@@ -440,7 +485,6 @@ class App {
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
-    // window.removeEventListener('wheel', this.boundOnWheel);
     window.removeEventListener('mousedown', this.boundOnTouchDown);
     window.removeEventListener('mousemove', this.boundOnTouchMove);
     window.removeEventListener('mouseup', this.boundOnTouchUp);
@@ -450,6 +494,7 @@ class App {
     if (this.renderer?.gl?.canvas?.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas as HTMLCanvasElement);
     }
+    this.textureCache.clear();
   }
 }
 
@@ -470,6 +515,7 @@ export default function CircularGallery({
   scrollEase = 0.05
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -500,5 +546,9 @@ export default function CircularGallery({
     };
   }, [items, bend, borderRadius, scrollSpeed, scrollEase]);
 
-  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing" ref={containerRef} />;
+  return (
+    <div className="w-full h-full relative overflow-hidden cursor-grab active:cursor-grabbing">
+      <div className="w-full h-full" ref={containerRef} />
+    </div>
+  );
 }

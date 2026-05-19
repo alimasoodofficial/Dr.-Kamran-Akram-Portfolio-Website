@@ -48,23 +48,7 @@ export default function Footer() {
             students, and communities.
           </p>
 
-          {/* Newsletter Section */}
-          <div className="w-full mt-2">
-            <h4 className="font-bold text-lg mb-3 !text-white">
-              Subscribe to My Newsletter
-            </h4>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md min-w-0">
-              <input
-                type="email"
-                aria-label="Email address"
-                placeholder="Your Email Address*"
-                className="flex-1 bg-white/10 border border-white/20 !text-white placeholder:text-white/40 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto min-w-0 backdrop-blur-sm"
-              />
-              <button className="bg-primary hover:bg-primary-dark !text-white font-bold px-8 py-3 rounded-full transition-all duration-300 shadow-lg shadow-primary/20 w-full sm:w-auto">
-                Subscribe
-              </button>
-            </div>
-          </div>
+          
         </div>
 
         {/* --- Column 2: Quick Links (Span 2 columns) --- */}

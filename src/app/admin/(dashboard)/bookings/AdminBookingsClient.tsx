@@ -1,1071 +1,609 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
-import { format, addDays, startOfDay, endOfDay } from "date-fns";
-import {
-  formatTimeAEST,
-  formatDateAEST,
-  formatShortDateAEST,
-  formatFullDateTimeAEST,
-  getAESTDayRange,
-} from "@/lib/timezone";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Calendar,
-  User,
-  Mail,
-  FileText,
-  Clock,
-  TrendingUp,
-  Loader2,
-  Trash2,
-  Plus,
-  Filter,
-  CheckCircle2,
+import { useState } from "react";
+import { format, parse, isSameDay, isAfter, addMinutes } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/shadcn/card";
+import { Button } from "@/components/ui/shadcn/button";
+import { Input } from "@/components/ui/shadcn/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/shadcn/tabs";
+import { Badge } from "@/components/ui/shadcn/badge";
+import { Switch } from "@/components/ui/shadcn/switch";
+import { Calendar } from "@/components/ui/shadcn/calendar";
+import { 
+  Calendar as CalendarIcon, 
+  Clock, 
+  Video, 
+  Users, 
+  Trash2, 
+  Plus, 
+  CheckCircle2, 
   XCircle,
-  AlertCircle,
-  ChevronRight,
-  ChevronLeft,
-  ExternalLink,
-  Globe,
-  RefreshCw,
-  X,
+  MoreVertical,
+  Check,
+  X
 } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Booking, updateBookingStatus, deleteBooking, updateBooking, createBooking } from "@/app/actions/bookings";
+import { AvailabilitySlot, BlockedDate, updateAvailability, addBlockedDate, removeBlockedDate, getTimeSlots } from "@/app/actions/availability";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/shadcn/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/shadcn/dialog";
+import { Label } from "@/components/ui/shadcn/label";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/shadcn/select";
 
-import { BookingWithSlot, TimeSlot } from "@/types/booking";
+interface Props {
+  initialBookings: Booking[];
+  initialAvailability: AvailabilitySlot[];
+  initialBlockedDates: BlockedDate[];
+}
 
-type AdminBookingsClientProps = {
-  initialBookings: BookingWithSlot[];
-};
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export default function AdminBookingsClient({
-  initialBookings,
-}: AdminBookingsClientProps) {
-  const [activeTab, setActiveTab] = useState<"bookings" | "slots">("bookings");
-  const [bookings, setBookings] = useState<BookingWithSlot[]>(initialBookings);
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const router = useRouter();
-
-  const [stats, setStats] = useState({
-    total: initialBookings.length,
-    today: 0,
-    upcoming: 0,
-  });
-
-  // Bulk generation state
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isCleaning, setIsCleaning] = useState(false);
-  const [genConfig, setGenConfig] = useState({
-    startDate: format(new Date(), "yyyy-MM-dd"),
-    endDate: format(addDays(new Date(), 7), "yyyy-MM-dd"),
-    startHour: 9,
-    endHour: 17,
-    duration: 30,
-  });
-
-  // Reschedule modal state
-  const [rescheduleModal, setRescheduleModal] = useState<{
-    open: boolean;
-    booking: BookingWithSlot | null;
-    availableSlots: TimeSlot[];
-    selectedNewSlotId: string | null;
-    loadingSlots: boolean;
-    submitting: boolean;
-    selectedDate: Date;
-  }>({
-    open: false,
-    booking: null,
-    availableSlots: [],
-    selectedNewSlotId: null,
-    loadingSlots: false,
-    submitting: false,
-    selectedDate: new Date(),
-  });
-
-  useEffect(() => {
-    calculateStats(bookings);
-  }, [bookings]);
-
-  useEffect(() => {
-    if (activeTab === "slots") {
-      fetchSlots();
+export default function AdminBookingsClient({ initialBookings, initialAvailability, initialBlockedDates }: Props) {
+  const { toast } = useToast();
+  const [bookings, setBookings] = useState(initialBookings);
+  const [availability, setAvailability] = useState<AvailabilitySlot[]>(() => {
+    const base = [...initialAvailability];
+    for (let i = 0; i < 7; i++) {
+      if (!base.find(a => a.day_of_week === i)) {
+        base.push({
+          id: `new-${i}`,
+          day_of_week: i,
+          start_time: "09:00",
+          end_time: "17:00",
+          is_enabled: false
+        });
+      }
     }
-  }, [activeTab, selectedDate]);
+    return base.sort((a, b) => a.day_of_week - b.day_of_week);
+  });
+  const [blockedDates, setBlockedDates] = useState(initialBlockedDates);
+  const [selectedBlockedDate, setSelectedBlockedDate] = useState<Date | undefined>(undefined);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingBookingId, setEditingBookingId] = useState<string | null>(null);
+  const [newBookingDate, setNewBookingDate] = useState<Date | undefined>(new Date());
+  
+  // Manual override state
+  const [overrideDate, setOverrideDate] = useState<Date | undefined>(undefined);
+  const [overrideTimes, setOverrideTimes] = useState({ start: "09:00", end: "17:00" });
+  const [availableSlots, setAvailableSlots] = useState<any[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [newBookingData, setNewBookingData] = useState({
+    fullName: "",
+    email: "",
+    platform: "Zoom" as "Zoom" | "Google Meet",
+    duration: 30 as 30 | 60,
+    timeSlot: "",
+    notes: ""
+  });
 
-  useEffect(() => {
-    const channel = supabase
-      .channel("admin-booking-mgmt")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "bookings" },
-        () => {
-          router.refresh(); // Refresh server data
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "time_slots" },
-        () => {
-          if (activeTab === "slots") fetchSlots();
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [activeTab]);
-
-  const confirmAction = (message: string, onConfirm: () => void) => {
-    toast.custom(
-      (t) => (
-        <div
-          className={`${
-            t.visible
-              ? "animate-in fade-in zoom-in duration-300"
-              : "animate-out fade-out zoom-out duration-300"
-          } max-w-md w-full bg-white dark:bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto ring-1 ring-black/5 p-6 border border-slate-100 dark:border-slate-800 z-[9999]`}
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <AlertCircle className="w-6 h-6 text-red-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Are you sure?
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                {message}
-              </p>
-            </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-3">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                onConfirm();
-                toast.dismiss(t.id);
-              }}
-              className="px-6 py-2 text-sm font-bold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg shadow-red-500/20 transition-all active:scale-95"
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      ),
-      { duration: Infinity, position: "top-center" },
-    );
-  };
-
-  const fetchSlots = async () => {
-    setSlotsLoading(true);
-    try {
-      // Use Australian date for the query boundaries
-      const dateStr = format(selectedDate, "yyyy-MM-dd");
-      const { start, end } = getAESTDayRange(dateStr);
-
-      const { data, error } = await supabase
-        .from("time_slots")
-        .select("*")
-        .gte("start_time", start)
-        .lte("start_time", end)
-        .order("start_time", { ascending: true });
-
-      if (error) throw error;
-      setSlots(data || []);
-    } catch (error) {
-      console.error("Error fetching slots:", error);
-      toast.error("Failed to fetch time slots");
-    } finally {
-      setSlotsLoading(false);
+  const handleStatusUpdate = async (id: string, status: string) => {
+    const result = await updateBookingStatus(id, status);
+    if (result.success) {
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: status as any } : b));
+      toast({ title: "Status updated" });
     }
   };
 
-  const calculateStats = (bookingsList: BookingWithSlot[]) => {
+  const fetchSlotsForManualBooking = async (date: Date, duration: number) => {
+    setIsLoadingSlots(true);
+    const dateStr = format(date, "yyyy-MM-dd");
+    const slots = await getTimeSlots(dateStr, duration);
+    
     const now = new Date();
-    const today = startOfDay(now);
-    const tomorrow = addDays(today, 1);
-
-    const todayBookings = bookingsList.filter((b) => {
-      const bDate = new Date(b.time_slots.start_time);
-      return bDate >= today && bDate < tomorrow;
-    });
-
-    const upcomingBookings = bookingsList.filter((b) => {
-      return new Date(b.time_slots.start_time) > now;
-    });
-
-    setStats({
-      total: bookingsList.length,
-      today: todayBookings.length,
-      upcoming: upcomingBookings.length,
-    });
+    const filtered = slots.map(slot => ({
+      ...slot,
+      isBooked: slot.is_booked || (isSameDay(date, now) && !isAfter(parse(slot.start_time, "HH:mm:ss", date), addMinutes(now, 30)))
+    }));
+    
+    setAvailableSlots(filtered);
+    setIsLoadingSlots(false);
   };
 
-  const handleDeleteBooking = async (bookingId: string, slotId: string) => {
-    confirmAction(
-      "Are you sure you want to cancel this booking? This will notify the client.",
-      async () => {
-        try {
-          const response = await fetch(
-            `/api/admin/bookings?id=${bookingId}&slotId=${slotId}`,
-            {
-              method: "DELETE",
-            },
-          );
-
-          if (!response.ok) throw new Error("Failed to cancel booking");
-
-          toast.success("Booking cancelled successfully");
-          router.refresh();
-        } catch (error: any) {
-          toast.error(error.message || "Failed to cancel booking");
-        }
-      },
-    );
+  const handleEditClick = (booking: Booking) => {
+    setEditingBookingId(booking.id);
+    const dateObj = new Date(booking.date);
+    setNewBookingDate(dateObj);
+    setNewBookingData({
+      fullName: booking.full_name,
+      email: booking.email,
+      platform: booking.platform as any,
+      duration: booking.duration,
+      timeSlot: booking.time_slot,
+      notes: booking.message || ""
+    });
+    fetchSlotsForManualBooking(dateObj, booking.duration);
+    setIsCreateDialogOpen(true);
   };
 
-  const handleDeleteSlot = async (slotId: string, isBooked: boolean) => {
-    if (isBooked) {
-      toast.error("Cannot delete a booked slot. Cancel the booking first.");
+  const resetManualBookingForm = () => {
+    setEditingBookingId(null);
+    setNewBookingData({
+      fullName: "",
+      email: "",
+      platform: "Zoom",
+      duration: 30,
+      timeSlot: "",
+      notes: ""
+    });
+    setNewBookingDate(new Date());
+    setAvailableSlots([]);
+  };
+
+  const handleManualBooking = async () => {
+    if (!newBookingDate || !newBookingData.timeSlot || !newBookingData.fullName || !newBookingData.email) {
+      toast({ title: "Missing fields", variant: "destructive" });
       return;
     }
 
-    confirmAction(
-      "Are you sure you want to delete this time slot?",
-      async () => {
-        try {
-          const response = await fetch(`/api/admin/slots?id=${slotId}`, {
-            method: "DELETE",
-          });
-
-          if (!response.ok) throw new Error("Failed to delete slot");
-
-          toast.success("Time slot deleted");
-          
-          fetchSlots();
-        } catch (error: any) {
-          toast.error(error.message || "Failed to delete time slot");
-        }
-      },
-    );
-  };
-
-  const handleBulkGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      const response = await fetch("/api/admin/slots", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start_date: genConfig.startDate,
-          end_date: genConfig.endDate,
-          start_hour: genConfig.startHour,
-          end_hour: genConfig.endHour,
-          slot_duration_minutes: genConfig.duration,
-        }),
+    setIsSaving(true);
+    
+    if (editingBookingId) {
+      const result = await updateBooking(editingBookingId, {
+        full_name: newBookingData.fullName,
+        email: newBookingData.email,
+        message: newBookingData.notes,
+        date: format(newBookingDate, "yyyy-MM-dd"),
+        time_slot: newBookingData.timeSlot,
+        platform: newBookingData.platform as any,
+        duration: newBookingData.duration,
       });
 
-      if (!response.ok) throw new Error("Failed to generate slots");
-
-      toast.success("Time slots generated successfully!");
-      if (activeTab === "slots") fetchSlots();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to generate slots");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleCleanup = async () => {
-    confirmAction(
-      "Delete all unbooked slots older than 1 week? This cannot be undone.",
-      async () => {
-        setIsCleaning(true);
-        try {
-          const response = await fetch("/api/admin/slots/cleanup", {
-            method: "POST",
-          });
-
-          const data = await response.json();
-
-          if (!response.ok)
-            throw new Error(data.error || "Failed to cleanup slots");
-
-          toast.success(`Cleanup successful! Deleted ${data.count} old slots.`);
-          if (activeTab === "slots") fetchSlots();
-        } catch (error: any) {
-          toast.error(error.message || "Failed to cleanup slots");
-        } finally {
-          setIsCleaning(false);
-        }
-      },
-    );
-  };
-
-  // --- Reschedule Functions ---
-  const openRescheduleModal = (booking: BookingWithSlot) => {
-    setRescheduleModal({
-      open: true,
-      booking,
-      availableSlots: [],
-      selectedNewSlotId: null,
-      loadingSlots: false,
-      submitting: false,
-      selectedDate: new Date(),
-    });
-  };
-
-  const fetchRescheduleSlots = async (date: Date) => {
-    setRescheduleModal((prev) => ({
-      ...prev,
-      loadingSlots: true,
-      selectedDate: date,
-      selectedNewSlotId: null,
-    }));
-
-    try {
-      const start = startOfDay(date).toISOString();
-      const end = endOfDay(date).toISOString();
-
-      const { data, error } = await supabase
-        .from("time_slots")
-        .select("*")
-        .gte("start_time", start)
-        .lte("start_time", end)
-        .eq("is_booked", false)
-        .order("start_time", { ascending: true });
-
-      if (error) throw error;
-
-      // Filter out past slots
-      const now = new Date();
-      const futureSlots = (data || []).filter(
-        (slot) => new Date(slot.start_time) > now,
-      );
-
-      setRescheduleModal((prev) => ({
-        ...prev,
-        availableSlots: futureSlots,
-        loadingSlots: false,
-      }));
-    } catch (error) {
-      console.error("Error fetching slots for reschedule:", error);
-      toast.error("Failed to fetch available slots");
-      setRescheduleModal((prev) => ({
-        ...prev,
-        loadingSlots: false,
-      }));
-    }
-  };
-
-  const handleReschedule = async () => {
-    if (!rescheduleModal.booking || !rescheduleModal.selectedNewSlotId) return;
-
-    setRescheduleModal((prev) => ({ ...prev, submitting: true }));
-
-    try {
-      const response = await fetch("/api/admin/bookings", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bookingId: rescheduleModal.booking.id,
-          newSlotId: rescheduleModal.selectedNewSlotId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to reschedule");
+      if (result.success) {
+        toast({ title: "Booking updated successfully" });
+        setIsCreateDialogOpen(false);
+        window.location.reload();
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" });
       }
-
-      toast.success("Booking rescheduled! Notification emails sent.");
-      setRescheduleModal({
-        open: false,
-        booking: null,
-        availableSlots: [],
-        selectedNewSlotId: null,
-        loadingSlots: false,
-        submitting: false,
-        selectedDate: new Date(),
+    } else {
+      const result = await createBooking({
+        full_name: newBookingData.fullName,
+        email: newBookingData.email,
+        phone: "",
+        message: newBookingData.notes,
+        date: format(newBookingDate, "yyyy-MM-dd"),
+        time_slot: newBookingData.timeSlot,
+        platform: newBookingData.platform as any,
+        duration: newBookingData.duration,
+        service: "Manual Admin Booking",
       });
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to reschedule booking");
-      setRescheduleModal((prev) => ({ ...prev, submitting: false }));
+
+      if (result.success) {
+        toast({ title: "Booking created successfully" });
+        setIsCreateDialogOpen(false);
+        window.location.reload();
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" });
+      }
+    }
+    setIsSaving(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this booking?")) return;
+    const result = await deleteBooking(id);
+    if (result.success) {
+      setBookings(prev => prev.filter(b => b.id !== id));
+      toast({ title: "Booking deleted" });
     }
   };
 
-  const getStatusColor = (startTime: string) => {
-    const now = new Date();
-    const bTime = new Date(startTime);
-    if (bTime < now) return "bg-slate-100 text-slate-500";
-    if (format(bTime, "yyyy-MM-dd") === format(now, "yyyy-MM-dd"))
-      return "bg-emerald-100 text-emerald-700";
-    return "bg-blue-100 text-blue-700";
+  const handleAvailabilityToggle = (dayOfWeek: number, enabled: boolean) => {
+    setAvailability(prev => prev.map(a => a.day_of_week === dayOfWeek ? { ...a, is_enabled: enabled } : a));
+  };
+
+  const handleTimeChange = (dayOfWeek: number, field: "start_time" | "end_time", value: string) => {
+    setAvailability(prev => prev.map(a => a.day_of_week === dayOfWeek ? { ...a, [field]: value } : a));
+  };
+
+  const saveAvailability = async () => {
+    setIsSaving(true);
+    const slotsToSave = availability.map(({ id, ...rest }) => 
+      String(id).startsWith('new-') ? rest : { id, ...rest }
+    );
+    
+    const result = await updateAvailability(slotsToSave as any);
+    if (result.success) {
+      toast({ title: "Availability saved successfully" });
+    } else {
+      toast({ 
+        title: "Error saving", 
+        description: result.error || "Please check the logs.",
+        variant: "destructive" 
+      });
+    }
+    setIsSaving(false);
+  };
+
+  const handleAddBlockedDate = async () => {
+    if (!selectedBlockedDate) return;
+    const dateStr = format(selectedBlockedDate, "yyyy-MM-dd");
+    const result = await addBlockedDate(dateStr, "Blocked by admin");
+    if (result.success) {
+      const newBlockedDate = { id: Math.random().toString(), date: dateStr, reason: "Blocked" };
+      setBlockedDates(prev => [...prev, newBlockedDate]);
+      toast({ title: "Date blocked" });
+    }
+  };
+
+  const handleRemoveBlockedDate = async (id: string) => {
+    const result = await removeBlockedDate(id);
+    if (result.success) {
+      setBlockedDates(prev => prev.filter(bd => bd.id !== id));
+      toast({ title: "Block removed" });
+    }
   };
 
   return (
-    <div className="space-y-8 pb-20">
-      <Toaster position="top-right" />
-
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-10 p-4 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">
-            Booking Management
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            Schedule <span className="text-primary">Management</span>
           </h1>
-          <p className="text-slate-500">
-            Manage appointments and availability slots
+          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">
+            Manage your incoming consultations and set your availability.
           </p>
-          <div className="flex items-center gap-4 mt-2">
-            <Link
-              href="/consulting"
-              target="_blank"
-              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-            >
-              <ExternalLink className="w-4 h-4" />
-              View Public Page
-            </Link>
-            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-              🇦🇺 Australian Eastern Time
-            </span>
-          </div>
         </div>
 
-        <div className="flex bg-white rounded-xl p-1 shadow-sm border border-slate-200 self-start">
-          <button
-            onClick={() => setActiveTab("bookings")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "bookings"
-                ? "bg-slate-900 text-white shadow-md"
-                : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Bookings
-          </button>
-          <button
-            onClick={() => setActiveTab("slots")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "slots"
-                ? "bg-slate-900 text-white shadow-md"
-                : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Time Slots
-          </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            label: "Total Bookings",
-            value: stats.total,
-            icon: Calendar,
-            color: "text-blue-600",
-            bg: "bg-blue-50",
-          },
-          {
-            label: "Today's",
-            value: stats.today,
-            icon: Clock,
-            color: "text-emerald-600",
-            bg: "bg-emerald-50",
-          },
-          {
-            label: "Upcoming",
-            value: stats.upcoming,
-            icon: TrendingUp,
-            color: "text-purple-600",
-            bg: "bg-purple-50",
-          },
-        ].map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4"
-          >
-            <div className={`p-3 rounded-xl ${stat.bg}`}>
-              <stat.icon className={`w-6 h-6 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-              <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <AnimatePresence mode="wait">
-        {activeTab === "bookings" ? (
-          <motion.div
-            key="bookings"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden"
-          >
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-slate-400" />
-                Recent Appointments
-              </h2>
-              <div className="text-xs text-slate-400 animate-pulse flex items-center gap-1">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                Live Updates Enabled
-              </div>
-            </div>
-
-            {bookings.length === 0 ? (
-              <div className="p-20 text-center">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-slate-200" />
+        <div className="flex items-center gap-4">
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetManualBookingForm} className="rounded-xl h-14 px-8 bg-primary hover:bg-[#064e3b] shadow-lg shadow-primary/20 font-black uppercase tracking-widest text-xs transition-all text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Create Manual Booking
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl rounded-[2.5rem] p-10 border-none shadow-2xl overflow-hidden dark:bg-slate-900">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
+              
+              <DialogHeader className="relative z-10">
+                <DialogTitle className="text-3xl font-black text-slate-900 dark:text-white">{editingBookingId ? "Edit" : "Manual"} <span className="text-primary">Booking</span></DialogTitle>
+                <DialogDescription className="font-medium text-slate-500 dark:text-slate-400">{editingBookingId ? "Modify the existing" : "Add a"} consultation directly to your schedule.</DialogDescription>
+              </DialogHeader>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 relative z-10">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Client Name</Label>
+                  <Input 
+                    placeholder="Jane Doe" 
+                    className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                    value={newBookingData.fullName}
+                    onChange={(e) => setNewBookingData({...newBookingData, fullName: e.target.value})}
+                  />
                 </div>
-                <h3 className="text-slate-900 font-bold">No bookings yet</h3>
-                <p className="text-slate-500 mt-1 max-w-xs mx-auto">
-                  When clients book appointments, they will appear here in
-                  real-time.
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-slate-50 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
-                      <th className="px-6 py-4">Client</th>
-                      <th className="px-6 py-4">Date & Time (AEST)</th>
-                      <th className="px-6 py-4">Status</th>
-                      <th className="px-6 py-4">Country</th>
-                      <th className="px-6 py-4">Notes</th>
-                      <th className="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {bookings.map((booking) => (
-                      <tr
-                        key={booking.id}
-                        className="hover:bg-slate-50/50 transition-colors group"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase">
-                              {booking.user_name.charAt(0)}
-                            </div>
-                            <div>
-                              <p className="font-bold text-slate-900">
-                                {booking.user_name}
-                              </p>
-                              <p className="text-xs text-slate-500 flex items-center gap-1">
-                                <Mail className="w-3 h-3" />
-                                {booking.user_email}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm">
-                            <p className="font-medium text-slate-900">
-                              {formatShortDateAEST(
-                                booking.time_slots.start_time,
-                              )}
-                            </p>
-                            <p className="text-slate-500">
-                              {formatTimeAEST(booking.time_slots.start_time)} -{" "}
-                              {formatTimeAEST(booking.time_slots.end_time)}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight ${getStatusColor(booking.time_slots.start_time)}`}
-                          >
-                            {new Date(booking.time_slots.start_time) <
-                            new Date()
-                              ? "Past"
-                              : "Upcoming"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded-full flex items-center gap-1 w-fit">
-                            <Globe className="w-3 h-3" />
-                            {booking.country || "N/A"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          {booking.notes ? (
-                            <div
-                              className="max-w-[200px] truncate text-xs text-slate-500 italic"
-                              title={booking.notes}
-                            >
-                              &quot;{booking.notes}&quot;
-                            </div>
-                          ) : (
-                            <span className="text-slate-300 text-xs">-</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <button
-                              onClick={() => openRescheduleModal(booking)}
-                              className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
-                              title="Reschedule Booking"
-                            >
-                              <RefreshCw className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeleteBooking(booking.id, booking.slot_id)
-                              }
-                              className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                              title="Cancel Booking"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="slots"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="grid lg:grid-cols-3 gap-8"
-          >
-            {/* Slot Generation Form */}
-            <div className="lg:col-span-1 space-y-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <Plus className="w-5 h-5 text-blue-500" />
-                  Generate Slots
-                </h3>
-                <p className="text-xs text-slate-400 mb-4">
-                  Times are in Australian Eastern Time (AEST/AEDT)
-                </p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={genConfig.startDate}
-                      onChange={(e) =>
-                        setGenConfig({
-                          ...genConfig,
-                          startDate: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={genConfig.endDate}
-                      onChange={(e) =>
-                        setGenConfig({ ...genConfig, endDate: e.target.value })
-                      }
-                      className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
-                        Start Hour
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="23"
-                        value={genConfig.startHour}
-                        onChange={(e) =>
-                          setGenConfig({
-                            ...genConfig,
-                            startHour: parseInt(e.target.value),
-                          })
-                        }
-                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
-                        End Hour
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="23"
-                        value={genConfig.endHour}
-                        onChange={(e) =>
-                          setGenConfig({
-                            ...genConfig,
-                            endHour: parseInt(e.target.value),
-                          })
-                        }
-                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Client Email</Label>
+                  <Input 
+                    type="email" 
+                    placeholder="jane@example.com" 
+                    className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                    value={newBookingData.email}
+                    onChange={(e) => setNewBookingData({...newBookingData, email: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Platform</Label>
+                  <Select 
+                    value={newBookingData.platform} 
+                    onValueChange={(v: any) => setNewBookingData({...newBookingData, platform: v})}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="Zoom">Zoom Video</SelectItem>
+                      <SelectItem value="Google Meet">Google Meet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Duration</Label>
+                  <Select 
+                    value={newBookingData.duration.toString()} 
+                    onValueChange={(v: any) => {
+                      const dur = parseInt(v);
+                      setNewBookingData({...newBookingData, duration: dur as any});
+                      if (newBookingDate) fetchSlotsForManualBooking(newBookingDate, dur);
+                    }}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="30">30 Minutes</SelectItem>
+                      <SelectItem value="60">60 Minutes</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-slate-100 dark:border-slate-800">
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Select Date</Label>
+                    <div className="p-4 border border-slate-100 dark:border-slate-700 rounded-[1.5rem] bg-slate-50 dark:bg-slate-800 flex justify-center">
+                      <Calendar
+                        selected={newBookingDate}
+                        onSelect={(date) => {
+                          setNewBookingDate(date);
+                          if (date) fetchSlotsForManualBooking(date, newBookingData.duration);
+                        }}
+                        className="rounded-xl dark:text-white"
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">
-                      Duration (min)
-                    </label>
-                    <select
-                      value={genConfig.duration}
-                      onChange={(e) =>
-                        setGenConfig({
-                          ...genConfig,
-                          duration: parseInt(e.target.value),
-                        })
-                      }
-                      className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    >
-                      <option value="15">15 minutes</option>
-                      <option value="30">30 minutes</option>
-                      <option value="45">45 minutes</option>
-                      <option value="60">60 minutes</option>
-                    </select>
-                  </div>
-                  <button
-                    onClick={handleBulkGenerate}
-                    disabled={isGenerating}
-                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isGenerating ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      "Generate Slots"
-                    )}
-                  </button>
-                  <p className="text-[10px] text-slate-400 text-center">
-                    Note: Weekends are automatically skipped. Times in AEST.
-                  </p>
-                </div>
-              </div>
-
-              {/* Maintenance Section */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm mt-6">
-                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2 text-sm">
-                  <Trash2 className="w-4 h-4 text-slate-400" />
-                  Maintenance
-                </h3>
-                <p className="text-xs text-slate-500 mb-4">
-                  Keep your database clean by removing old, unbooked time slots.
-                </p>
-                <button
-                  onClick={handleCleanup}
-                  disabled={isCleaning}
-                  className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
-                >
-                  {isCleaning ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Trash2 className="w-4 h-4" />
-                      Cleanup Old Slots
-                    </>
-                  )}
-                </button>
-                <p className="text-[10px] text-slate-400 text-center mt-3">
-                  Deletes unbooked slots older than 7 days.
-                </p>
-              </div>
-            </div>
-
-            {/* Slots List */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setSelectedDate(addDays(selectedDate, -1))}
-                    className="p-2 hover:bg-slate-50 rounded-lg transition-colors border border-slate-100"
-                  >
-                    <ChevronLeft className="w-5 h-5 text-slate-400" />
-                  </button>
-                  <div className="text-center min-w-[150px]">
-                    <p className="text-sm font-bold text-slate-900">
-                      {format(selectedDate, "EEEE")}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {format(selectedDate, "MMMM d, yyyy")}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setSelectedDate(addDays(selectedDate, 1))}
-                    className="p-2 hover:bg-slate-50 rounded-lg transition-colors border border-slate-100"
-                  >
-                    <ChevronRight className="w-5 h-5 text-slate-400" />
-                  </button>
-                </div>
-                <button
-                  onClick={() => setSelectedDate(new Date())}
-                  className="text-xs font-bold text-blue-600 hover:underline"
-                >
-                  Jump to Today
-                </button>
-              </div>
-
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="font-bold text-slate-800 text-sm">
-                    Slots for {format(selectedDate, "MMM d")}
-                  </h3>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">
-                    {slots.length} available
-                  </span>
-                </div>
-
-                {slotsLoading ? (
-                  <div className="p-20 flex flex-col items-center justify-center gap-4">
-                    <Loader2 className="w-10 h-10 text-slate-300 animate-spin" />
-                  </div>
-                ) : slots.length === 0 ? (
-                  <div className="p-16 text-center">
-                    <p className="text-slate-400 text-sm">
-                      No slots generated for this date.
-                    </p>
-                    <p className="text-xs text-slate-300 mt-1">
-                      Use the generator tool on the left.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="divide-y divide-slate-50">
-                    {slots.map((slot) => (
-                      <div
-                        key={slot.id}
-                        className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div
-                            className={`w-2 h-2 rounded-full ${slot.is_booked ? "bg-emerald-500 shadow-lg shadow-emerald-500/20" : "bg-emerald-500 shadow-lg shadow-emerald-500/20"}`}
-                          ></div>
-                          <div>
-                            <p className="font-bold text-slate-900 text-sm">
-                              {formatTimeAEST(slot.start_time)} -{" "}
-                              {formatTimeAEST(slot.end_time)}
-                            </p>
-                            <p className="text-[10px] text-slate-400 flex items-center gap-1">
-                              {slot.is_booked ? (
-                                <>
-                                  <AlertCircle className="w-2 h-2 text-emerald-500" />
-                                  Booked by Client
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle2 className="w-2 h-2 text-emerald-500" />
-                                  Available for Booking
-                                </>
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Available Times</Label>
+                    <div className="h-[280px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                      {isLoadingSlots ? (
+                         <div className="flex flex-col items-center justify-center h-full space-y-3">
+                           <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Loading Slots...</p>
+                         </div>
+                      ) : availableSlots.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-2">
+                          {availableSlots.map((slot) => (
+                            <button
+                              key={slot.id}
+                              disabled={slot.isBooked}
+                              type="button"
+                              onClick={() => setNewBookingData({...newBookingData, timeSlot: slot.start_time.slice(0, 5)})}
+                              className={cn(
+                                "w-full p-4 rounded-xl text-sm font-black tracking-widest border-2 transition-all text-left flex justify-between items-center group relative overflow-hidden",
+                                newBookingData.timeSlot === slot.start_time.slice(0, 5)
+                                  ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                                  : slot.isBooked
+                                    ? "bg-slate-50 dark:bg-slate-800 text-slate-300 dark:text-slate-600 border-slate-100 dark:border-slate-700 cursor-not-allowed opacity-50"
+                                    : "bg-white dark:bg-slate-900 border-slate-50 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-primary/30 hover:bg-primary/5"
                               )}
-                            </p>
-                          </div>
+                            >
+                              <span>{slot.start_time.slice(0, 5)}</span>
+                              {slot.isBooked && (
+                                <span className="text-[8px] bg-slate-100 dark:bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full uppercase tracking-tighter">Reserved</span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-center p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                          <Clock className="w-8 h-8 text-slate-200 mb-2" />
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Select a date to view<br/>available slots</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <DialogFooter className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 relative z-10">
+                <Button variant="ghost" onClick={() => setIsCreateDialogOpen(false)} className="rounded-xl font-bold text-slate-400 hover:text-slate-600">Cancel</Button>
+                <Button 
+                  onClick={handleManualBooking} 
+                  disabled={isSaving || !newBookingData.timeSlot}
+                  className="rounded-xl bg-[#022c22] text-white hover:bg-[#064e3b] px-10 h-14 font-black uppercase tracking-widest text-xs shadow-xl transition-all"
+                >
+                  {isSaving ? "Creating..." : "Confirm Booking"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <Tabs defaultValue="bookings" className="w-full">
+        <TabsList className="bg-white dark:bg-slate-900 p-1 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm mb-8 h-auto">
+          <TabsTrigger value="bookings" className="rounded-xl px-8 py-3 font-black uppercase tracking-widest text-xs data-[state=active]:bg-primary data-[state=active]:text-white transition-all dark:text-slate-400">
+            Client Bookings
+          </TabsTrigger>
+          <TabsTrigger value="availability" className="rounded-xl px-8 py-3 font-black uppercase tracking-widest text-xs data-[state=active]:bg-primary data-[state=active]:text-white transition-all dark:text-slate-400">
+            Availability Settings
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="bookings">
+          <div className="grid grid-cols-1 gap-6">
+            {bookings.length > 0 ? (
+              bookings.map((booking) => (
+                <Card key={booking.id} className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group">
+                  <CardContent className="p-0">
+                    <div className="flex flex-col md:flex-row">
+                      <div className="p-8 md:w-1/4 bg-slate-50 dark:bg-slate-800 border-r border-slate-100 dark:border-slate-700 flex flex-col justify-center items-center text-center">
+                        <div className="flex items-center gap-2 mb-2">
+                           <CalendarIcon className="w-4 h-4 text-primary" />
+                           <span className="text-sm font-black text-slate-900 dark:text-white">{format(new Date(booking.date), "MMM d, yyyy")}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() =>
-                              handleDeleteSlot(slot.id, slot.is_booked)
-                            }
-                            disabled={slot.is_booked}
-                            className={`p-2 rounded-lg transition-all ${
-                              slot.is_booked
-                                ? "text-slate-200 cursor-not-allowed"
-                                : "text-slate-400 hover:text-red-500 hover:bg-red-50"
-                            }`}
-                            title={
-                              slot.is_booked
-                                ? "Cannot delete booked slot"
-                                : "Delete Slot"
-                            }
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                           <Clock className="w-4 h-4 text-primary" />
+                           <span className="text-lg font-black text-primary">{booking.time_slot}</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                      
+                      <div className="p-8 flex-1 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white">{booking.full_name}</h3>
+                            <Badge variant={booking.status === "confirmed" ? "default" : booking.status === "cancelled" ? "destructive" : "secondary"} className="rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-widest">
+                              {booking.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4">{booking.email}</p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {booking.platform && (
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                                  <Video className="w-3 h-3" />
+                                  <span>{booking.platform}</span>
+                                </div>
+                              )}
+                              {booking.duration && (
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{booking.duration} Min</span>
+                                </div>
+                              )}
+                            </div>
+                        </div>
 
-      {/* Reschedule Modal */}
-      <AnimatePresence>
-        {rescheduleModal.open && rescheduleModal.booking && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            onClick={() =>
-              setRescheduleModal((prev) => ({ ...prev, open: false }))
-            }
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <RefreshCw className="w-5 h-5 text-blue-500" />
-                    Reschedule Booking
-                  </h3>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Move <strong>{rescheduleModal.booking.user_name}</strong>
-                    &apos;s appointment to a new time
-                  </p>
-                </div>
-                <button
-                  onClick={() =>
-                    setRescheduleModal((prev) => ({ ...prev, open: false }))
-                  }
-                  className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5 text-slate-400" />
-                </button>
-              </div>
-
-              {/* Current Booking Info */}
-              <div className="p-6 border-b border-slate-100">
-                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
-                  Current Time
-                </p>
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-                  <p className="font-bold text-red-700">
-                    {formatFullDateTimeAEST(
-                      rescheduleModal.booking.time_slots.start_time,
+                        <div className="flex items-center gap-3">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl dark:border-slate-700">
+                                <MoreVertical className="w-4 h-4 dark:text-white" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 rounded-xl p-2 dark:bg-slate-900 dark:border-slate-700">
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-primary">
+                                <CheckCircle2 className="w-4 h-4 mr-3" /> Mark Confirmed
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-amber-600">
+                                <XCircle className="w-4 h-4 mr-3" /> Mark Cancelled
+                              </DropdownMenuItem>
+                              <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
+                              <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                                <Plus className="w-4 h-4 mr-3" /> Edit Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-red-600">
+                                <Trash2 className="w-4 h-4 mr-3" /> Delete Booking
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                    </div>
+                    {booking.message && (
+                      <div className="px-8 pb-8">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Message from client</p>
+                          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">"{booking.message}"</p>
+                        </div>
+                      </div>
                     )}
-                  </p>
-                </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700">
+                <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                <h3 className="text-xl font-black text-slate-400">No bookings found</h3>
               </div>
+            )}
+          </div>
+        </TabsContent>
 
-              {/* Date Picker */}
-              <div className="p-6 border-b border-slate-100">
-                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
-                  Select New Date
-                </p>
-                <input
-                  type="date"
-                  value={format(rescheduleModal.selectedDate, "yyyy-MM-dd")}
-                  min={format(new Date(), "yyyy-MM-dd")}
-                  onChange={(e) => {
-                    const date = new Date(e.target.value + "T00:00:00");
-                    fetchRescheduleSlots(date);
-                  }}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
-              </div>
-
-              {/* Available Slots */}
-              <div className="p-6">
-                <p className="text-xs font-bold text-slate-400 uppercase mb-3">
-                  Available Slots (AEST)
-                </p>
-
-                {rescheduleModal.loadingSlots ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+        <TabsContent value="availability">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2 space-y-6">
+              <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="text-2xl font-black dark:text-white">Weekly Schedule</CardTitle>
+                  <CardDescription className="dark:text-slate-400">Set your standard working hours for each day of the week.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8 space-y-6">
+                  {DAYS.map((day, index) => {
+                    const slot = availability.find(a => a.day_of_week === index);
+                    return (
+                      <div key={day} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center gap-4">
+                          <Switch 
+                            checked={slot?.is_enabled ?? false} 
+                            onCheckedChange={(checked: boolean) => handleAvailabilityToggle(index, checked)}
+                          />
+                          <span className={`text-sm font-black uppercase tracking-widest ${slot?.is_enabled ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>
+                            {day}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-4">
+                          <Input 
+                            type="time" 
+                            value={slot?.start_time ?? "09:00"} 
+                            onChange={(e) => handleTimeChange(index, "start_time", e.target.value)}
+                            disabled={!slot?.is_enabled}
+                            className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
+                          />
+                          <span className="text-slate-300 font-bold">to</span>
+                          <Input 
+                            type="time" 
+                            value={slot?.end_time ?? "17:00"} 
+                            onChange={(e) => handleTimeChange(index, "end_time", e.target.value)}
+                            disabled={!slot?.is_enabled}
+                            className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="pt-4">
+                    <Button onClick={saveAvailability} disabled={isSaving} className="w-full h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest shadow-xl hover:bg-[#064e3b]">
+                      {isSaving ? "Saving Configuration..." : "Save Weekly Schedule"}
+                    </Button>
                   </div>
-                ) : rescheduleModal.availableSlots.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-slate-400 text-sm">
-                      {rescheduleModal.selectedDate
-                        ? "No available slots for this date. Pick a date above."
-                        : "Select a date to see available slots."}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
-                    {rescheduleModal.availableSlots.map((slot) => (
-                      <button
-                        key={slot.id}
-                        onClick={() =>
-                          setRescheduleModal((prev) => ({
-                            ...prev,
-                            selectedNewSlotId: slot.id,
-                          }))
-                        }
-                        className={`p-3 rounded-xl text-sm font-semibold transition-all ${
-                          rescheduleModal.selectedNewSlotId === slot.id
-                            ? "bg-blue-600 text-white shadow-lg"
-                            : "bg-slate-50 text-slate-700 hover:bg-blue-50 hover:text-blue-600"
-                        }`}
-                      >
-                        {formatTimeAEST(slot.start_time)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </CardContent>
+              </Card>
+            </div>
 
-              {/* Action Buttons */}
-              <div className="p-6 border-t border-slate-100 flex items-center justify-end gap-3">
-                <button
-                  onClick={() =>
-                    setRescheduleModal((prev) => ({ ...prev, open: false }))
-                  }
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleReschedule}
-                  disabled={
-                    !rescheduleModal.selectedNewSlotId ||
-                    rescheduleModal.submitting
-                  }
-                  className="px-6 py-2 text-sm font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-                >
-                  {rescheduleModal.submitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Rescheduling...
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCw className="w-4 h-4" />
-                      Confirm Reschedule
-                    </>
-                  )}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="space-y-6">
+              <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="text-xl font-black dark:text-white">Blocked Dates</CardTitle>
+                  <CardDescription className="dark:text-slate-400">Add specific dates where you are unavailable.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <Calendar
+                    selected={selectedBlockedDate}
+                    onSelect={setSelectedBlockedDate}
+                    className="mb-6 rounded-xl border border-slate-100 dark:border-slate-700 p-4 dark:text-white"
+                  />
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-12 rounded-xl border-2 font-black uppercase tracking-widest text-xs mb-8 dark:text-white dark:border-slate-700"
+                    onClick={handleAddBlockedDate}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Block Selected Date
+                  </Button>
+
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Currently Blocked</p>
+                    {blockedDates.length > 0 ? (
+                      blockedDates.map((bd) => (
+                        <div key={bd.id} className="flex items-center justify-between p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20">
+                          <span className="text-sm font-bold text-red-700 dark:text-red-400">{format(new Date(bd.date), "MMM d, yyyy")}</span>
+                          <button onClick={() => handleRemoveBlockedDate(bd.id)} className="text-red-400 hover:text-red-600">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-slate-400 italic font-medium">No dates are currently blocked.</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

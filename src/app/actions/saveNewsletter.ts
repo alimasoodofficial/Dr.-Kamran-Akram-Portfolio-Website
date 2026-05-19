@@ -64,6 +64,20 @@ export async function saveNewsletter(
 
       if (subscribers && subscribers.length > 0) {
         const emails = subscribers.map((s) => s.email);
+
+        // Generate a clean preview if content is JSON
+        let cleanContent = payload.content;
+        try {
+          const parsed = JSON.parse(payload.content);
+          if (Array.isArray(parsed)) {
+            // Find the first paragraph or list section for preview
+            const firstTextSection = parsed.find(s => s.type === 'paragraph' || s.type === 'list');
+            cleanContent = firstTextSection ? firstTextSection.description : payload.content;
+          }
+        } catch (e) {
+          // Not JSON, use as is
+        }
+
         await sendNewsletterEmails(
           emails,
           {
@@ -71,7 +85,7 @@ export async function saveNewsletter(
             title: payload.title,
             subtitle: payload.subtitle,
             hero_image_url: payload.hero_image_url,
-            content: payload.content,
+            content: cleanContent, // Send clean preview
           },
           baseUrl
         );
