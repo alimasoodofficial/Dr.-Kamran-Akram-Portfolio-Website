@@ -86,8 +86,7 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
   
   // Custom date overrides state
   const [overrideType, setOverrideType] = useState<"standard" | "off" | "custom" >("standard");
-  const [customStartTime, setCustomStartTime] = useState("09:00");
-  const [customEndTime, setCustomEndTime] = useState("17:00");
+  const [customRanges, setCustomRanges] = useState<{ start: string; end: string }[]>([{ start: "09:00", end: "17:00" }]);
 
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -250,17 +249,19 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     if (existing) {
       if (existing.reason && existing.reason.startsWith("CUSTOM:")) {
         setOverrideType("custom");
-        const timesPart = existing.reason.substring(7);
-        const [start, end] = timesPart.split("-");
-        setCustomStartTime(start || "09:00");
-        setCustomEndTime(end || "17:00");
+        const rangesPart = existing.reason.substring(7);
+        const parsed = rangesPart.split(",").map(r => {
+          const [start, end] = r.split("-");
+          return { start: start || "09:00", end: end || "17:00" };
+        });
+        setCustomRanges(parsed.length > 0 ? parsed : [{ start: "09:00", end: "17:00" }]);
       } else {
         setOverrideType("off");
+        setCustomRanges([{ start: "09:00", end: "17:00" }]);
       }
     } else {
       setOverrideType("standard");
-      setCustomStartTime("09:00");
-      setCustomEndTime("17:00");
+      setCustomRanges([{ start: "09:00", end: "17:00" }]);
     }
   };
 
@@ -268,7 +269,8 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     if (!selectedBlockedDate) return;
     setIsSaving(true);
     const dateStr = format(selectedBlockedDate, "yyyy-MM-dd");
-    const result = await saveDateOverride(dateStr, overrideType, customStartTime, customEndTime);
+    const rangesStr = customRanges.map(r => `${r.start}-${r.end}`).join(",");
+    const result = await saveDateOverride(dateStr, overrideType, rangesStr);
     
     if (result.success) {
       toast({ title: "Date schedule updated successfully" });
@@ -277,7 +279,7 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
       if (overrideType === "standard") {
         setBlockedDates(prev => prev.filter(bd => bd.date !== dateStr));
       } else {
-        const reason = overrideType === "off" ? "OFF" : `CUSTOM:${customStartTime}-${customEndTime}`;
+        const reason = overrideType === "off" ? "OFF" : `CUSTOM:${rangesStr}`;
         setBlockedDates(prev => {
           const filtered = prev.filter(bd => bd.date !== dateStr);
           return [...filtered, { id: Math.random().toString(), date: dateStr, reason }];
@@ -672,21 +674,49 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
 
                       {overrideType === "custom" && (
                         <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
-                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">Custom Hours</label>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              type="time"
-                              value={customStartTime}
-                              onChange={(e) => setCustomStartTime(e.target.value)}
-                              className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white"
-                            />
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">to</span>
-                            <Input
-                              type="time"
-                              value={customEndTime}
-                              onChange={(e) => setCustomEndTime(e.target.value)}
-                              className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white"
-                            />
+                          <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">Custom Hours</label>
+                            <button
+                              type="button"
+                              onClick={() => setCustomRanges(prev => [...prev, { start: "09:00", end: "17:00" }])}
+                              className="text-[10px] text-blue-500 hover:text-blue-600 font-black uppercase tracking-wider"
+                            >
+                              + Add Range
+                            </button>
+                          </div>
+                          <div className="space-y-2">
+                            {customRanges.map((range, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <Input
+                                  type="time"
+                                  value={range.start}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, start: val } : r));
+                                  }}
+                                  className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
+                                />
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">to</span>
+                                <Input
+                                  type="time"
+                                  value={range.end}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, end: val } : r));
+                                  }}
+                                  className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
+                                />
+                                {customRanges.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setCustomRanges(prev => prev.filter((_, i) => i !== index))}
+                                    className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
@@ -722,8 +752,10 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                         let displayReason = "OFF / Unavailable";
                         if (isCustom) {
                           const timesPart = bd.reason.substring(7);
-                          const [start, end] = timesPart.split("-");
-                          displayReason = `${start} to ${end}`;
+                          displayReason = timesPart.split(",").map(range => {
+                            const [start, end] = range.split("-");
+                            return `${start} to ${end}`;
+                          }).join(", ");
                         }
                         
                         return (
