@@ -332,11 +332,21 @@ export function MeetingScheduler({ availability, blockedDates }: MeetingSchedule
                     setSelectedTime(null);
                   }}
                   className="w-full dark:text-white"
-                  disabled={(date) => 
-                    date < startOfToday() || 
-                    blockedDates.some(bd => isSameDay(new Date(bd.date), date)) ||
-                    !availability.some(a => a.day_of_week === date.getDay() && a.is_enabled)
-                  }
+                  disabled={(date) => {
+                    if (date < startOfToday()) return true;
+
+                    // Check if date has an override in blockedDates
+                    const block = blockedDates.find(bd => isSameDay(new Date(bd.date), date));
+                    if (block && (!block.reason || !block.reason.startsWith("CUSTOM:"))) {
+                      return true; // Date is marked off/unavailable
+                    }
+
+                    // A date is enabled if either its weekly weekday is enabled OR it has a custom hours override
+                    const hasWeekly = availability.some(a => a.day_of_week === date.getDay() && a.is_enabled);
+                    const hasCustom = !!(block && block.reason && block.reason.startsWith("CUSTOM:"));
+
+                    return !hasWeekly && !hasCustom;
+                  }}
                 />
               </div>
 
