@@ -24,7 +24,7 @@ import {
   X
 } from "lucide-react";
 import { Booking, updateBookingStatus, deleteBooking, updateBooking, createBooking } from "@/app/actions/bookings";
-import { AvailabilitySlot, BlockedDate, updateAvailability, addBlockedDate, removeBlockedDate, getTimeSlots } from "@/app/actions/availability";
+import { AvailabilitySlot, BlockedDate, updateAvailability, addBlockedDate, removeBlockedDate, getTimeSlots, saveDateOverride } from "@/app/actions/availability";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -84,9 +84,11 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
   const [editingBookingId, setEditingBookingId] = useState<string | null>(null);
   const [newBookingDate, setNewBookingDate] = useState<Date | undefined>(new Date());
   
-  // Manual override state
-  const [overrideDate, setOverrideDate] = useState<Date | undefined>(undefined);
-  const [overrideTimes, setOverrideTimes] = useState({ start: "09:00", end: "17:00" });
+  // Custom date overrides state
+  const [overrideType, setOverrideType] = useState<"standard" | "off" | "custom" >("standard");
+  const [customStartTime, setCustomStartTime] = useState("09:00");
+  const [customEndTime, setCustomEndTime] = useState("17:00");
+
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [newBookingData, setNewBookingData] = useState({
@@ -237,22 +239,65 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     setIsSaving(false);
   };
 
-  const handleAddBlockedDate = async () => {
-    if (!selectedBlockedDate) return;
-    const dateStr = format(selectedBlockedDate, "yyyy-MM-dd");
-    const result = await addBlockedDate(dateStr, "Blocked by admin");
-    if (result.success) {
-      const newBlockedDate = { id: Math.random().toString(), date: dateStr, reason: "Blocked" };
-      setBlockedDates(prev => [...prev, newBlockedDate]);
-      toast({ title: "Date blocked" });
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedBlockedDate(date);
+    if (!date) {
+      setOverrideType("standard");
+      return;
     }
+    const dateStr = format(date, "yyyy-MM-dd");
+    const existing = blockedDates.find(bd => bd.date === dateStr);
+    if (existing) {
+      if (existing.reason && existing.reason.startsWith("CUSTOM:")) {
+        setOverrideType("custom");
+        const timesPart = existing.reason.substring(7);
+        const [start, end] = timesPart.split("-");
+        setCustomStartTime(start || "09:00");
+        setCustomEndTime(end || "17:00");
+      } else {
+        setOverrideType("off");
+      }
+    } else {
+      setOverrideType("standard");
+      setCustomStartTime("09:00");
+      setCustomEndTime("17:00");
+    }
+  };
+
+  const handleSaveDateOverride = async () => {
+    if (!selectedBlockedDate) return;
+    setIsSaving(true);
+    const dateStr = format(selectedBlockedDate, "yyyy-MM-dd");
+    const result = await saveDateOverride(dateStr, overrideType, customStartTime, customEndTime);
+    
+    if (result.success) {
+      toast({ title: "Date schedule updated successfully" });
+      
+      // Update local state blockedDates
+      if (overrideType === "standard") {
+        setBlockedDates(prev => prev.filter(bd => bd.date !== dateStr));
+      } else {
+        const reason = overrideType === "off" ? "OFF" : `CUSTOM:${customStartTime}-${customEndTime}`;
+        setBlockedDates(prev => {
+          const filtered = prev.filter(bd => bd.date !== dateStr);
+          return [...filtered, { id: Math.random().toString(), date: dateStr, reason }];
+        });
+      }
+    } else {
+      toast({ 
+        title: "Error saving schedule", 
+        description: result.error || "Could not save the schedule.", 
+        variant: "destructive" 
+      });
+    }
+    setIsSaving(false);
   };
 
   const handleRemoveBlockedDate = async (id: string) => {
     const result = await removeBlockedDate(id);
     if (result.success) {
       setBlockedDates(prev => prev.filter(bd => bd.id !== id));
-      toast({ title: "Block removed" });
+      toast({ title: "Override removed" });
     }
   };
 
@@ -565,37 +610,151 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
             <div className="space-y-6">
               <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
                 <CardHeader className="p-8 pb-4">
-                  <CardTitle className="text-xl font-black dark:text-white">Blocked Dates</CardTitle>
-                  <CardDescription className="dark:text-slate-400">Add specific dates where you are unavailable.</CardDescription>
+                  <CardTitle className="text-xl font-black dark:text-white">Custom Date Settings</CardTitle>
+                  <CardDescription className="dark:text-slate-400">Configure schedule overrides or take specific days off.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-8">
                   <Calendar
                     selected={selectedBlockedDate}
-                    onSelect={setSelectedBlockedDate}
+                    onSelect={handleDateSelect}
                     className="mb-6 rounded-xl border border-slate-100 dark:border-slate-700 p-4 dark:text-white"
                   />
-                  <Button 
-                    variant="outline" 
-                    className="w-full h-12 rounded-xl border-2 font-black uppercase tracking-widest text-xs mb-8 dark:text-white dark:border-slate-700"
-                    onClick={handleAddBlockedDate}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Block Selected Date
-                  </Button>
 
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Currently Blocked</p>
-                    {blockedDates.length > 0 ? (
-                      blockedDates.map((bd) => (
-                        <div key={bd.id} className="flex items-center justify-between p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20">
-                          <span className="text-sm font-bold text-red-700 dark:text-red-400">{format(new Date(bd.date), "MMM d, yyyy")}</span>
-                          <button onClick={() => handleRemoveBlockedDate(bd.id)} className="text-red-400 hover:text-red-600">
-                            <X className="w-4 h-4" />
+                  {selectedBlockedDate ? (
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-4 mb-6">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-widest text-primary">
+                          Schedule for {format(selectedBlockedDate, "MMM d, yyyy")}
+                        </span>
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Availability Status</label>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setOverrideType("standard")}
+                            className={cn(
+                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
+                              overrideType === "standard"
+                                ? "bg-primary border-primary text-white"
+                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/20"
+                            )}
+                          >
+                            Weekly
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setOverrideType("off")}
+                            className={cn(
+                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
+                              overrideType === "off"
+                                ? "bg-red-500 border-red-500 text-white"
+                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-500/20"
+                            )}
+                          >
+                            Off
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setOverrideType("custom")}
+                            className={cn(
+                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
+                              overrideType === "custom"
+                                ? "bg-blue-500 border-blue-500 text-white"
+                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-500/20"
+                            )}
+                          >
+                            Custom
                           </button>
                         </div>
-                      ))
+                      </div>
+
+                      {overrideType === "custom" && (
+                        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">Custom Hours</label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="time"
+                              value={customStartTime}
+                              onChange={(e) => setCustomStartTime(e.target.value)}
+                              className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white"
+                            />
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">to</span>
+                            <Input
+                              type="time"
+                              value={customEndTime}
+                              onChange={(e) => setCustomEndTime(e.target.value)}
+                              className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <Button
+                        onClick={handleSaveDateOverride}
+                        disabled={isSaving}
+                        className={cn(
+                          "w-full h-11 rounded-xl text-xs font-black uppercase tracking-widest text-white shadow-md transition-all",
+                          overrideType === "standard"
+                            ? "bg-slate-600 hover:bg-slate-700"
+                            : overrideType === "off"
+                              ? "bg-red-500 hover:bg-red-600"
+                              : "bg-blue-500 hover:bg-blue-600"
+                        )}
+                      >
+                        {isSaving ? "Saving..." : "Save Date Schedule"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="p-4 mb-6 text-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-relaxed">
+                        Select a date on the calendar<br />to edit its schedule
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Date-Specific Overrides</p>
+                    {blockedDates.length > 0 ? (
+                      blockedDates.map((bd) => {
+                        const isCustom = bd.reason && bd.reason.startsWith("CUSTOM:");
+                        let displayReason = "OFF / Unavailable";
+                        if (isCustom) {
+                          const timesPart = bd.reason.substring(7);
+                          const [start, end] = timesPart.split("-");
+                          displayReason = `${start} to ${end}`;
+                        }
+                        
+                        return (
+                          <div 
+                            key={bd.id} 
+                            className={cn(
+                              "flex items-center justify-between p-3 rounded-xl border transition-all",
+                              isCustom 
+                                ? "bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/20" 
+                                : "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/20"
+                            )}
+                          >
+                            <div className="flex flex-col">
+                              <span className={cn(
+                                "text-xs font-black",
+                                isCustom ? "text-blue-700 dark:text-blue-400" : "text-red-700 dark:text-red-400"
+                              )}>
+                                {format(new Date(bd.date), "MMM d, yyyy")}
+                              </span>
+                              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 mt-0.5">
+                                {displayReason}
+                              </span>
+                            </div>
+                            <button onClick={() => handleRemoveBlockedDate(bd.id)} className="text-slate-400 hover:text-red-600 transition-colors">
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        );
+                      })
                     ) : (
-                      <p className="text-xs text-slate-400 italic font-medium">No dates are currently blocked.</p>
+                      <p className="text-xs text-slate-400 italic font-medium">No custom date schedules set.</p>
                     )}
                   </div>
                 </CardContent>

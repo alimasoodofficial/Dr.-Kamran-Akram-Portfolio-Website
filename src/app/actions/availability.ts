@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { verifyAdminSession } from "@/lib/adminAuth";
 import { parseISO, addDays, format, addMinutes, isBefore, isSameDay, startOfDay, endOfDay } from "date-fns";
+import { randomUUID } from "crypto";
 
 export interface AvailabilitySlot {
   id: string;
@@ -48,7 +49,7 @@ export async function updateAvailability(slots: AvailabilitySlot[]) {
   const supabase = getSupabaseService();
 
   const mappedSlots = slots.map(slot => ({
-    ...(String(slot.id).startsWith("new-") ? {} : { id: slot.id }),
+    id: String(slot.id).startsWith("new-") ? randomUUID() : slot.id,
     day_of_week: slot.day_of_week,
     start_time: slot.start_time.length === 5 ? slot.start_time + ":00" : slot.start_time,
     end_time:   slot.end_time.length   === 5 ? slot.end_time   + ":00" : slot.end_time,
@@ -120,6 +121,51 @@ export async function removeBlockedDate(id: string) {
   return { success: true };
 }
 
+export async function saveDateOverride(
+  date: string,
+  type: "standard" | "off" | "custom",
+  startTime?: string,
+  endTime?: string
+) {
+  if (!(await verifyAdminSession())) {
+    return { success: false, error: "Unauthorized access: Admin privileges required." };
+  }
+
+  const supabase = getSupabaseService();
+
+  if (type === "standard") {
+    const { error } = await supabase
+      .from("blocked_dates")
+      .delete()
+      .eq("date", date);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  }
+
+  const reason = type === "off" ? "OFF" : `CUSTOM:${startTime}-${endTime}`;
+
+  const { data: existing } = await supabase
+    .from("blocked_dates")
+    .select("id")
+    .eq("date", date)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("blocked_dates")
+      .update({ reason })
+      .eq("id", existing.id);
+    if (error) return { success: false, error: error.message };
+  } else {
+    const { error } = await supabase
+      .from("blocked_dates")
+      .insert([{ date, reason }]);
+    if (error) return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
 export async function getTimeSlots(dateString: string, durationMinutes: number) {
   const supabase = createSupabaseServerClient();
 
@@ -127,23 +173,48 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
   const requestedDate = new Date(year, month - 1, day);
   const dayOfWeek = requestedDate.getDay();
 
-  const { data: availability, error: availError } = await supabase
-    .from("availability")
-    .select("id, day_of_week, start_time, end_time, is_enabled")
-    .eq("day_of_week", dayOfWeek)
-    .single();
-
-  if (availError || !availability || availability.is_enabled === false) {
-    return [];
-  }
-
-  const { data: blockedDates } = await supabase
+  // 1. Fetch any blocked_dates/override entries for this date
+  const { data: blockedRows } = await supabase
     .from("blocked_dates")
-    .select("id")
+    .select("id, reason")
     .eq("date", dateString);
 
-  if (blockedDates && blockedDates.length > 0) {
+  const block = blockedRows && blockedRows[0];
+
+  // If the date is completely blocked off (either standard block or explicit OFF)
+  if (block && (!block.reason || !block.reason.startsWith("CUSTOM:"))) {
     return []; 
+  }
+
+  let start_time = "";
+  let end_time = "";
+  let is_override_enabled = false;
+
+  // If there is a custom hours override, parse it
+  if (block && block.reason && block.reason.startsWith("CUSTOM:")) {
+    const timesPart = block.reason.substring(7); // e.g. "09:00-12:30"
+    const [customStart, customEnd] = timesPart.split("-");
+    if (customStart && customEnd) {
+      start_time = customStart;
+      end_time = customEnd;
+      is_override_enabled = true;
+    }
+  }
+
+  // If no custom override exists, fallback to standard weekly schedule
+  if (!is_override_enabled) {
+    const { data: availability, error: availError } = await supabase
+      .from("availability")
+      .select("id, day_of_week, start_time, end_time, is_enabled")
+      .eq("day_of_week", dayOfWeek)
+      .single();
+
+    if (availError || !availability || availability.is_enabled === false) {
+      return [];
+    }
+
+    start_time = availability.start_time;
+    end_time = availability.end_time;
   }
 
   const startOfDayObj = new Date(year, month - 1, day, 0, 0, 0);
@@ -161,8 +232,8 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
     return [];
   }
 
-  const [sH, sM] = availability.start_time.split(":").map(Number);
-  const [eH, eM] = availability.end_time.split(":").map(Number);
+  const [sH, sM] = start_time.split(":").map(Number);
+  const [eH, eM] = end_time.split(":").map(Number);
 
   const workStart = new Date(year, month - 1, day, sH, sM);
   const workEnd   = new Date(year, month - 1, day, eH, eM);

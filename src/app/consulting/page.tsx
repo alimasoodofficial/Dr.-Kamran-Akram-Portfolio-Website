@@ -1,8 +1,7 @@
 import Banner from "@/components/sections/Banner";
-import { PricingPlanDemo } from "@/components/ui/PricingPlan";
 import ConsultationGrid from "@/components/ui/BentoCard";
 import WorkTimeline from "@/components/sections/WorkTimeline";
-import { MeetingScheduler } from "@/components/forms/MeetingScheduler";
+import ConsultingPageClient from "@/components/sections/ConsultingPageClient";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -76,23 +75,7 @@ export default async function ConsultingPage() {
         <WorkTimeline />
       </section>
 
-      <section className="py-10 bg-slate-50 dark:bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Choose Your <span className="text-primary">Plan</span></h2>
-            <p className="text-slate-500 font-medium">Select the duration that fits your needs.</p>
-          </div>
-          <PricingPlanDemo />
-        </div>
-      </section>
-
-      <section id="book-now" className="py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Schedule Your <span className="text-primary">Call</span></h2>
-          <p className="text-slate-500 font-medium max-w-2xl mx-auto">Book a slot directly into my calendar. You'll receive a meeting link immediately after confirmation.</p>
-        </div>
-        <MeetingScheduler availability={availability as any} blockedDates={blockedDates as any} />
-      </section>
+      <ConsultingPageClient availability={availability as any} blockedDates={blockedDates as any} />
     </>
   );
 }
