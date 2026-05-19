@@ -34,11 +34,12 @@ import { cn } from "@/lib/utils";
 interface MeetingSchedulerProps {
   availability: AvailabilitySlot[];
   blockedDates: BlockedDate[];
+  selectedPlan?: { name: string; duration: number } | null;
 }
 
 type Step = "info" | "calendar" | "success";
 
-export function MeetingScheduler({ availability, blockedDates }: MeetingSchedulerProps) {
+export function MeetingScheduler({ availability, blockedDates, selectedPlan }: MeetingSchedulerProps) {
   const { toast } = useToast();
   const [step, setStep] = useState<Step>("info");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -54,6 +55,22 @@ export function MeetingScheduler({ availability, blockedDates }: MeetingSchedule
     duration: 30 as 30 | 60,
     notes: "",
   });
+
+  useEffect(() => {
+    if (selectedPlan) {
+      setFormData(prev => {
+        const cleanedNotes = prev.notes.startsWith("Selected Package:")
+          ? prev.notes.split("\n").slice(1).join("\n")
+          : prev.notes;
+        
+        return {
+          ...prev,
+          duration: selectedPlan.duration as 30 | 60,
+          notes: `Selected Package: ${selectedPlan.name}\n${cleanedNotes}`.trim()
+        };
+      });
+    }
+  }, [selectedPlan]);
 
   useEffect(() => {
     if (selectedDate) {

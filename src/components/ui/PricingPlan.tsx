@@ -58,7 +58,7 @@ const pricingData: PricingTier[] = [
   },
 ];
 
-const PricingCard = ({ tier }: { tier: PricingTier }) => {
+const PricingCard = ({ tier, onSelect }: { tier: PricingTier; onSelect?: () => void }) => {
   return (
     <motion.div
       whileHover={{ y: -10 }}
@@ -134,6 +134,7 @@ const PricingCard = ({ tier }: { tier: PricingTier }) => {
 
       {/* Button */}
       <button
+        onClick={onSelect}
         className={`w-full py-4 rounded-2xl font-black transition-all duration-300 ${
           tier.popular
             ? "bg-white text-[#134e4a] hover:bg-[#FFD600] hover:text-black shadow-[0_10px_20px_rgba(255,255,255,0.1)]"
@@ -146,7 +147,16 @@ const PricingCard = ({ tier }: { tier: PricingTier }) => {
   );
 };
 
-export function PricingPlanDemo() {
+interface PricingPlanDemoProps {
+  onSelectPlan?: (planName: string, duration: number) => void;
+}
+
+export function PricingPlanDemo({ onSelectPlan }: PricingPlanDemoProps) {
+  const getDuration = (name: string) => {
+    if (name === "Deep-Dive" || name === "Mentorship") return 60;
+    return 30; // Quick Chat and Quick-Fire
+  };
+
   return (
     <div className="py-20 px-4">
       <div className="max-w-7xl mx-auto text-center mb-16 px-4 md:px-0">
@@ -163,7 +173,11 @@ export function PricingPlanDemo() {
 
       <div className="flex justify-center gap-6 md:gap-6 mx-auto">
         {pricingData.map((tier, index) => (
-          <PricingCard key={index} tier={tier} />
+          <PricingCard 
+            key={index} 
+            tier={tier} 
+            onSelect={() => onSelectPlan?.(tier.name, getDuration(tier.name))}
+          />
         ))}
       </div>
     </div>
