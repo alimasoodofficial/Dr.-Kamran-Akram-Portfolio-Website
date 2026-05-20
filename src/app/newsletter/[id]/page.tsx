@@ -140,10 +140,12 @@ function SectionRenderer({ section }: { section: NewsletterSection }) {
             )}
 
             {section.type === "embed" && section.embedCode && (
-                <div 
-                    className="rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800"
-                    dangerouslySetInnerHTML={{ __html: section.embedCode }} 
-                />
+                <div className="flex justify-center w-full">
+                    <div 
+                        className="w-fit max-w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 [&_iframe]:max-w-full [&_iframe]:aspect-video [&_iframe]:h-auto"
+                        dangerouslySetInnerHTML={{ __html: section.embedCode }} 
+                    />
+                </div>
             )}
 
             {section.buttons && section.buttons.length > 0 && (
@@ -290,7 +292,7 @@ export default async function NewsletterDetailPage({
                         <Mail className="w-4 h-4 text-emerald-400" />
                         Join the Inner Circle
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">Stay ahead of the curve</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-white! leading-tight">Stay ahead of the curve</h3>
                     <p className="text-slate-400 max-w-xl mx-auto text-base">
                         Get these exclusive insights delivered directly to your inbox every week. Join over 5,000+ industry leaders.
                     </p>
