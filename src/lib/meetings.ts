@@ -5,7 +5,7 @@
  */
 
 // Google OAuth2 Client Setup
-const GOOGLE_REDIRECT_URI = 
+const GOOGLE_REDIRECT_URI =
   process.env.GOOGLE_REDIRECT_URI && process.env.GOOGLE_REDIRECT_URI !== 'your_google_redirect_uri'
     ? process.env.GOOGLE_REDIRECT_URI
     : 'http://localhost:3000';
@@ -46,7 +46,7 @@ async function getZoomAccessToken() {
  */
 async function createZoomMeeting(details: { topic: string; startTime: string; duration: number }) {
   const token = await getZoomAccessToken();
-  
+
   const response = await fetch('https://api.zoom.us/v2/users/me/meetings', {
     method: 'POST',
     headers: {
@@ -81,17 +81,17 @@ async function createZoomMeeting(details: { topic: string; startTime: string; du
  */
 async function createGoogleMeet(details: { topic: string; startTime: string; duration: number; userEmail?: string }) {
   console.log('Creating Google Meet with details:', details);
-  
+
   // 1. Validate environment
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
   if (!clientId || !clientSecret || !refreshToken) {
-    console.error('Missing Google Environment Variables:', { 
-      hasClientId: !!clientId, 
-      hasClientSecret: !!clientSecret, 
-      hasRefreshToken: !!refreshToken 
+    console.error('Missing Google Environment Variables:', {
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+      hasRefreshToken: !!refreshToken
     });
     throw new Error('Google environment variables are missing');
   }
@@ -125,7 +125,7 @@ async function createGoogleMeet(details: { topic: string; startTime: string; dur
   // 5. Construct Event
   const event: any = {
     summary: details.topic,
-    description: 'Consultation - Velto Labs',
+    description: 'Consultation -',
     start: {
       dateTime: start.toISOString(),
       timeZone: 'UTC',
@@ -156,7 +156,7 @@ async function createGoogleMeet(details: { topic: string; startTime: string; dur
 
     // Extract Google Meet link
     let meetLink = res.data.hangoutLink;
-    
+
     if (!meetLink && res.data.conferenceData?.entryPoints) {
       const videoEntryPoint = res.data.conferenceData.entryPoints.find(
         (ep: any) => ep.entryPointType === 'video'
@@ -191,7 +191,7 @@ export async function generateMeetingLink(
   }
 ) {
   console.log(`Generating meeting link for ${platform}...`);
-  
+
   try {
     if (platform === 'Zoom') {
       return await createZoomMeeting(details);
