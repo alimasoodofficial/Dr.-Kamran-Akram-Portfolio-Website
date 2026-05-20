@@ -260,7 +260,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
             {/* Main Form */}
             <div className="lg:col-span-8">
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl">
+              <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl">
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                   <User className="text-primary" /> Basic Information
                 </h3>
@@ -269,7 +269,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Full Name *</label>
                     <Input 
-                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
                       placeholder="Jane Smith"
                       value={formData.fullName}
                       onChange={(e) => setFormData({...formData, fullName: e.target.value})}
@@ -279,7 +279,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Work Email *</label>
                     <Input 
                       type="email"
-                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
                       placeholder="jane@company.com"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -291,10 +291,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Preferred Platform *</label>
                     <Select value={formData.platform} onValueChange={(v: string) => setFormData({...formData, platform: v as any})}>
-                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900  dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-2xl bg-white">
+                      <SelectContent className="rounded-2xl bg-white dark:bg-slate-800">
                         <SelectItem value="Zoom">Zoom Video</SelectItem>
                         <SelectItem value="Google Meet">Google Meet</SelectItem>
                       </SelectContent>
@@ -303,10 +303,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Duration *</label>
                     <Select value={formData.duration.toString()} onValueChange={(v: string) => setFormData({...formData, duration: parseInt(v) as 15 | 30 | 60})}>
-                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900  dark:border-slate-700 dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-2xl">
+                      <SelectContent className="rounded-2xl bg-white dark:bg-slate-800">
                         <SelectItem value="15">15 Minutes (Quick Chat)</SelectItem>
                         <SelectItem value="30">30 Minutes (Standard)</SelectItem>
                         <SelectItem value="60">60 Minutes (Deep Dive)</SelectItem>
@@ -318,7 +318,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                 <div className="space-y-3 mb-10">
                   <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Notes (Optional)</label>
                   <Textarea 
-                    className="rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all min-h-[120px] pt-4 dark:text-white"
+                    className="rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all min-h-[120px] pt-4 dark:text-white"
                     placeholder="Briefly describe your enquiry..."
                     value={formData.notes}
                     onChange={(e) => setFormData({...formData, notes: e.target.value})}
@@ -362,7 +362,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Calendar Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl h-fit">
+              <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl h-fit">
                 <div className="flex items-center gap-4 mb-8">
                   <div className="p-3 bg-primary/10 text-primary rounded-xl">
                     <CalendarIcon className="w-6 h-6" />
@@ -376,7 +376,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     setSelectedDate(date);
                     setSelectedTime(null);
                   }}
-                  className="w-full dark:text-white"
+                  className="w-full dark:text-white dark:bg-slate-950"
                   disabled={(date) => {
                     if (date < startOfToday()) return true;
 
@@ -396,7 +396,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
               </div>
 
               {/* Slots Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl">
+              <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl">
                 <div className="flex items-center gap-4 mb-8">
                   <div className="p-3 bg-primary/10 text-primary rounded-xl">
                     <Clock className="w-6 h-6" />

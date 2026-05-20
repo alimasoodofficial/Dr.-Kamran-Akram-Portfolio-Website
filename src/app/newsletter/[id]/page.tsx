@@ -197,30 +197,36 @@ export default async function NewsletterDetailPage({
   const readTime = Math.max(1, Math.ceil(wordCount / 200));
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] pb-32 font-sans">
-      {/* ── Immersive Hero Background ─────────────────────────────────── */}
-      <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden">
-        {newsletter.hero_image_url ? (
-          <Image
-            src={newsletter.hero_image_url}
-            alt={newsletter.title}
-            fill
-            priority
-            className="object-cover scale-105 animate-slow-zoom"
-            quality={100}
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900" />
-        )}
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#010403] pb-32 font-sans">
+      <div className="max-w-4xl mx-auto px-6 pt-12 space-y-8">
+        
+        {/* Back link above the article */}
+        <div className="flex items-center justify-between">
+          <Link href="/newsletter" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-emerald-500 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Newsletter
+          </Link>
+        </div>
 
-      {/* ── Overlapping Content Card ─────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-6 -mt-64 relative z-20">
-        <div className="bg-white dark:bg-[#111827] rounded-[3.5rem] p-8 md:p-16 lg:p-24 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-white/20">
+        {/* ── Centered Hero Image ───────────────────────────────────────── */}
+        {newsletter.hero_image_url && (
+          <div className="relative w-full h-[250px] md:h-[400px] rounded-[2rem] overflow-hidden shadow-xl border border-slate-200/60 dark:border-[#0d2a22] mx-auto">
+            <Image
+              src={newsletter.hero_image_url}
+              alt={newsletter.title}
+              fill
+              priority
+              className="object-cover"
+              quality={95}
+            />
+          </div>
+        )}
+
+        {/* ── Heading and Content Card (beneath the image) ───────────────── */}
+        <div className="bg-white dark:bg-[#040d0a] rounded-[2.5rem] p-8 md:p-16 lg:p-20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] border border-slate-200/60 dark:border-[#0d2a22] space-y-12">
           
           {/* Top Metadata */}
-          <div className="flex flex-wrap items-center gap-6 mb-10">
+          <div className="flex flex-wrap items-center gap-6">
             <span className="inline-flex items-center px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-emerald-500/20">
               Special Edition
             </span>
@@ -231,13 +237,13 @@ export default async function NewsletterDetailPage({
           </div>
 
           {/* Title Section */}
-          <div className="space-y-8 mb-16">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tighter max-w-4xl">
+          <div className="space-y-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-[1.15] tracking-tighter">
               {newsletter.title}
             </h1>
             
             {newsletter.subtitle && (
-                <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl border-l-4 border-emerald-500 pl-8">
+                <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l-4 border-emerald-500 pl-6">
                     {newsletter.subtitle}
                 </p>
             )}
@@ -251,7 +257,7 @@ export default async function NewsletterDetailPage({
           </div>
 
           {/* Article Footer with Share & Meta */}
-          <div className="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center gap-10">
                 <div className="space-y-1">
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">Published</span>
@@ -274,24 +280,24 @@ export default async function NewsletterDetailPage({
           </div>
 
           {/* Premium Subscription CTA */}
-          <div className="mt-32">
-              <div className="relative overflow-hidden bg-slate-900 rounded-[3rem] p-8 md:p-16 text-center space-y-8">
+          <div className="mt-24">
+              <div className="relative overflow-hidden bg-slate-900 dark:bg-emerald-950/15 border border-slate-800 dark:border-emerald-900/20 rounded-[2.5rem] p-8 md:p-12 text-center space-y-6">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 blur-[100px] translate-y-1/2 -translate-x-1/2" />
                   
-                  <div className="relative z-10 space-y-6">
+                  <div className="relative z-10 space-y-4">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
                         <Mail className="w-4 h-4 text-emerald-400" />
                         Join the Inner Circle
                     </div>
-                    <h3 className="text-3xl md:text-5xl font-black text-white leading-tight">Stay ahead of the curve</h3>
-                    <p className="text-slate-400 max-w-xl mx-auto text-lg">
+                    <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">Stay ahead of the curve</h3>
+                    <p className="text-slate-400 max-w-xl mx-auto text-base">
                         Get these exclusive insights delivered directly to your inbox every week. Join over 5,000+ industry leaders.
                     </p>
                     <div className="pt-4">
                         <Link
                             href="/newsletter"
-                            className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-500 text-white font-black uppercase tracking-widest text-xs rounded-full hover:bg-emerald-600 transition-all shadow-2xl shadow-emerald-500/20"
+                            className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-500 text-white font-black uppercase tracking-widest text-xs rounded-full hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/25"
                         >
                             Subscribe Now
                             <ChevronRight className="w-4 h-4" />
@@ -303,15 +309,15 @@ export default async function NewsletterDetailPage({
               <div className="mt-16 flex items-center justify-between px-4">
                   <Link href="/newsletter" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-emerald-500 transition-colors">
                       <ArrowLeft className="w-4 h-4" />
-                      Back to all issues
+                      Back
                   </Link>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                       © {new Date().getFullYear()} Dr. Kamran Akram
                   </p>
               </div>
           </div>
-        </div>
       </div>
+    </div>
     </div>
   );
 }
