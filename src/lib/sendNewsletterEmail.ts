@@ -14,17 +14,17 @@ export async function sendNewsletterEmails(
   if (!emails || emails.length === 0) return;
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_PORT === "465",
+    host: process.env.EMAIL_SERVER_HOST || "smtp.gmail.com",
+    port: parseInt(process.env.EMAIL_SERVER_PORT || "587"),
+    secure: process.env.EMAIL_SERVER_PORT === "465",
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
+      user: process.env.EMAIL_SERVER_USER,
+      pass: process.env.EMAIL_SERVER_PASSWORD,
     },
   });
 
-  const from = `"${process.env.SMTP_FROM_NAME || "Dr Muhammad Kamran"}" <${
-    process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER
+  const from = `"${process.env.EMAIL_FROM || "Dr Muhammad Kamran"}" <${
+    process.env.EMAIL_SERVER_USER
   }>`;
 
   // Create a quick overview from content (strip markdown/HTML roughly, max 200 chars)

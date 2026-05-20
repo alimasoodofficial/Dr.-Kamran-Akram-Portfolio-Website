@@ -2,12 +2,12 @@ import nodemailer from 'nodemailer';
 
 // Create reusable transporter
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
+  host: process.env.EMAIL_SERVER_HOST,
+  port: parseInt(process.env.EMAIL_SERVER_PORT || '587'),
+  secure: process.env.EMAIL_SERVER_PORT === '465',
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 });
 
@@ -151,7 +151,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
 
         <div class="footer">
           <p>This is an automated confirmation email. Please do not reply to this email.</p>
-          <p>If you have any questions, please contact us at ${process.env.SMTP_FROM_EMAIL}</p>
+          <p>If you have any questions, please contact us at ${process.env.EMAIL_SERVER_USER}</p>
           <p style="margin-top: 20px;">© ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.</p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
   `;
 
   const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
     to: userEmail,
     subject: '✅ Booking Confirmation - Dr. Muhammad Kamran',
     html: htmlContent,
@@ -302,7 +302,7 @@ export async function sendAdminNotification(data: BookingEmailData) {
   `;
 
   const mailOptions = {
-    from: `"Booking System" <${process.env.SMTP_FROM_EMAIL}>`,
+    from: `"Booking System" <${process.env.EMAIL_SERVER_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: `🔔 New Booking: ${userName} (${country}) - ${new Date(startTime).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })}`,
     html: htmlContent,
@@ -439,7 +439,7 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
 
         <div class="footer">
           <p>This is an automated notification. Please do not reply to this email.</p>
-          <p>If you have any questions, please contact us at ${process.env.SMTP_FROM_EMAIL}</p>
+          <p>If you have any questions, please contact us at ${process.env.EMAIL_SERVER_USER}</p>
           <p style="margin-top: 20px;">© ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.</p>
         </div>
       </div>
@@ -448,7 +448,7 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
   `;
 
   const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
     to: userEmail,
     subject: '📅 Appointment Rescheduled - Dr. Kamran Akram',
     html: htmlContent,
@@ -558,7 +558,7 @@ export async function sendAdminRescheduleNotification(data: RescheduleEmailData)
   `;
 
   const mailOptions = {
-    from: `"Booking System" <${process.env.SMTP_FROM_EMAIL}>`,
+    from: `"Booking System" <${process.env.EMAIL_SERVER_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: `📅 Rescheduled: ${userName} - ${new Date(newStartTime).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })}`,
     html: htmlContent,

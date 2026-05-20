@@ -646,3 +646,65 @@ canvas {
     linear-gradient(135deg, #010403 0%, #000000 100%);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #059669;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 rgba(0, 0, 0, 0.03);
+}
+
+/* Custom horizontal scrollbar for single-line textareas/inputs */
+.custom-scrollbar-x {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+}
+
+.dark .custom-scrollbar-x::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 10px;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-thumb:hover {
+  background: #059669;
+}
+
+.custom-scrollbar-x {
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 rgba(0, 0, 0, 0.03);
+}

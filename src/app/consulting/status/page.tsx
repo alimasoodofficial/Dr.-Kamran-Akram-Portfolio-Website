@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default function BookingStatusPage() {
   return (
-    <div className="pt-24 pb-12 bg-[#0b0c12] min-h-screen text-white">
+    <div className="pt-24 pb-12 min-h-screen transition-colors duration-300">
       <Suspense fallback={<Loading />}>
         <StatusClient />
       </Suspense>

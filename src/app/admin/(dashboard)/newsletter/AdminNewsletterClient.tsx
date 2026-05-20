@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import GradientText from "@/components/ui/GradientText";
-import { Plus, Send, Users, ExternalLink, Download, Edit, FileText } from "lucide-react";
+import { Plus, Send, Users, ExternalLink, Download, Edit, FileText, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { Subscriber } from "./page";
+import { useToast } from "@/hooks/use-toast";
+import { deleteSubscriberAction } from "@/app/actions/newsletter";
 
 type Newsletter = {
   id: string;
@@ -58,6 +60,38 @@ export default function AdminNewsletterClient({
   const [activeTab, setActiveTab] = useState<"campaigns" | "subscribers">(
     "campaigns",
   );
+  const [subscribers, setSubscribers] = useState<Subscriber[]>(initialSubscribers);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleDeleteSubscriber = async (id: string, email: string) => {
+    if (!confirm(`Are you sure you want to unsubscribe and delete ${email}?`)) return;
+    setDeletingId(id);
+    try {
+      const result = await deleteSubscriberAction(id);
+      if (result.success) {
+        setSubscribers((prev) => prev.filter((s) => s.id !== id));
+        toast({
+          title: "Subscriber deleted",
+          description: `${email} has been unsubscribed.`,
+        });
+      } else {
+        toast({
+          title: "Error deleting subscriber",
+          description: result.error || "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to contact server.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -77,8 +111,8 @@ export default function AdminNewsletterClient({
         <div className="flex items-center gap-3">
           {activeTab === "subscribers" && (
             <button
-              onClick={() => exportToCsv(initialSubscribers)}
-              disabled={initialSubscribers.length === 0}
+              onClick={() => exportToCsv(subscribers)}
+              disabled={subscribers.length === 0}
               className="flex items-center gap-2 text-xs md:text-sm bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Download className="w-4 h-4" />
@@ -128,7 +162,7 @@ export default function AdminNewsletterClient({
           >
             Subscribers
             <span className="text-xs font-semibold bg-slate-100 text-slate-500 rounded-full px-2 py-0.5">
-              {initialSubscribers.length}
+              {subscribers.length}
             </span>
           </button>
         </nav>
@@ -189,7 +223,7 @@ export default function AdminNewsletterClient({
       ) : (
         /* ── Subscribers tab ─────────────────────────────────────── */
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          {initialSubscribers.length === 0 ? (
+          {subscribers.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-3">
               <Users className="w-10 h-10 opacity-30" />
               <p className="text-sm font-medium">No subscribers yet.</p>
@@ -208,10 +242,13 @@ export default function AdminNewsletterClient({
                     <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
                       Date Joined
                     </th>
+                    <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {initialSubscribers.map((sub) => (
+                  {subscribers.map((sub) => (
                     <tr
                       key={sub.id}
                       className="hover:bg-slate-50 transition-colors"
@@ -235,6 +272,16 @@ export default function AdminNewsletterClient({
                           month: "short",
                           day: "numeric",
                         })}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleDeleteSubscriber(sub.id, sub.email)}
+                          disabled={deletingId === sub.id}
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50"
+                          title="Unsubscribe / Delete Subscriber"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}

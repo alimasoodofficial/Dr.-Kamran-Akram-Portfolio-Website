@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 interface ResourceCardProps {
   title: string;
@@ -67,27 +68,26 @@ export default function ResourceCard({
               </div>
             </div>
 
-            {/* Image Placeholder Section */}
-            <div className="lg:w-80 xl:w-96">
+            {/* Image Section */}
+            <div className="lg:w-80 xl:w-96 w-full shrink-0">
               <div
                 className={`relative h-64 lg:h-full min-h-[300px] rounded-2xl bg-gradient-to-br ${gradient} p-1 group-hover:scale-105 transition-transform duration-500`}
               >
-                <div className="w-full h-full rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                  {/* Placeholder with animated background */}
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 animate-pulse`}
-                    ></div>
-                    <div className="relative text-center space-y-3 p-6">
-                      <div
-                        className={`text-6xl bg-gradient-to-br ${gradient} bg-clip-text text-transparent`}
-                      >
-                        {icon}
-                      </div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wider">
-                        {imagePlaceholder}
-                      </p>
-                    </div>
+                <div className="relative w-full h-full rounded-xl bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                  <Image
+                    src={imagePlaceholder}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 384px"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    priority={title === "Research Articles"}
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+                  
+                  {/* Floating glassmorphic badge with the icon */}
+                  <div className="absolute top-4 right-4 bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 p-2 rounded-xl text-white shadow-lg">
+                    {icon}
                   </div>
                 </div>
               </div>
