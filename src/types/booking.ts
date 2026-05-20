@@ -15,7 +15,7 @@ export interface Booking {
   user_email: string;
   country: string;
   meeting_platform: "Zoom" | "Google Meet" | "Meeting";
-  duration_minutes: 30 | 60;
+  duration_minutes: 15 | 30 | 60;
   meeting_link: string | null;
   status: "pending" | "confirmed" | "cancelled";
   start_time: string;

@@ -16,7 +16,7 @@ export interface Booking {
   date: string;
   time_slot: string;
   platform: "Zoom" | "Google Meet" | "Meeting";
-  duration: 30 | 60;
+  duration: 15 | 30 | 60;
   country?: string;
   status: "pending" | "confirmed" | "cancelled";
   created_at: string;

@@ -10,7 +10,7 @@ export async function createConsultingCheckoutSession(bookingData: {
   fullName: string;
   email: string;
   platform: "Zoom" | "Google Meet";
-  duration: 30 | 60;
+  duration: 15 | 30 | 60;
   notes: string;
   date: string;
   time_slot: string;
@@ -144,7 +144,7 @@ export async function confirmStripeBooking(sessionId: string) {
       date: meta.date,
       time_slot: meta.time_slot,
       platform: meta.platform as "Zoom" | "Google Meet",
-      duration: parseInt(meta.duration) as 30 | 60,
+      duration: parseInt(meta.duration) as 15 | 30 | 60,
       service: "Professional Consultation",
     });
 
