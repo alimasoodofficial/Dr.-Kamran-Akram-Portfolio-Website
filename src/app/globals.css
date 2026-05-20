@@ -2,6 +2,22 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @import "react-datepicker/dist/react-datepicker.css";
 
+/* 🖱 Global Cursor Pointer styles for buttons, links, and interactive elements */
+button,
+a,
+[role="button"],
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Ensure disabled states show the correct cursor */
+button:disabled,
+a[disabled],
+[role="button"][aria-disabled="true"],
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
 /* 🌐 Fonts mapped from next/font */
 @theme {
   --font-heading: var(--font-dm-serif), serif;
