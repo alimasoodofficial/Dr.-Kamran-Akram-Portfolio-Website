@@ -26,13 +26,24 @@ const mapDbToBooking = (dbRow: any): Booking => {
   const startTime = dbRow.time_slots?.start_time || dbRow.start_time || dbRow.created_at;
   const startDate = startTime ? new Date(startTime) : new Date();
   
+  let clientMessage = dbRow.notes || "";
+  if (clientMessage.startsWith("stripe_session_id:")) {
+    const parts = clientMessage.split("\n\n");
+    if (parts.length > 1) {
+      clientMessage = parts.slice(1).join("\n\n");
+    } else {
+      const lines = clientMessage.split("\n");
+      clientMessage = lines.slice(1).join("\n");
+    }
+  }
+  
   return {
     id: dbRow.id,
     full_name: dbRow.user_name || dbRow.full_name || "",
     email: dbRow.user_email || dbRow.email || "",
     phone: "",
     service: "",
-    message: dbRow.message || dbRow.notes || "",
+    message: clientMessage,
     date: startTime ? `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}` : "",
     time_slot: startTime ? `${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}` : "",
     platform: dbRow.meeting_platform || "Zoom",
@@ -42,8 +53,8 @@ const mapDbToBooking = (dbRow: any): Booking => {
   };
 };
 
-export async function createBooking(data: Omit<Booking, "id" | "status" | "created_at">) {
-  const supabase = createSupabaseServerClient();
+export async function createBooking(data: Omit<Booking, "id" | "status" | "created_at"> & { stripe_session_id?: string }) {
+  const supabase = getSupabaseService();
   
   const [hours, minutes] = data.time_slot.split(':').map(Number);
   const [year, month, day] = data.date.split('-').map(Number);
@@ -83,6 +94,7 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
       .single();
 
     if (createSlotError || !newSlot) {
+      console.error("Error creating slot in createBooking:", createSlotError);
       return { success: false, error: "Failed to create a time slot for this booking." };
     }
     finalSlotId = newSlot.id;
@@ -97,6 +109,7 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
       .eq("id", slot.id);
 
     if (updateSlotError) {
+      console.error("Error updating slot in createBooking:", updateSlotError);
       return { success: false, error: "Failed to reserve the time slot." };
     }
     finalSlotId = slot.id;
@@ -113,12 +126,14 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
       duration: data.duration,
       meeting_link: meetingLink,
       status: "confirmed",
-      notes: data.message
+      notes: data.message,
+      message: data.stripe_session_id || null
     }])
     .select()
     .single();
 
   if (error) {
+    console.error("Error inserting booking in createBooking:", error);
     // Rollback: mark slot as available
     await supabase
       .from("time_slots")
@@ -139,11 +154,23 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
     meetingLink: meetingLink
   });
   
-  return { success: true };
+  return { 
+    success: true, 
+    booking: {
+      id: booking.id,
+      fullName: data.full_name,
+      email: data.email,
+      date: data.date,
+      timeSlot: data.time_slot,
+      platform: data.platform,
+      duration: data.duration,
+      meetingLink: meetingLink
+    }
+  };
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  const supabase = createSupabaseServerClient();
+  const supabase = getSupabaseService();
   const { data, error } = await supabase
     .from("bookings")
     .select(`

@@ -50,8 +50,8 @@ export async function createConsultingCheckoutSession(bookingData: {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/consulting?payment_success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/consulting?payment_cancelled=true`,
+      success_url: `${origin}/consulting/status?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/consulting/status?success=false`,
       metadata: {
         fullName: bookingData.fullName,
         email: bookingData.email,
@@ -78,11 +78,47 @@ export async function confirmStripeBooking(sessionId: string) {
     const { data: existingBooking } = await supabase
       .from("bookings")
       .select("id")
-      .like("notes", `%stripe_session_id: ${sessionId}%`)
+      .or(`message.eq.${sessionId},notes.like.%stripe_session_id: ${sessionId}%`)
       .maybeSingle();
 
     if (existingBooking) {
       console.log(`Booking for stripe session ${sessionId} already exists.`);
+      
+      const { data: bookingDetails } = await supabase
+        .from("bookings")
+        .select(`
+          id,
+          user_name,
+          user_email,
+          meeting_platform,
+          duration,
+          meeting_link,
+          time_slots (
+            start_time
+          )
+        `)
+        .eq("id", existingBooking.id)
+        .maybeSingle();
+
+      if (bookingDetails) {
+        const slots = bookingDetails.time_slots as any;
+        const startTime = Array.isArray(slots) ? slots[0]?.start_time : slots?.start_time;
+        const startDate = startTime ? new Date(startTime) : new Date();
+        return {
+          success: true,
+          alreadyCreated: true,
+          booking: {
+            id: bookingDetails.id,
+            fullName: bookingDetails.user_name,
+            email: bookingDetails.user_email,
+            date: startTime ? `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}` : "",
+            timeSlot: startTime ? `${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}` : "",
+            platform: bookingDetails.meeting_platform,
+            duration: bookingDetails.duration,
+            meetingLink: bookingDetails.meeting_link
+          }
+        };
+      }
       return { success: true, alreadyCreated: true };
     }
 
@@ -103,7 +139,8 @@ export async function confirmStripeBooking(sessionId: string) {
       full_name: meta.fullName,
       email: meta.email,
       phone: "",
-      message: `stripe_session_id: ${sessionId}\n\n${meta.notes || ""}`,
+      message: meta.notes || "",
+      stripe_session_id: sessionId,
       date: meta.date,
       time_slot: meta.time_slot,
       platform: meta.platform as "Zoom" | "Google Meet",
