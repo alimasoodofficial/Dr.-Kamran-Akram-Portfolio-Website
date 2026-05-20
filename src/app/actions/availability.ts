@@ -49,7 +49,7 @@ export async function updateAvailability(slots: AvailabilitySlot[]) {
   const supabase = getSupabaseService();
 
   const mappedSlots = slots.map(slot => ({
-    id: String(slot.id).startsWith("new-") ? randomUUID() : slot.id,
+    id: (!slot.id || String(slot.id).startsWith("new-")) ? randomUUID() : slot.id,
     day_of_week: slot.day_of_week,
     start_time: slot.start_time.length === 5 ? slot.start_time + ":00" : slot.start_time,
     end_time:   slot.end_time.length   === 5 ? slot.end_time   + ":00" : slot.end_time,
