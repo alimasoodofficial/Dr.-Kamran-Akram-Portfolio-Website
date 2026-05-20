@@ -7,12 +7,12 @@ export async function GET() {
   return NextResponse.json({
     ...result,
     config: {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      user: process.env.EMAIL_SERVER_USER,
       // Don't leak full password but show if it's there
-      passSet: !!process.env.SMTP_PASSWORD,
-      fromEmail: process.env.SMTP_FROM_EMAIL,
+      passSet: !!process.env.EMAIL_SERVER_PASSWORD,
+      fromEmail: process.env.EMAIL_SERVER_USER,
       adminEmail: process.env.ADMIN_EMAIL,
     }
   });

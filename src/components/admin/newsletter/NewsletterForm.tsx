@@ -208,16 +208,27 @@ export default function NewsletterForm({ newsletter }: Props) {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* 📝 Main Writing Area */}
-                <div className="lg:col-span-8 space-y-10">
+                <div className="lg:col-span-8 space-y-10 pt-10">
                     <div className="space-y-4">
                         <label className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-600 flex items-center gap-2">
                             <Sparkles className="h-3 w-3" /> Subject & Preview
                         </label>
-                        <input
+                        <textarea
                             placeholder="Enter subject line..."
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            className="w-full bg-transparent border-none text-4xl md:text-5xl font-black p-0 focus:outline-none focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-700 dark:text-white"
+                            onKeyDown={e => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                }
+                            }}
+                            onPaste={e => {
+                                e.preventDefault();
+                                const text = e.clipboardData.getData("text/plain").replace(/[\r\n]+/g, " ");
+                                setFormData({ ...formData, title: formData.title + text });
+                            }}
+                            rows={1}
+                            className="w-full bg-transparent border-none text-3xl font-black p-0 focus:outline-none focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-700 dark:text-white resize-none h-16 md:h-20 custom-scrollbar-x"
                             required
                         />
                         <textarea
@@ -363,7 +374,7 @@ export default function NewsletterForm({ newsletter }: Props) {
                                                                 const newButtons = [...(section.buttons || []), { label: "", url: "" }];
                                                                 updateSection(index, "buttons", newButtons);
                                                             }}
-                                                            className="text-[8px] font-black uppercase tracking-tighter text-emerald-600 hover:text-emerald-700"
+                                                            className="text-xs bg-emerald-600 font-black uppercase tracking-tighter text-white px-4 py-1 rounded"
                                                         >
                                                             + Add Button
                                                         </button>

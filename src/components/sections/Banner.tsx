@@ -31,6 +31,7 @@ interface BannerProps {
   descriptionClass?: string;
   breadcrumbClass?: string;
   children?: React.ReactNode;
+  rightContent?: React.ReactNode;
 }
 
 export default function Banner({
@@ -56,12 +57,13 @@ export default function Banner({
   descriptionClass = "",
   breadcrumbClass = "",
   children,
+  rightContent,
 }: BannerProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const finalImageSrc = imageSrc || "/images/dummy.webp";
   const isExternal = finalImageSrc.startsWith("http");
-  const hasVisual = showImage || showLottie;
+  const hasVisual = showImage || showLottie || !!rightContent;
 
   // 🪄 Default gradient settings
   const { theme } = useTheme();
@@ -100,14 +102,14 @@ export default function Banner({
       <div
         className={`relative z-10 container mx-auto flex ${
           hasVisual
-            ? "flex-col md:flex-row items-center gap-8 rounded-lg"
+            ? "flex-col md:flex-row items-center justify-between gap-12 rounded-lg"
             : "flex-col items-center text-center lg:w-1/2"
         } ${bannerClass}`}
       >
         {/* 🧭 Text Section */}
         <div
-          className={`flex flex-col ${
-            hasVisual ? "text-left" : "items-center text-center"
+          className={`flex flex-col flex-1 ${
+            hasVisual ? "text-left w-full md:w-1/2" : "items-center text-center"
           }`}
         >
           {showBreadcrumb && !isHome && (
@@ -128,8 +130,10 @@ export default function Banner({
 
         {/* 🎨 Visual Section */}
         {hasVisual && (
-          <div className="md:w-1/2 flex justify-center items-center">
-            {showLottie ? (
+          <div className="md:w-1/2 flex justify-center items-center w-full">
+            {rightContent ? (
+              rightContent
+            ) : showLottie ? (
               <LottiePlayer
                 src={lottieSrc}
                 height={lottieWidth}

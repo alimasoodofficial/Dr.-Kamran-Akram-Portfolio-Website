@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST || process.env.SMTP_HOST,
-  port: Number(process.env.EMAIL_SERVER_PORT || process.env.SMTP_PORT),
-  secure: process.env.EMAIL_SERVER_PORT === '465' || process.env.SMTP_PORT === '465',
+  host: process.env.EMAIL_SERVER_HOST,
+  port: Number(process.env.EMAIL_SERVER_PORT || '587'),
+  secure: process.env.EMAIL_SERVER_PORT === '465',
   auth: {
-    user: process.env.EMAIL_SERVER_USER || process.env.SMTP_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD || process.env.SMTP_PASSWORD,
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 });
 
@@ -28,7 +28,7 @@ export async function sendMeetingInvitation({
   meetingLink: string;
 }) {
   const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_FROM || process.env.SMTP_FROM_EMAIL}>`,
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
     to,
     subject: `Meeting Invitation: Consultation with Dr. Muhammad Kamran`,
     html: `

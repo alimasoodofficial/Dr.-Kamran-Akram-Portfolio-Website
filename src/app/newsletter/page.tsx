@@ -36,36 +36,15 @@ export default async function NewsletterPage() {
   return (
     <div className="min-h-screen pb-24 transition-colors duration-300">
       <Banner
-        title="Newsletter"
-        description="Stay updated with the latest insights and tech trends from Dr. Kamran Akram."
+        title="Get ideas delivered straight to your inbox"
+        description="Join the growing community of readers. Stay updated with the latest insights, exclusive content, deep-dives, and tech trends from Dr. Kamran Akram."
         gradientColors={["#ffffff", "#7ebcf6", "#dcbaff"]}
         showImage={false}
-        className="w-auto h-[300px]"
+        className="w-auto"
+        rightContent={<SubscribeForm />}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 space-y-24">
-        {/* Subscription Section */}
-        <section className="relative px-6 py-16 bg-white dark:bg-slate-900/40 rounded-3xl shadow-sm border border-slate-200/50 dark:border-slate-800/80 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 max-w-5xl mx-auto">
-          {/* Subtle background decoration */}
-          <div className="absolute top-0 right-0 -m-32 w-64 h-64 bg-blue-500/10 dark:bg-blue-400/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 -m-32 w-64 h-64 bg-purple-500/10 dark:bg-purple-400/5 rounded-full blur-3xl" />
-
-          <div className="relative z-10 flex-1 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
-              <Mail className="w-4 h-4" />
-              <span>Weekly Insights</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
-              Get ideas delivered straight to your inbox
-            </h2>
-            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto md:mx-0">
-              Join the growing community of readers. Exclusive content, deep-dives, and trends in the tech space.
-            </p>
-          </div>
-          <div className="relative z-10 w-full md:w-auto">
-            <SubscribeForm />
-          </div>
-        </section>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 space-y-24">
 
         {/* Newsletter List Section */}
         <section className="space-y-12">

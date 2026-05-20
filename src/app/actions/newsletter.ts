@@ -3,6 +3,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { getSupabaseService } from "@/lib/supabaseService";
+import { verifyAdminSession } from "@/lib/adminAuth";
+import { revalidatePath } from "next/cache";
 
 const subscribeSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -77,4 +80,18 @@ export async function subscribeAction(
   }
 
   return { success: true, message: "You're subscribed! Welcome aboard 🚀" };
+}
+
+export async function deleteSubscriberAction(id: string) {
+  if (!(await verifyAdminSession())) {
+    return { success: false, error: "Unauthorized access: Admin privileges required." };
+  }
+  const supabase = getSupabaseService();
+  const { error } = await supabase.from("subscribers").delete().eq("id", id);
+  if (error) {
+    console.error("[deleteSubscriberAction] Supabase error:", error.message);
+    return { success: false, error: error.message };
+  }
+  revalidatePath("/admin/newsletter");
+  return { success: true };
 }
