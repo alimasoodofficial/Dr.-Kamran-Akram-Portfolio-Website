@@ -53,7 +53,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
     fullName: "",
     email: "",
     platform: "Zoom" as "Zoom" | "Google Meet",
-    duration: 30 as 30 | 60,
+    duration: 30 as 15 | 30 | 60,
     notes: "",
   });
 
@@ -66,7 +66,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
         
         return {
           ...prev,
-          duration: selectedPlan.duration as 30 | 60,
+          duration: selectedPlan.duration as 15 | 30 | 60,
           notes: `Selected Package: ${selectedPlan.name}\n${cleanedNotes}`.trim()
         };
       });
@@ -124,7 +124,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
       return;
     }
 
-    const packageName = selectedPlan?.name || (formData.duration === 60 ? "Deep-Dive" : "Quick-Fire");
+    const packageName = selectedPlan?.name || (formData.duration === 60 ? "Deep-Dive" : formData.duration === 15 ? "Quick Chat" : "Quick-Fire");
 
     setIsSubmitting(true);
     try {
@@ -302,11 +302,12 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Duration *</label>
-                    <Select value={formData.duration.toString()} onValueChange={(v: string) => setFormData({...formData, duration: parseInt(v) as 30 | 60})}>
+                    <Select value={formData.duration.toString()} onValueChange={(v: string) => setFormData({...formData, duration: parseInt(v) as 15 | 30 | 60})}>
                       <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-2xl">
+                        <SelectItem value="15">15 Minutes (Quick Chat)</SelectItem>
                         <SelectItem value="30">30 Minutes (Standard)</SelectItem>
                         <SelectItem value="60">60 Minutes (Deep Dive)</SelectItem>
                       </SelectContent>

@@ -25,7 +25,7 @@ const pricingData: PricingTier[] = [
     price: "$0",
     unit: "/call",
     icon: <MessageCircle className="w-6 h-6 text-teal-600" />,
-    features: ["5-minute call", "Intro session"],
+    features: ["15-minute call", "Intro session"],
     buttonText: "Select Plan",
   },
   {
@@ -153,8 +153,9 @@ interface PricingPlanDemoProps {
 
 export function PricingPlanDemo({ onSelectPlan }: PricingPlanDemoProps) {
   const getDuration = (name: string) => {
+    if (name === "Quick Chat") return 15;
     if (name === "Deep-Dive" || name === "Mentorship") return 60;
-    return 30; // Quick Chat and Quick-Fire
+    return 30; // Quick-Fire
   };
 
   return (

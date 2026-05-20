@@ -94,7 +94,7 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     fullName: "",
     email: "",
     platform: "Zoom" as "Zoom" | "Google Meet",
-    duration: 30 as 30 | 60,
+    duration: 30 as 15 | 30 | 60,
     timeSlot: "",
     notes: ""
   });
@@ -380,6 +380,7 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
+                      <SelectItem value="15">15 Minutes</SelectItem>
                       <SelectItem value="30">30 Minutes</SelectItem>
                       <SelectItem value="60">60 Minutes</SelectItem>
                     </SelectContent>
