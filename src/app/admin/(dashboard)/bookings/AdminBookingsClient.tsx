@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format, parse, isSameDay, isAfter, addMinutes } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/shadcn/card";
@@ -58,6 +58,27 @@ interface Props {
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+const generateSlotsForRange = (start: string, end: string): string[] => {
+  const slots: string[] = [];
+  const [startH, startM] = start.split(":").map(Number);
+  const [endH, endM] = end.split(":").map(Number);
+  
+  let currentH = startH;
+  let currentM = startM;
+  
+  while (currentH < endH || (currentH === endH && currentM < endM)) {
+    const formatted = `${String(currentH).padStart(2, "0")}:${String(currentM).padStart(2, "0")}`;
+    slots.push(formatted);
+    
+    currentM += 30;
+    if (currentM >= 60) {
+      currentH += 1;
+      currentM -= 60;
+    }
+  }
+  return slots;
+};
+
 export default function AdminBookingsClient({ initialBookings, initialAvailability, initialBlockedDates }: Props) {
   const { toast } = useToast();
   const [bookings, setBookings] = useState(initialBookings);
@@ -87,6 +108,31 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
   // Custom date overrides state
   const [overrideType, setOverrideType] = useState<"standard" | "off" | "custom" >("standard");
   const [customRanges, setCustomRanges] = useState<{ start: string; end: string }[]>([{ start: "09:00", end: "17:00" }]);
+  const [blockedSlots, setBlockedSlots] = useState<string[]>([]);
+
+  const allPotentialSlots = useMemo(() => {
+    if (!selectedBlockedDate) return [];
+    if (overrideType === "off") return [];
+
+    if (overrideType === "custom") {
+      const slots: string[] = [];
+      for (const range of customRanges) {
+        if (range.start && range.end) {
+          slots.push(...generateSlotsForRange(range.start, range.end));
+        }
+      }
+      return Array.from(new Set(slots)).sort();
+    }
+
+    // standard weekly hours fallback
+    const dayOfWeek = selectedBlockedDate.getDay();
+    const standardSlot = availability.find(a => a.day_of_week === dayOfWeek);
+    if (!standardSlot || !standardSlot.is_enabled) return [];
+    
+    const startStr = standardSlot.start_time.substring(0, 5);
+    const endStr = standardSlot.end_time.substring(0, 5);
+    return generateSlotsForRange(startStr, endStr);
+  }, [selectedBlockedDate, overrideType, customRanges, availability]);
 
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -247,21 +293,38 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     const dateStr = format(date, "yyyy-MM-dd");
     const existing = blockedDates.find(bd => bd.date === dateStr);
     if (existing) {
-      if (existing.reason && existing.reason.startsWith("CUSTOM:")) {
+      // 1. Extract blocked slots
+      const blockedMatch = existing.reason.match(/BLOCKED:([^;]+)/);
+      if (blockedMatch) {
+        setBlockedSlots(blockedMatch[1].split(","));
+      } else {
+        setBlockedSlots([]);
+      }
+
+      // 2. Set override settings
+      if (existing.reason.startsWith("CUSTOM:") || existing.reason.includes("CUSTOM:")) {
         setOverrideType("custom");
-        const rangesPart = existing.reason.substring(7);
+        const customMatch = existing.reason.match(/CUSTOM:([^;]+)/);
+        const rangesPart = customMatch ? customMatch[1] : "";
         const parsed = rangesPart.split(",").map(r => {
           const [start, end] = r.split("-");
           return { start: start || "09:00", end: end || "17:00" };
         });
         setCustomRanges(parsed.length > 0 ? parsed : [{ start: "09:00", end: "17:00" }]);
-      } else {
+      } else if (existing.reason === "OFF") {
         setOverrideType("off");
+        setCustomRanges([{ start: "09:00", end: "17:00" }]);
+      } else if (existing.reason.startsWith("WEEKLY") || existing.reason.includes("WEEKLY")) {
+        setOverrideType("standard");
+        setCustomRanges([{ start: "09:00", end: "17:00" }]);
+      } else {
+        setOverrideType("standard");
         setCustomRanges([{ start: "09:00", end: "17:00" }]);
       }
     } else {
       setOverrideType("standard");
       setCustomRanges([{ start: "09:00", end: "17:00" }]);
+      setBlockedSlots([]);
     }
   };
 
@@ -270,16 +333,23 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
     setIsSaving(true);
     const dateStr = format(selectedBlockedDate, "yyyy-MM-dd");
     const rangesStr = customRanges.map(r => `${r.start}-${r.end}`).join(",");
-    const result = await saveDateOverride(dateStr, overrideType, rangesStr);
+    const blockedSlotsStr = blockedSlots.length > 0 ? blockedSlots.join(",") : undefined;
+    const result = await saveDateOverride(dateStr, overrideType, rangesStr, blockedSlotsStr);
     
     if (result.success) {
       toast({ title: "Date schedule updated successfully" });
       
       // Update local state blockedDates
-      if (overrideType === "standard") {
+      if (overrideType === "standard" && !blockedSlotsStr) {
         setBlockedDates(prev => prev.filter(bd => bd.date !== dateStr));
       } else {
-        const reason = overrideType === "off" ? "OFF" : `CUSTOM:${rangesStr}`;
+        let reason = "OFF";
+        if (overrideType === "custom") {
+          reason = `CUSTOM:${rangesStr}`;
+          if (blockedSlotsStr) reason += `;BLOCKED:${blockedSlotsStr}`;
+        } else if (overrideType === "standard") {
+          reason = `WEEKLY;BLOCKED:${blockedSlotsStr}`;
+        }
         setBlockedDates(prev => {
           const filtered = prev.filter(bd => bd.date !== dateStr);
           return [...filtered, { id: Math.random().toString(), date: dateStr, reason }];
@@ -722,6 +792,45 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                         </div>
                       )}
 
+                      {overrideType !== "off" && allPotentialSlots.length > 0 && (
+                        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                          <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">
+                              Slot Availability
+                            </label>
+                            <span className="text-[9px] text-slate-400 font-medium">
+                              Click a slot to toggle availability
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto p-1 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50">
+                            {allPotentialSlots.map((time: string) => {
+                              const isBlocked = blockedSlots.includes(time);
+                              return (
+                                <button
+                                  key={time}
+                                  type="button"
+                                  onClick={() => {
+                                    setBlockedSlots(prev =>
+                                      isBlocked
+                                        ? prev.filter(t => t !== time)
+                                        : [...prev, time]
+                                    );
+                                  }}
+                                  className={cn(
+                                    "py-1.5 text-[10px] font-bold rounded-lg border transition-all text-center",
+                                    isBlocked
+                                      ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/40 text-red-500 line-through decoration-red-400"
+                                      : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary/50 hover:bg-primary/5"
+                                  )}
+                                >
+                                  {time}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
                       <Button
                         onClick={handleSaveDateOverride}
                         disabled={isSaving}
@@ -749,14 +858,33 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Date-Specific Overrides</p>
                     {blockedDates.length > 0 ? (
                       blockedDates.map((bd) => {
-                        const isCustom = bd.reason && bd.reason.startsWith("CUSTOM:");
+                        const isCustom = bd.reason && (bd.reason.startsWith("CUSTOM:") || bd.reason.includes("CUSTOM:"));
+                        const hasBlockedSlots = bd.reason && bd.reason.includes("BLOCKED:");
                         let displayReason = "OFF / Unavailable";
-                        if (isCustom) {
-                          const timesPart = bd.reason.substring(7);
-                          displayReason = timesPart.split(",").map(range => {
-                            const [start, end] = range.split("-");
-                            return `${start} to ${end}`;
-                          }).join(", ");
+                        
+                        if (bd.reason === "OFF") {
+                          displayReason = "OFF / Unavailable";
+                        } else {
+                          let baseHours = "Weekly Hours";
+                          if (isCustom) {
+                            const customMatch = bd.reason.match(/CUSTOM:([^;]+)/);
+                            if (customMatch) {
+                              baseHours = customMatch[1].split(",").map(range => {
+                                const [start, end] = range.split("-");
+                                return `${start} to ${end}`;
+                              }).join(", ");
+                            }
+                          }
+                          
+                          let blockedText = "";
+                          if (hasBlockedSlots) {
+                            const blockedMatch = bd.reason.match(/BLOCKED:([^;]+)/);
+                            if (blockedMatch) {
+                              blockedText = ` (Blocked: ${blockedMatch[1]})`;
+                            }
+                          }
+                          
+                          displayReason = `${baseHours}${blockedText}`;
                         }
                         
                         return (
