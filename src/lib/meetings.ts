@@ -201,8 +201,8 @@ export async function generateMeetingLink(
   } catch (error) {
     console.error(`Failed to generate ${platform} link:`, error);
     // Fallback to a default link if API fails, so the booking isn't completely broken
-    return "https://veltolabs.com/meeting-fallback";
+    return "https://imkamran.com/meeting-fallback";
   }
 
-  return 'https://veltolabs.com/meeting';
+  return 'https://imkamran.com/meeting';
 }

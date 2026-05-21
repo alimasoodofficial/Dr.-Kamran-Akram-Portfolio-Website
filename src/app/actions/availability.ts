@@ -124,7 +124,8 @@ export async function removeBlockedDate(id: string) {
 export async function saveDateOverride(
   date: string,
   type: "standard" | "off" | "custom",
-  customRangesString?: string
+  customRangesString?: string,
+  blockedSlotsString?: string
 ) {
   if (!(await verifyAdminSession())) {
     return { success: false, error: "Unauthorized access: Admin privileges required." };
@@ -132,7 +133,7 @@ export async function saveDateOverride(
 
   const supabase = getSupabaseService();
 
-  if (type === "standard") {
+  if (type === "standard" && !blockedSlotsString) {
     const { error } = await supabase
       .from("blocked_dates")
       .delete()
@@ -141,7 +142,15 @@ export async function saveDateOverride(
     return { success: true };
   }
 
-  const reason = type === "off" ? "OFF" : `CUSTOM:${customRangesString}`;
+  let reason = "OFF";
+  if (type === "custom") {
+    reason = `CUSTOM:${customRangesString}`;
+    if (blockedSlotsString) {
+      reason += `;BLOCKED:${blockedSlotsString}`;
+    }
+  } else if (type === "standard") {
+    reason = `WEEKLY;BLOCKED:${blockedSlotsString}`;
+  }
 
   const { data: existing } = await supabase
     .from("blocked_dates")
@@ -181,8 +190,17 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
   const block = blockedRows && blockedRows[0];
 
   // If the date is completely blocked off (either standard block or explicit OFF)
-  if (block && (!block.reason || !block.reason.startsWith("CUSTOM:"))) {
+  if (block && (!block.reason || block.reason === "OFF")) {
     return []; 
+  }
+
+  // Parse blocked slot times if any (e.g. "12:30,13:00")
+  let blockedTimes: string[] = [];
+  if (block && block.reason) {
+    const blockedMatch = block.reason.match(/BLOCKED:([^;]+)/);
+    if (blockedMatch) {
+      blockedTimes = blockedMatch[1].split(",");
+    }
   }
 
   const startOfDayObj = new Date(year, month - 1, day, 0, 0, 0);
@@ -200,9 +218,12 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
     return [];
   }
 
+  const isCustom = block && block.reason && (block.reason.startsWith("CUSTOM:") || block.reason.includes("CUSTOM:"));
+
   // If there is a custom hours override (possibly with multiple ranges), parse it
-  if (block && block.reason && block.reason.startsWith("CUSTOM:")) {
-    const rangesPart = block.reason.substring(7); // e.g. "09:00-11:00,14:00-16:00"
+  if (isCustom && block && block.reason) {
+    const customMatch = block.reason.match(/CUSTOM:([^;]+)/);
+    const rangesPart = customMatch ? customMatch[1] : "";
     const ranges = rangesPart.split(",");
     
     const availableSlots: any[] = [];
@@ -233,14 +254,23 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
         const startTimeStr = format(currentSlotStart, "HH:mm:ss");
         const endTimeStr   = format(currentSlotEnd,   "HH:mm:ss");
 
-        availableSlots.push({
-          id: startTimeStr,
-          date: dateString,
-          start_time: startTimeStr,
-          end_time:   endTimeStr,
-          duration:   durationMinutes,
-          is_booked:  isOverlapping,
+        // Check if this time slot is manually blocked
+        const isTimeBlocked = blockedTimes.some(bt => {
+          const [btH, btM] = bt.split(":");
+          const [slotH, slotM] = startTimeStr.split(":");
+          return Number(btH) === Number(slotH) && Number(btM) === Number(slotM);
         });
+
+        if (!isTimeBlocked) {
+          availableSlots.push({
+            id: startTimeStr,
+            date: dateString,
+            start_time: startTimeStr,
+            end_time:   endTimeStr,
+            duration:   durationMinutes,
+            is_booked:  isOverlapping,
+          });
+        }
 
         currentSlotStart = addMinutes(currentSlotStart, 30);
       }
@@ -283,14 +313,23 @@ export async function getTimeSlots(dateString: string, durationMinutes: number) 
     const startTimeStr = format(currentSlotStart, "HH:mm:ss");
     const endTimeStr   = format(currentSlotEnd,   "HH:mm:ss");
 
-    availableSlots.push({
-      id: startTimeStr,
-      date: dateString,
-      start_time: startTimeStr,
-      end_time:   endTimeStr,
-      duration:   durationMinutes,
-      is_booked:  isOverlapping,
+    // Check if this time slot is manually blocked
+    const isTimeBlocked = blockedTimes.some(bt => {
+      const [btH, btM] = bt.split(":");
+      const [slotH, slotM] = startTimeStr.split(":");
+      return Number(btH) === Number(slotH) && Number(btM) === Number(slotM);
     });
+
+    if (!isTimeBlocked) {
+      availableSlots.push({
+        id: startTimeStr,
+        date: dateString,
+        start_time: startTimeStr,
+        end_time:   endTimeStr,
+        duration:   durationMinutes,
+        is_booked:  isOverlapping,
+      });
+    }
 
     currentSlotStart = addMinutes(currentSlotStart, 30);
   }
