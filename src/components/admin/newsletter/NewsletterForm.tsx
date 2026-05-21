@@ -320,7 +320,7 @@ export default function NewsletterForm({ newsletter }: Props) {
                                                     <div className="relative aspect-video rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
                                                         {section.imageUrl ? (
                                                             <>
-                                                                <Image src={section.imageUrl} alt="Section Visual" fill className="object-cover" />
+                                                                <Image src={section.imageUrl} alt="Section Visual" fill className="object-contain" />
                                                                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                                                     <button
                                                                         type="button"
