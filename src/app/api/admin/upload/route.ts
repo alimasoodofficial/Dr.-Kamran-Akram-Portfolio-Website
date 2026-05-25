@@ -19,18 +19,18 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(arrayBuffer);
     const fileName = `gallery-${Date.now()}-${(file as any).name || "img"}`;
 
-    const { data, error } = await supabaseService.storage.from("gallery-images").upload(fileName, buffer, {
+    const bucketName = "website images & videos";
+    const { data, error } = await supabaseService.storage.from(bucketName).upload(fileName, buffer, {
       cacheControl: "3600",
       upsert: false
     });
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    // data.path is the path *inside* the bucket (e.g. "gallery-123.png").
-    // Build a public URL that includes the bucket name.
-    const bucket = "gallery-images";
-    const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${data.path}`;
-    return NextResponse.json({ url: publicUrl });
+    // Retrieve public URL using Supabase Storage API to handle special characters & spaces correctly
+    const { data: urlData } = supabaseService.storage.from(bucketName).getPublicUrl(data.path);
+    
+    return NextResponse.json({ url: urlData.publicUrl });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

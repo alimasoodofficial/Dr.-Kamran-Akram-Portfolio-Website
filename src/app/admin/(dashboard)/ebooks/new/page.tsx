@@ -12,6 +12,9 @@ export default function NewEbook() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
+  const [price, setPrice] = useState("9.99");
+  const [discountPrice, setDiscountPrice] = useState("");
+  const [discountExpiresAt, setDiscountExpiresAt] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -74,6 +77,9 @@ export default function NewEbook() {
           description,
           file_url: fileUrl,
           cover_url,
+          price: price ? parseFloat(price) : 0, // 0 means Free!
+          discount_price: discountPrice ? parseFloat(discountPrice) : null,
+          discount_expires_at: discountExpiresAt ? new Date(discountExpiresAt).toISOString() : null,
           is_published: true
       });
 
@@ -116,6 +122,23 @@ export default function NewEbook() {
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">PDF/File URL</label>
                             <input value={fileUrl} onChange={e => setFileUrl(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" placeholder="https://..." />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Price ($ USD)</label>
+                            <input type="number" step="0.01" min="0.00" value={price} onChange={e => setPrice(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" required placeholder="9.99" />
+                            <p className="text-[11px] text-slate-400 mt-1">Set to 0.00 to offer this e-book for free direct download.</p>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Discount Price ($ USD) (Optional)</label>
+                            <input type="number" step="0.01" min="0.01" value={discountPrice} onChange={e => setDiscountPrice(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" placeholder="e.g. 4.99" />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Discount Expiry Date & Time</label>
+                            <input type="datetime-local" value={discountExpiresAt} onChange={e => setDiscountExpiresAt(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+                            <p className="text-[11px] text-slate-400 mt-1">Select the exact date and time when this discount should automatically expire.</p>
                         </div>
                    </div>
 

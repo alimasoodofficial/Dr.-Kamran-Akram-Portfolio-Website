@@ -27,7 +27,7 @@ export default function FreeResourcesPage() {
       title: "E-Books & Guides",
       description:
         "Download comprehensive e-books and practical guides designed to help you master complex topics. From technical tutorials to professional development resources, find valuable content to accelerate your learning journey.",
-      href: "/coming-soon",
+      href: "/free-resources/ebooks",
       icon: <FaBook className="w-8 h-8" />,
       imagePlaceholder: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1374&auto=format&fit=crop",
       gradient: "from-blue-500 via-purple-500 to-indigo-500",

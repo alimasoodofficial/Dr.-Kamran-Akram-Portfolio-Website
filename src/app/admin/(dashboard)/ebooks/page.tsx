@@ -12,6 +12,9 @@ type Ebook = {
   cover_url?: string;
   file_url?: string;
   downloads?: number;
+  price?: number;
+  discount_price?: number;
+  discount_expires_at?: string;
 };
 
 async function getEbooks(): Promise<Ebook[]> {
