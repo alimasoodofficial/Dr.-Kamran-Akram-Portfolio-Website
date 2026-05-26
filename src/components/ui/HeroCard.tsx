@@ -61,22 +61,31 @@ export const InfoCard = ({
 );
 
 // --- 2. Strip Card (e.g., Relentless Love) ---
-export const  StripCard = ({
+export const StripCard = ({
   icon,
   text,
   bgClass,
+  desc,
 }: {
   icon: string;
   text: string;
   bgClass: string;
+  desc?: string;
 }) => (
   <CardWrapper
-    className={`${bgClass} min-h-[120px] flex flex-col md:flex-row items-center gap-4 text-white `}
+    className={`${bgClass} min-h-[120px] flex flex-col justify-center  text-white p-6`}
   >
-    <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
-      <i className={`${icon} text-xl`}></i>
+    <div className="flex items-center gap-4">
+      <div className="border-2 border-white/30 rounded-full p-3 w-12 h-12 flex items-center justify-center shrink-0">
+        <i className={`${icon} text-xl`}></i>
+      </div>
+      <h3 className="text-lg font-semibold !text-white leading-tight">{text}</h3>
     </div>
-    <h3 className="text-lg font-semibold !text-white">{text}</h3>
+    {desc && (
+      <p className="text-sm text-white text-left font-light  pl-16 leading-relaxed">
+        {desc}
+      </p>
+    )}
   </CardWrapper>
 );
 
@@ -100,10 +109,10 @@ export const ImageCard = ({
       <Link href="/free-resources/articles" className="text-white">
 
     <div className="relative z-10 text-white">
-      <span className="block text-lg font-medium mb-1 opacity-90 text-white">
+      <span className="block text-2xl font-bold mb-1 opacity-90 text-white">
         {category}
       </span>
-      <h3 className="text-xl font-bold leading-tight !text-white">{title}</h3>
+      <h3 className="text-sm md:text-md font-medium leading-tight !text-white">{title}</h3>
     </div>
     </Link>
   </CardWrapper>
@@ -116,7 +125,7 @@ export const CenterStatCard = () => (
     <p className="font-medium mb-6 text-white/90">Years of Experience</p>
     <div className="bg-white/10 hover:bg-white/20 transition-colors w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
     <Link href="/consulting" className="text-white">
-      <i className="fa-solid fa-hand-holding-dollar"></i> Hire for Consulting
+      <i className="fa-solid fa-handshake"></i> Hire for Consulting
     </Link>
     </div>
   </CardWrapper>

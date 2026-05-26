@@ -80,7 +80,7 @@ export default function Footer() {
           <ul className="space-y-3 !text-white/80">
             {[
               { name: "Consulting", path: "/consulting" },
-              { name: "Academy", path: "/academy" },
+              { name: "eBooks", path: "/ebooks" },
               { name: "Contact Me", path: "mailto:hi@imkamran.com" },
             ].map((item) => (
               <li key={item.name}>

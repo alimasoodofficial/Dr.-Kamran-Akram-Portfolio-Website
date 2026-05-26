@@ -36,20 +36,15 @@ function HelpCardsHome() {
         </div>
 
         <div className="flex flex-col gap-5 duration-300">
-          <Cards
-            title="Free Resources"
-            description="On my YouTube channel, I share productivity tips, creative insights, and career advice."
-            iconClassName="fa-solid fa-play"
-            link="free-resources"
-            className=""
-          />
+         
 
           <Cards
-            title="Courses / Academy "
-            description="Join thousands of learners in my online courses focused on creative entrepreneurship and learning effectively."
-            iconClassName="fa-solid fa-graduation-cap"
-            link="#"
+            title="eBooks"
+            description="Explore free and premium eBooks covering science, agriculture, innovation, research and practical insights."
+            iconClassName="fa-solid fa-book"
+            link="/ebooks"
             className="!bg-primary !text-white"
+            buttonText="Browse eBooks"
           />
           <Cards
             title="Website Newsletter"

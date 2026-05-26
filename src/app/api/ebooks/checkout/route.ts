@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-11-15" as any, // standard version overrides
@@ -95,8 +96,8 @@ export async function POST(req: Request) {
         promoCodeApplied: promoApplied ? promoCode : "",
         discountPercentApplied: String(discountPercent),
       },
-      success_url: `${origin}/free-resources/ebooks/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/free-resources/ebooks/${ebook.id}`,
+      success_url: `${origin}/ebooks/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/ebooks/${slugify(ebook.title)}`,
     });
 
     return NextResponse.json({ sessionId: session.id, url: session.url });

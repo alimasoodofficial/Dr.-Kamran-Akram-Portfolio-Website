@@ -18,6 +18,7 @@ import {
   Tag
 } from "lucide-react";
 import BookCard from "@/components/ui/BookCard";
+import { slugify } from "@/lib/utils";
 
 type Ebook = {
   id: string;
@@ -153,7 +154,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                   height={320}
                   coverColor="bg-gradient-to-br from-emerald-500 to-teal-600"
                   coverText="PREMIUM"
-                  href={`/free-resources/ebooks/${featuredEbook.id}`}
+                  href={`/ebooks/${slugify(featuredEbook.title)}`}
                   buttonText="View Book"
                   buttonClassName="btn-gradient text-white font-medium px-6 py-2.5 rounded-xl text-sm"
                 />
@@ -204,7 +205,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
 
               <div className="flex justify-center lg:justify-start pt-2">
                 <Link
-                  href={`/free-resources/ebooks/${featuredEbook.id}`}
+                  href={`/ebooks/${slugify(featuredEbook.title)}`}
                   className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-3.5 rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-102 transition-all group"
                 >
                   <span>Explore Ebook & Buy</span>
@@ -338,7 +339,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                           height={220}
                           coverColor="bg-gradient-to-br from-emerald-500 to-teal-600"
                           coverText={isPaid ? "PREMIUM" : "READ NOW"}
-                          href={`/free-resources/ebooks/${book.id}`}
+                          href={`/ebooks/${slugify(book.title)}`}
                           buttonText="View Info"
                           buttonClassName="hidden"
                         />
@@ -348,7 +349,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                     {/* Product Details Section */}
                     <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                       <div className="space-y-2">
-                        <Link href={`/free-resources/ebooks/${book.id}`}>
+                        <Link href={`/ebooks/${slugify(book.title)}`}>
                           <h3 className="font-extrabold text-lg text-slate-800 dark:text-white line-clamp-1 group-hover:text-emerald-500 transition-colors font-heading leading-snug">
                             {book.title}
                           </h3>
@@ -374,7 +375,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                       {/* CTA Actions */}
                       <div className="flex gap-2.5 pt-2">
                         <Link
-                          href={`/free-resources/ebooks/${book.id}`}
+                          href={`/ebooks/${slugify(book.title)}`}
                           className={`flex-1 text-center py-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 font-extrabold shadow-sm ${
                             isPaid 
                               ? "bg-amber-500 hover:bg-amber-600 text-slate-900" 

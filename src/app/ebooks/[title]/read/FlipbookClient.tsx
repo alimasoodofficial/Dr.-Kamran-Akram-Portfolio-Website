@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { slugify } from "@/lib/utils";
 import { 
   ArrowLeft, 
   ChevronLeft, 
@@ -269,7 +270,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       {/* 🧭 Control Panel Top */}
       <div className="w-full max-w-5xl flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
         <Link 
-          href={`/free-resources/ebooks/${ebook.id}`}
+          href={`/ebooks/${slugify(ebook.title)}`}
           className="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-500 text-sm font-bold transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />

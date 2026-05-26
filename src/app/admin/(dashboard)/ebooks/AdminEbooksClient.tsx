@@ -171,7 +171,7 @@ export default function AdminEbooksClient({
         </div>
         <div className="flex items-center gap-3">
           <Link
-            href="/free-resources/ebooks"
+            href="/ebooks"
             target="_blank"
             className="flex items-center text-xs md:text-sm gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors"
           >

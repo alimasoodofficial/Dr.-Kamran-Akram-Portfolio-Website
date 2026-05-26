@@ -105,10 +105,10 @@ export default async function HomePage() {
             Join My Newsletter
           </Button>
           <Button
-            href="/academy"
+            href="/ebooks"
             className=" text-white text-sm md:text-base px-6 md:px-8 py-3 rounded-2xl font-medium transition-transform hover:scale-105"
           >
-            Join My Academy
+            Browse eBooks
           </Button>
           <Button
             href="/consulting"

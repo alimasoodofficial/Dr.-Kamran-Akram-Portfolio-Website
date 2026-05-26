@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { notFound } from "next/navigation";
 import FlipbookClient from "./FlipbookClient";
 import { Suspense } from "react";
+import { slugify } from "@/lib/utils";
 
 // Enable revalidation for fresh stats
 export const revalidate = 60;
@@ -15,23 +16,22 @@ type Ebook = {
 };
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ title: string }>;
 }
 
-async function getEbookData(id: string): Promise<Ebook | null> {
+async function getEbookData(titleSlug: string): Promise<Ebook | null> {
   try {
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase
+    const { data: ebooks, error } = await supabase
       .from("ebooks")
-      .select("*")
-      .eq("id", id)
-      .single();
+      .select("*");
 
-    if (error || !data) {
+    if (error || !ebooks) {
       return null;
     }
 
-    return data;
+    const ebook = ebooks.find((b) => slugify(b.title) === titleSlug) || null;
+    return ebook;
   } catch (error) {
     console.error("Error loading flipbook reader ebook data:", error);
     return null;
@@ -54,8 +54,8 @@ function ReaderSkeleton() {
 }
 
 export default async function EbookReaderPage({ params }: PageProps) {
-  const { id } = await params;
-  const ebook = await getEbookData(id);
+  const { title } = await params;
+  const ebook = await getEbookData(title);
 
   if (!ebook) {
     notFound();
@@ -69,3 +69,4 @@ export default async function EbookReaderPage({ params }: PageProps) {
     </div>
   );
 }
+

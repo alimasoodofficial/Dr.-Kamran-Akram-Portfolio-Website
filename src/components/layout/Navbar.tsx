@@ -84,7 +84,7 @@ export default function Navbar() {
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
                     <div
-                      className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}
+                      className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0 overflow-hidden`}
                     >
                       {item.icon &&
                       (item.icon.trim().startsWith("/") ||
@@ -92,12 +92,18 @@ export default function Navbar() {
                         <img
                           src={item.icon.trim()}
                           alt={item.title}
-                          className="object-contain"
-                          style={{
-                            width: "28px",
-                            height: "28px",
-                            display: "block",
-                          }}
+                          className={item.icon.endsWith(".svg") ? "object-contain" : "w-full h-full object-cover"}
+                          style={
+                            item.icon.endsWith(".svg") ? {
+                              width: "28px",
+                              height: "28px",
+                              display: "block",
+                            } : {
+                              width: "100%",
+                              height: "100%",
+                              display: "block",
+                            }
+                          }
                         />
                       ) : (
                         <i
@@ -361,7 +367,7 @@ export default function Navbar() {
                     className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                   >
                     <div
-                      className={`w-10 h-10 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}
+                      className={`w-10 h-10 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0 overflow-hidden`}
                     >
                       {item.icon &&
                       (item.icon.trim().startsWith("/") ||
@@ -369,12 +375,18 @@ export default function Navbar() {
                         <img
                           src={item.icon.trim()}
                           alt={item.title}
-                          className="object-contain"
-                          style={{
-                            width: "24px",
-                            height: "24px",
-                            display: "block",
-                          }}
+                          className={item.icon.endsWith(".svg") ? "object-contain" : "w-full h-full object-cover"}
+                          style={
+                            item.icon.endsWith(".svg") ? {
+                              width: "24px",
+                              height: "24px",
+                              display: "block",
+                            } : {
+                              width: "100%",
+                              height: "100%",
+                              display: "block",
+                            }
+                          }
                         />
                       ) : (
                         <i

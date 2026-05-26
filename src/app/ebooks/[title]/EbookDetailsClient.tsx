@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import BookCard from "@/components/ui/BookCard";
 import toast from "react-hot-toast";
+import { slugify } from "@/lib/utils";
 
 type Ebook = {
   id: string;
@@ -265,7 +266,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
       {/* 🔙 Navigation & Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <Link 
-          href="/free-resources/ebooks"
+          href="/ebooks"
           className="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-500 font-bold transition-colors group"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -523,7 +524,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               You Might Also Like
             </h3>
             <Link
-              href="/free-resources/ebooks"
+              href="/ebooks"
               className="text-emerald-500 hover:text-emerald-600 font-bold text-sm flex items-center gap-1 group"
             >
               <span>View All Ebooks</span>
@@ -550,7 +551,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                           height={165}
                           coverColor="bg-gradient-to-br from-emerald-500 to-teal-600"
                           coverText={relatedPaid ? "PREMIUM" : "READ"}
-                          href={`/free-resources/ebooks/${book.id}`}
+                          href={`/ebooks/${slugify(book.title)}`}
                           buttonText="View"
                           buttonClassName="hidden"
                         />
@@ -559,7 +560,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">{bookMeta.category}</span>
-                      <Link href={`/free-resources/ebooks/${book.id}`}>
+                      <Link href={`/ebooks/${slugify(book.title)}`}>
                         <h4 className="font-bold text-slate-800 dark:text-white line-clamp-1 group-hover:text-emerald-500 transition-colors leading-tight font-heading">
                           {book.title}
                         </h4>

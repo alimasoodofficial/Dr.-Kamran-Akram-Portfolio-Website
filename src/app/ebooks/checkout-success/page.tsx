@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { CheckCircle2, Download, BookOpen, ChevronRight, Mail, Calendar, CreditCard } from "lucide-react";
 import BookCard from "@/components/ui/BookCard";
+import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-11-15" as any,
@@ -51,7 +52,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Session Missing</h1>
           <p className="text-sm text-slate-500">We could not locate your payment session. Please check your purchase confirmation email or navigate back to the e-book store.</p>
-          <Link href="/free-resources/ebooks" className="block w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl">
+          <Link href="/ebooks" className="block w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl">
             Return to Store
           </Link>
         </div>
@@ -70,7 +71,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Payment Confirmed</h1>
           <p className="text-sm text-slate-500">Your order has been authorized, but we are still assembling your digital copy. Please check your email inbox in 2 minutes for your direct access links.</p>
-          <Link href="/free-resources/ebooks" className="block w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl">
+          <Link href="/ebooks" className="block w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl">
             Return to Store
           </Link>
         </div>
@@ -144,7 +145,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 pt-6">
             <Link 
-              href={`/free-resources/ebooks/${ebook.id}/read`}
+              href={`/ebooks/${slugify(ebook.title)}/read`}
               className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 transition-all hover:scale-102 cursor-pointer"
             >
               <BookOpen className="w-5 h-5" />
@@ -190,7 +191,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           </div>
 
           <Link
-            href="/free-resources/ebooks"
+            href="/ebooks"
             className="text-xs text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold inline-flex items-center gap-1.5 mt-2 transition-colors group"
           >
             <span>Back to Publications Store</span>

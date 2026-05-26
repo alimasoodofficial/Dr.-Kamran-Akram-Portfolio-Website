@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { notFound } from "next/navigation";
 import EbookDetailsClient from "./EbookDetailsClient";
 import { Suspense } from "react";
+import { slugify } from "@/lib/utils";
 
 // Enable revalidation for fresh download stats
 export const revalidate = 30;
@@ -17,21 +18,26 @@ type Ebook = {
 };
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ title: string }>;
 }
 
-async function getEbookData(id: string): Promise<{ ebook: Ebook | null; related: Ebook[] }> {
+async function getEbookData(titleSlug: string): Promise<{ ebook: Ebook | null; related: Ebook[] }> {
   try {
     const supabase = createSupabaseServerClient();
 
-    // Fetch the target ebook
-    const { data: ebook, error } = await supabase
+    // Fetch all ebooks to match by slugified title
+    const { data: ebooks, error } = await supabase
       .from("ebooks")
-      .select("*")
-      .eq("id", id)
-      .single();
+      .select("*");
 
-    if (error || !ebook) {
+    if (error || !ebooks) {
+      return { ebook: null, related: [] };
+    }
+
+    // Find the ebook matching the title slug
+    const ebook = ebooks.find((b) => slugify(b.title) === titleSlug) || null;
+
+    if (!ebook) {
       return { ebook: null, related: [] };
     }
 
@@ -39,7 +45,7 @@ async function getEbookData(id: string): Promise<{ ebook: Ebook | null; related:
     const { data: relatedData } = await supabase
       .from("ebooks")
       .select("*")
-      .neq("id", id)
+      .neq("id", ebook.id)
       .limit(4);
 
     return {
@@ -82,8 +88,8 @@ function DetailSkeleton() {
 }
 
 export default async function EbookDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const { ebook, related } = await getEbookData(id);
+  const { title } = await params;
+  const { ebook, related } = await getEbookData(title);
 
   if (!ebook) {
     notFound();

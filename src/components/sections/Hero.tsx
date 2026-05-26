@@ -43,16 +43,24 @@ export default function Hero() {
             <span className="absolute inline-flex h-full w-full rounded-full bg-[#E67E22] opacity-75 animate-ping"></span>
             <span className="relative inline-flex rounded-full h-3 w-3  bg-[#E67E22]"></span>
           </span>
-          Agriculture Consultant, Data & Business Analyst
+          Agritech Entrepreneur, Data & Business Analyst
         </span>
-        <h1 className=" text-3xl  md:text-6xl pb-3 font-black  leading-tight tracking-wider">
-          Turbocharge your{" "}
-          <GradientText colors={["#10b981", "#10b981", "#10b981"]}>
+        <h1 className=" text-3xl  md:text-6xl pb-3 font-black!  leading-tight tracking-wider">
+          Turning 
+          {" "}
+          <span className="bg-gradient-to-r from-primary  to-primary-dark bg-clip-text text-transparent">
             {" "}
-            brand{" "}
-          </GradientText>{" "}
-          <br className="invisible md:visible" />
-          Reach millions online
+            Ideas
+          </span>
+          , Data & Research 
+          {" "}
+          
+          <br className="" />
+          Into Meaningful{" "}
+          <span className="bg-gradient-to-r from-primary  to-primary-dark bg-clip-text text-transparent">
+            {" "}
+            Insights{" "}
+          </span>
         </h1>
 
         <div className="w-full mx-auto">

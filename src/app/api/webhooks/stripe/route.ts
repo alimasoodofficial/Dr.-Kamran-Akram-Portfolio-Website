@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { sendEbookPurchaseConfirmation } from "@/lib/mail";
+import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-11-15" as any,
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
         const origin = `${protocol}://${host}`;
         
         const downloadUrl = ebook.file_url || "";
-        const flipbookUrl = `${origin}/free-resources/ebooks/${ebook.id}/read`;
+        const flipbookUrl = `${origin}/ebooks/${slugify(ebook.title)}/read`;
 
         // 4. Send premium receipt and download details email
         await sendEbookPurchaseConfirmation({
