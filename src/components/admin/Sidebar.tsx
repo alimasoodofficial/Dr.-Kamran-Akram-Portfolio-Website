@@ -12,6 +12,7 @@ import {
   Settings,
   Globe,
   Calendar,
+  CreditCard,
 } from "lucide-react";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ const navItems = [
   { label: "Ebooks", href: "/admin/ebooks", icon: BookOpen },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Bookings", href: "/admin/bookings", icon: Calendar },
+  { label: "Transactions", href: "/admin/transactions", icon: CreditCard },
 ];
 
 interface SidebarProps {

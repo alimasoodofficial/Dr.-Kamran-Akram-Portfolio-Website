@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseClient } from "@/lib/supabaseClient";
 import GradientText from "@/components/ui/GradientText";
-import { ArrowLeft, Save, Upload, X } from "lucide-react";
+import { ArrowLeft, Save, Upload, X, FileText, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -21,8 +21,15 @@ export default function EditEbook({ params }: PageProps) {
   const [discountPrice, setDiscountPrice] = useState("");
   const [discountExpiresAt, setDiscountExpiresAt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  
+  // Cover image states
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
+
+  // PDF file states
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfFileName, setPdfFileName] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [token, setToken] = useState<string | null>(null);
@@ -57,6 +64,20 @@ export default function EditEbook({ params }: PageProps) {
         setPreviewUrl(data.cover_url || null);
         setPrice(data.price !== null && data.price !== undefined ? String(data.price) : "0.00");
         setDiscountPrice(data.discount_price ? String(data.discount_price) : "");
+        
+        // If there's an existing file url, extract the filename for the display
+        if (data.file_url) {
+          try {
+            const urlParts = data.file_url.split("/");
+            const lastPart = urlParts[urlParts.length - 1];
+            // Remove prefix like ebook-123456789- to get original filename
+            const cleanName = lastPart.replace(/^ebook-\d+-/, "");
+            setPdfFileName(cleanName);
+          } catch (e) {
+            setPdfFileName("Current Ebook File.pdf");
+          }
+        }
+
         if (data.discount_expires_at) {
           const dt = new Date(data.discount_expires_at);
           const offset = dt.getTimezoneOffset();
@@ -74,20 +95,36 @@ export default function EditEbook({ params }: PageProps) {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (f) {
-      setFile(f);
+      setCoverFile(f);
       setPreviewUrl(URL.createObjectURL(f));
     }
   };
 
-  const handleUpload = async (): Promise<string | null> => {
-    if (!file) return imageUrl;
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) {
+        toast.error("Please upload a valid PDF document!");
+        return;
+      }
+      setPdfFile(f);
+      setPdfFileName(f.name);
+    }
+  };
+
+  // Helper setter for cover preview compatibility
+  const setPreviewUrl = (url: string | null) => {
+    setCoverPreviewUrl(url);
+  };
+
+  const uploadSingleFile = async (targetFile: File): Promise<string> => {
     if (!token) throw new Error("Unauthorized");
 
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", targetFile);
 
     const res = await fetch("/api/admin/upload", {
       method: "POST",
@@ -106,14 +143,26 @@ export default function EditEbook({ params }: PageProps) {
     const toastId = toast.loading("Updating ebook...");
 
     try {
-      const finalCoverUrl = await handleUpload();
+      // 1. Upload Cover Image if changed
+      let finalCoverUrl = imageUrl;
+      if (coverFile) {
+        finalCoverUrl = await uploadSingleFile(coverFile);
+      }
 
+      // 2. Upload PDF File if changed
+      let finalFileUrl = fileUrl;
+      if (pdfFile) {
+        toast.loading("Uploading PDF book file...", { id: toastId });
+        finalFileUrl = await uploadSingleFile(pdfFile);
+      }
+
+      // 3. Update Supabase
       const { error } = await supabaseClient
         .from("ebooks")
         .update({
           title,
           description,
-          file_url: fileUrl,
+          file_url: finalFileUrl,
           cover_url: finalCoverUrl,
           price: price ? parseFloat(price) : 0, // 0 means Free!
           discount_price: discountPrice ? parseFloat(discountPrice) : null,
@@ -123,10 +172,10 @@ export default function EditEbook({ params }: PageProps) {
 
       if (error) throw error;
 
-      toast.success("Ebook updated!", { id: toastId });
+      toast.success("Ebook updated successfully!", { id: toastId });
       router.push("/admin/ebooks");
     } catch (err: any) {
-      toast.error(err.message || "Error", { id: toastId });
+      toast.error(err.message || "Error updating ebook", { id: toastId });
     } finally {
       setSaving(false);
     }
@@ -159,7 +208,51 @@ export default function EditEbook({ params }: PageProps) {
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-8">
+            
+            {/* Left Form Column */}
             <div className="space-y-6">
+              
+              {/* 📁 PDF EBOOK UPLOAD ZONE */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-slate-700">1. Upload Ebook PDF File</label>
+                <div className="border-2 border-dashed border-blue-200 bg-blue-50/5 hover:bg-blue-50/20 rounded-xl p-6 text-center transition-colors relative group">
+                  <input 
+                    type="file" 
+                    accept="application/pdf"
+                    onChange={handlePdfChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  {pdfFileName ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="p-3 bg-emerald-100 text-emerald-600 rounded-full">
+                        <CheckCircle2 className="w-6 h-6 animate-pulse" />
+                      </div>
+                      <p className="text-sm font-bold text-slate-800 line-clamp-1 px-4">{pdfFileName}</p>
+                      <p className="text-xs text-slate-400">PDF successfully loaded. Click or drag to replace.</p>
+                    </div>
+                  ) : (
+                    <div className="py-4 text-slate-400">
+                      <FileText className="w-10 h-10 mx-auto mb-2 text-blue-400 group-hover:scale-110 transition-transform" />
+                      <p className="text-sm font-bold text-slate-700">Drag or Click to upload PDF file</p>
+                      <p className="text-xs text-slate-400 mt-1">Accepts document files up to 50MB</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Or: Manually Paste PDF/File URL
+                </label>
+                <input
+                  value={fileUrl}
+                  onChange={(e) => setFileUrl(e.target.value)}
+                  disabled={!!pdfFile}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-40"
+                  placeholder={pdfFile ? "New PDF selected above" : "https://..."}
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   Title
@@ -167,7 +260,7 @@ export default function EditEbook({ params }: PageProps) {
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
                   required
                   placeholder="Ebook Title"
                 />
@@ -180,21 +273,53 @@ export default function EditEbook({ params }: PageProps) {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 resize-none"
                   placeholder="Description..."
                 />
               </div>
+            </div>
 
+            {/* Right Form Column */}
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  PDF/File URL
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  2. Cover Image
                 </label>
-                <input
-                  value={fileUrl}
-                  onChange={(e) => setFileUrl(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                  placeholder="https://..."
-                />
+                <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition-colors relative group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  {coverPreviewUrl ? (
+                    <div className="relative">
+                      <img
+                        src={coverPreviewUrl}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCoverFile(null);
+                          setPreviewUrl(null);
+                          setImageUrl("");
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20 cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-12 text-slate-400">
+                      <Upload className="w-10 h-10 mx-auto mb-2 text-slate-300 group-hover:scale-110 transition-transform" />
+                      <p className="text-sm font-bold text-slate-500">Upload high-res cover artwork</p>
+                      <p className="text-[10px] text-slate-400 mt-1">Supports PNG, JPG, WEBP</p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>
@@ -207,7 +332,7 @@ export default function EditEbook({ params }: PageProps) {
                   min="0.00"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-bold text-slate-800"
                   required
                   placeholder="9.99"
                 />
@@ -242,58 +367,16 @@ export default function EditEbook({ params }: PageProps) {
                 <p className="text-[11px] text-slate-400 mt-1">Select the exact date and time when this discount should automatically expire.</p>
               </div>
             </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Cover Image
-                </label>
-                <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition-colors relative group">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  {previewUrl ? (
-                    <div className="relative">
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setFile(null);
-                          setPreviewUrl(null);
-                          setImageUrl("");
-                        }}
-                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="py-8 text-slate-400">
-                      <Upload className="w-10 h-10 mx-auto mb-2" />
-                      <p className="text-sm">Click or Drag to upload cover</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all font-medium"
+              className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all font-extrabold text-xs cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              {saving ? "Updating..." : "Update Ebook"}
+              {saving ? "Updating eBook..." : "Update Ebook"}
             </button>
           </div>
         </form>

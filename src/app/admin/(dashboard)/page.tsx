@@ -13,6 +13,7 @@ import {
   ArrowDownRight,
   Clock,
   ExternalLink,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -25,6 +26,7 @@ export default function AdminDashboard() {
     ebooks: 0,
     subscribers: 0,
     bookings: 0,
+    transactions: 0,
   });
 
   useEffect(() => {
@@ -47,12 +49,14 @@ export default function AdminDashboard() {
         ebooksCount,
         subscribersCount,
         bookingsCount,
+        transactionsCount,
       ] = await Promise.all([
         getCount("gallery"),
         getCount("articles"),
         getCount("ebooks"),
         getCount("newsletter_subscribers"),
         getCount("bookings"),
+        getCount("transactions"),
       ]);
 
       setStats({
@@ -61,6 +65,7 @@ export default function AdminDashboard() {
         ebooks: ebooksCount || 0,
         subscribers: subscribersCount || 0,
         bookings: bookingsCount || 0,
+        transactions: transactionsCount || 0,
       });
     }
 
@@ -113,6 +118,15 @@ export default function AdminDashboard() {
       trend: "+8.2%",
       isUp: true,
     },
+    {
+      label: "Transactions",
+      value: stats.transactions,
+      icon: CreditCard,
+      href: "/admin/transactions",
+      color: "from-blue-600 to-indigo-600",
+      trend: "New",
+      isUp: true,
+    },
   ];
 
   const recentActivity = [
@@ -162,7 +176,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {cards.map((card, idx) => (
           <motion.div
             key={card.label}

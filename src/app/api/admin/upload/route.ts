@@ -17,7 +17,16 @@ export async function POST(req: Request) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const fileName = `gallery-${Date.now()}-${(file as any).name || "img"}`;
+
+    // Dynamic prefixing depending on file type (PDF vs Image/Video)
+    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const prefix = isPdf ? "ebook" : "gallery";
+    
+    // Sanitize filename: replace spaces/special chars with hyphens
+    const cleanOrigName = file.name
+      .replace(/[^a-zA-Z0-9.]/g, "-")
+      .replace(/-+/g, "-");
+    const fileName = `${prefix}-${Date.now()}-${cleanOrigName}`;
 
     const bucketName = "website images & videos";
     const { data, error } = await supabaseService.storage.from(bucketName).upload(fileName, buffer, {
@@ -27,7 +36,7 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    // Retrieve public URL using Supabase Storage API to handle special characters & spaces correctly
+    // Retrieve public URL
     const { data: urlData } = supabaseService.storage.from(bucketName).getPublicUrl(data.path);
     
     return NextResponse.json({ url: urlData.publicUrl });

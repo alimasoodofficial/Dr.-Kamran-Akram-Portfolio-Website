@@ -148,3 +148,62 @@ export async function sendEbookPurchaseConfirmation({
   }
 }
 
+export async function sendEbookAdminNotification({
+  customerName,
+  customerEmail,
+  ebookTitle,
+  pricePaid,
+  promocodeUsed,
+}: {
+  customerName: string;
+  customerEmail: string;
+  ebookTitle: string;
+  pricePaid: number;
+  promocodeUsed?: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com';
+  const mailOptions = {
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
+    to: adminEmail,
+    subject: `🚨 E-Book Sold: ${ebookTitle}`,
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; padding: 32px; border-radius: 20px; background: #ffffff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
+        
+        <div style="text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px; margin-bottom: 28px;">
+          <span style="font-size: 24px; font-weight: 800; color: #3b82f6; letter-spacing: -0.5px;">Sales Notification</span>
+          <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; tracking: 1px; margin-top: 4px;">Dr. Kamran Akram Store</div>
+        </div>
+
+        <h2 style="color: #0f172a; font-size: 20px; font-weight: 800; margin-top: 0; text-align: center;">🎉 E-Book Successfully Sold!</h2>
+        
+        <div style="background: #f8fafc; border: 1px solid #f1f5f9; padding: 20px; border-radius: 16px; margin: 24px 0;">
+          <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 16px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Order Summary</h4>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>E-Book Title:</strong> ${ebookTitle}</p>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>Price Paid:</strong> <span style="color: #10b981; font-weight: 800;">$${pricePaid.toFixed(2)} USD</span></p>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>Promo Code:</strong> ${promocodeUsed ? `<span style="background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 12px;">${promocodeUsed}</span>` : '<span style="color: #94a3b8;">None</span>'}</p>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #f1f5f9; padding: 20px; border-radius: 16px; margin: 24px 0;">
+          <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 16px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Customer Details</h4>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>Name:</strong> ${customerName}</p>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>Email:</strong> <a href="mailto:${customerEmail}" style="color: #3b82f6; text-decoration: none;">${customerEmail}</a></p>
+        </div>
+
+        <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-top: 30px; margin-bottom: 0;">
+          This is an automated notification from your digital storefront.<br>
+          © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+        </p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending admin sales notification email:', error);
+    return { success: false, error };
+  }
+}
+
+
