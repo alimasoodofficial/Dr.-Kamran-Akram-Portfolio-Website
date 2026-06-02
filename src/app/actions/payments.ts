@@ -3,6 +3,8 @@
 import Stripe from "stripe";
 import { createBooking } from "./bookings";
 import { getSupabaseService } from "@/lib/supabaseService";
+import { sendEbookPurchaseConfirmation, sendEbookAdminNotification } from "@/lib/mail";
+import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -154,3 +156,149 @@ export async function confirmStripeBooking(sessionId: string) {
     return { success: false, error: error.message || "Failed to confirm your booking." };
   }
 }
+
+export async function confirmEbookPurchase(sessionId: string, origin: string) {
+  try {
+    const supabase = getSupabaseService();
+
+    // 1. Retrieve the session from Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== "paid") {
+      return { success: false, error: "Payment has not been completed." };
+    }
+
+    const ebookId = session.metadata?.ebookId;
+    if (!ebookId) {
+      return { success: false, error: "Session metadata is missing ebookId." };
+    }
+
+    const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || session.customer_email;
+    const customerName = session.customer_details?.name || session.metadata?.fullName || "Customer";
+
+    if (!customerEmail) {
+      return { success: false, error: "Customer email is missing." };
+    }
+
+    // 2. Check if a transaction with this stripe session ID already exists (idempotency!)
+    const { data: existingTx } = await supabase
+      .from("transactions")
+      .select("*")
+      .eq("stripe_session_id", sessionId)
+      .maybeSingle();
+
+    if (existingTx) {
+      console.log(`Transaction for session ${sessionId} already exists. Returning details.`);
+      
+      // Fetch ebook for display
+      const { data: ebook } = await supabase
+        .from("ebooks")
+        .select("id, title, cover_url, file_url")
+        .eq("id", ebookId)
+        .single();
+
+      if (!ebook) {
+        return { success: false, error: "Ebook not found" };
+      }
+
+      return {
+        success: true,
+        alreadyCreated: true,
+        purchaseDetails: {
+          receiptNo: (session.payment_intent as string) || "",
+          amountPaid: (session.amount_total ? (session.amount_total / 100).toFixed(2) : "0.00"),
+          email: customerEmail,
+          ebook: {
+            id: ebook.id,
+            title: ebook.title,
+            cover_url: ebook.cover_url || null,
+            file_url: ebook.file_url || null,
+          }
+        }
+      };
+    }
+
+    // 3. Get the ebook details from the database
+    const { data: ebook, error: fetchError } = await supabase
+      .from("ebooks")
+      .select("*")
+      .eq("id", ebookId)
+      .single();
+
+    if (fetchError || !ebook) {
+      console.error("Ebook purchased but not found in DB:", fetchError);
+      return { success: false, error: "Ebook not found" };
+    }
+
+    // 4. Increment the download count by +1 in Supabase
+    const currentDownloads = Number(ebook.downloads || 0);
+    await supabase
+      .from("ebooks")
+      .update({ downloads: currentDownloads + 1 })
+      .eq("id", ebookId);
+
+    // 5. Construct download URL and flipbook URL
+    const downloadUrl = ebook.file_url || "";
+    const flipbookUrl = `${origin}/ebooks/${slugify(ebook.title)}/read`;
+
+    // 6. Send premium receipt and download details email
+    await sendEbookPurchaseConfirmation({
+      to: customerEmail,
+      ebookTitle: ebook.title,
+      ebookCover: ebook.cover_url || "",
+      downloadUrl,
+      flipbookUrl,
+    });
+
+    const promocodeUsed = session.metadata?.promoCodeApplied || "";
+    const pricePaid = (session.amount_total || 0) / 100; // Stripe amount is in cents
+
+    // 7. Send admin sales notification email
+    await sendEbookAdminNotification({
+      customerName,
+      customerEmail,
+      ebookTitle: ebook.title,
+      pricePaid,
+      promocodeUsed,
+    });
+
+    // 8. Log the transaction in the database
+    const { error: insertTxError } = await supabase
+      .from("transactions")
+      .insert([{
+        stripe_session_id: sessionId,
+        customer_name: customerName,
+        customer_email: customerEmail,
+        promocode_used: promocodeUsed || null,
+        price_paid: pricePaid,
+        item_type: "ebook",
+        item_name: ebook.title
+      }]);
+
+    if (insertTxError) {
+      console.error("Failed to insert ebook transaction record:", insertTxError);
+      return { success: false, error: "Failed to save transaction details." };
+    }
+
+    console.log(`Successfully completed ebook purchase for ${customerEmail} via success page callback.`);
+
+    return {
+      success: true,
+      purchaseDetails: {
+        receiptNo: (session.payment_intent as string) || "",
+        amountPaid: pricePaid.toFixed(2),
+        email: customerEmail,
+        ebook: {
+          id: ebook.id,
+          title: ebook.title,
+          cover_url: ebook.cover_url || null,
+          file_url: ebook.file_url || null,
+        }
+      }
+    };
+  } catch (error: any) {
+    console.error("Error processing ebook purchase success:", error);
+    return { success: false, error: error.message || "Failed to process ebook purchase." };
+  }
+}
+
