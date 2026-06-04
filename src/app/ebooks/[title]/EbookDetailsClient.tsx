@@ -290,12 +290,12 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
         {/* Left Side: 3D Book & Info Shelf */}
         <div className="lg:col-span-4 flex flex-col items-center gap-8">
           <div className="relative group p-4 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 shadow-inner flex justify-center items-center w-full max-w-[340px] md:max-w-none aspect-[4/5]">
-            <div className="hover:scale-103 transition-transform duration-500">
+            <div className="w-full flex justify-center px-4 md:px-8">
               <BookCard
                 title={ebook.title}
                 imageSrc={ebook.cover_url}
-                width={240}
-                height={330}
+                width={280}
+                height={390}
                 coverColor="bg-gradient-to-br from-emerald-500 to-teal-600"
                 coverText={isPaid ? "PREMIUM" : "GET NOW"}
                 href="#"
@@ -539,46 +539,73 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               return (
                 <div 
                   key={book.id}
-                  className="group bg-white dark:bg-slate-900/60 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-emerald-500/30 flex flex-col justify-between"
+                  className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="space-y-4">
-                    <div className="bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl flex justify-center items-center aspect-[4/5] overflow-hidden border border-slate-100 dark:border-slate-800/40">
-                      <div className="group-hover:scale-103 transition-transform duration-500">
-                        <BookCard
-                          title={book.title}
-                          imageSrc={book.cover_url}
-                          width={120}
-                          height={165}
-                          coverColor="bg-gradient-to-br from-emerald-500 to-teal-600"
-                          coverText={relatedPaid ? "PREMIUM" : "READ"}
-                          href={`/ebooks/${slugify(book.title)}`}
-                          buttonText="View"
-                          buttonClassName="hidden"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">{bookMeta.category}</span>
-                      <Link href={`/ebooks/${slugify(book.title)}`}>
-                        <h4 className="font-bold text-slate-800 dark:text-white line-clamp-1 group-hover:text-emerald-500 transition-colors leading-tight font-heading">
-                          {book.title}
-                        </h4>
-                      </Link>
+                  <div className="bg-[#1c2434] p-6 flex justify-center items-center relative overflow-hidden aspect-[4/3]">
+                    <div className="w-full flex justify-center">
+                      <BookCard
+                        title={book.title}
+                        imageSrc={book.cover_url}
+                        width={120}
+                        height={165}
+                        coverColor="bg-slate-800"
+                        coverText={relatedPaid ? "PREMIUM" : "READ"}
+                        buttonClassName="hidden"
+                      />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/50">
-                    <div className="flex items-center gap-1 font-semibold text-slate-600 dark:text-slate-300">
-                      {relatedPaid ? (
-                        <span className="text-amber-500 font-extrabold">${Number(book.price).toFixed(2)}</span>
-                      ) : (
-                        <span className="text-emerald-500 font-extrabold">FREE</span>
-                      )}
+                  <div className="p-5 flex-1 flex flex-col justify-between bg-white dark:bg-slate-900">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                          {bookMeta.category}
+                        </span>
+                        <div className="flex items-center text-amber-400 text-[10px] gap-0.5">
+                          <div className="flex">
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <Link href={`/ebooks/${slugify(book.title)}`}>
+                        <h4 className="font-extrabold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors leading-snug font-heading">
+                          {book.title}
+                        </h4>
+                      </Link>
+
+                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-2.5 h-3.5 bg-blue-500 rounded-sm"></div>
+                          <span>{bookMeta.pageCount} Pages</span>
+                        </div>
+                        <span>PDF</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Download className="w-3 h-3 text-emerald-500" />
-                      <span>{book.downloads || 0} DLs</span>
+
+                    <div className="mt-5 space-y-4">
+                      <div className="flex items-center flex-wrap gap-2">
+                        {relatedPaid ? (
+                          <span className="text-xl font-black text-slate-900 dark:text-white">
+                            ${Number(book.price).toFixed(2)}
+                          </span>
+                        ) : (
+                          <span className="text-xl font-black text-slate-900 dark:text-white">
+                            FREE
+                          </span>
+                        )}
+                      </div>
+
+                      <Link
+                        href={`/ebooks/${slugify(book.title)}`}
+                        className="w-full text-center py-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center justify-center bg-[#1c2434] hover:bg-[#283244] text-white dark:bg-slate-800 dark:hover:bg-slate-700 shadow-md"
+                      >
+                        {relatedPaid ? "Buy Now" : "Get Access"}
+                      </Link>
                     </div>
                   </div>
                 </div>

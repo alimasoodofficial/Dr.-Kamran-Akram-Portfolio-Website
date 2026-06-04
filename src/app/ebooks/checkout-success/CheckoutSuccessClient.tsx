@@ -172,7 +172,7 @@ export default function CheckoutSuccessClient({ initialData }: CheckoutSuccessCl
         <div className="lg:col-span-5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl flex flex-col items-center justify-center relative overflow-hidden text-center gap-6">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent -z-10 pointer-events-none" />
           
-          <div className="scale-95 md:scale-100 hover:scale-103 transition-transform duration-500">
+          <div className="w-full flex justify-center scale-95 md:scale-100">
             <BookCard
               title={ebook.title}
               imageSrc={ebook.cover_url || ""}
@@ -188,7 +188,7 @@ export default function CheckoutSuccessClient({ initialData }: CheckoutSuccessCl
 
           <div className="space-y-1 mt-4">
             <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Digital Publication</span>
-            <h3 className="font-extrabold text-slate-900 dark:text-white line-clamp-2 leading-snug text-lg">{ebook.title}</h3>
+            <h3 className="font-extrabold text-slate-900 dark:text-white leading-snug text-lg">{ebook.title}</h3>
           </div>
 
           <Link

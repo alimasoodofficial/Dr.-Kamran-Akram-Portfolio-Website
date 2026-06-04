@@ -150,6 +150,36 @@ export async function confirmStripeBooking(sessionId: string) {
       service: "Professional Consultation",
     });
 
+    if (result.success) {
+      // 4. Log the transaction in the database (just like ebooks!)
+      const { data: existingTx } = await supabase
+        .from("transactions")
+        .select("id")
+        .eq("stripe_session_id", sessionId)
+        .maybeSingle();
+
+      if (!existingTx) {
+        const pricePaid = (session.amount_total || 0) / 100;
+        const { error: insertTxError } = await supabase
+          .from("transactions")
+          .insert([{
+            stripe_session_id: sessionId,
+            customer_name: meta.fullName,
+            customer_email: meta.email,
+            promocode_used: null,
+            price_paid: pricePaid,
+            item_type: "booking",
+            item_name: `Consultation Call - ${meta.date} ${meta.time_slot}`
+          }]);
+
+        if (insertTxError) {
+          console.error("Failed to insert booking transaction record in confirmStripeBooking:", insertTxError);
+        } else {
+          console.log(`Successfully logged transaction in confirmStripeBooking for ${meta.email}`);
+        }
+      }
+    }
+
     return result;
   } catch (error: any) {
     console.error("Error confirming booking:", error);

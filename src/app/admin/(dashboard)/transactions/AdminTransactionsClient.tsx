@@ -46,9 +46,22 @@ type AdminTransactionsClientProps = {
 };
 
 // ---------------------------------------------------------------------------
-// CSV export helper
+// Excel export helper
 // ---------------------------------------------------------------------------
-function exportToCsv(transactions: Transaction[]) {
+function escapeXml(unsafe: string) {
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
+
+function exportToExcel(transactions: Transaction[]) {
   const header = ["ID", "Stripe Session ID", "Customer Name", "Customer Email", "Item Name", "Item Type", "Promo Code Used", "Price Paid", "Date"];
   const rows = transactions.map((t) => [
     t.id,
@@ -62,15 +75,41 @@ function exportToCsv(transactions: Transaction[]) {
     new Date(t.created_at).toLocaleString("en-US"),
   ]);
 
-  const csvContent = [header, ...rows]
-    .map((row) => row.map((cell) => `"${cell}"`).join(","))
-    .join("\n");
+  let xml = '<?xml version="1.0"?>\n';
+  xml += '<?mso-application progid="Excel.Sheet"?>\n';
+  xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"\n';
+  xml += ' xmlns:o="urn:schemas-microsoft-com:office:office"\n';
+  xml += ' xmlns:x="urn:schemas-microsoft-com:office:excel"\n';
+  xml += ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"\n';
+  xml += ' xmlns:html="http://www.w3.org/TR/REC-html40">\n';
+  xml += ' <Worksheet ss:Name="Transactions">\n';
+  xml += '  <Table>\n';
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  // Add headers
+  xml += '   <Row>\n';
+  header.forEach((cell) => {
+    xml += `    <Cell><Data ss:Type="String">${escapeXml(cell)}</Data></Cell>\n`;
+  });
+  xml += '   </Row>\n';
+
+  // Add rows
+  rows.forEach((row) => {
+    xml += '   <Row>\n';
+    row.forEach((cell) => {
+      xml += `    <Cell><Data ss:Type="String">${escapeXml(cell)}</Data></Cell>\n`;
+    });
+    xml += '   </Row>\n';
+  });
+
+  xml += '  </Table>\n';
+  xml += ' </Worksheet>\n';
+  xml += '</Workbook>\n';
+
+  const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `transactions_${new Date().toISOString().split("T")[0]}.csv`;
+  link.download = `transactions_${new Date().toISOString().split("T")[0]}.xls`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -267,7 +306,7 @@ export default function AdminTransactionsClient({
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
             <GradientText colors={["#2563EB", "#7C3AED"]}>
-              Transactions Ledger
+              Transactions data
             </GradientText>
           </h1>
           <p className="text-slate-500 mt-1">
@@ -276,33 +315,14 @@ export default function AdminTransactionsClient({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Simulator Trigger */}
           <button
-            onClick={() => setIsSimulatorOpen(true)}
-            className="flex items-center gap-2 text-xs md:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-xl transition-all shadow-md font-semibold cursor-pointer"
-          >
-            <Play className="w-4 h-4" />
-            <span>Simulate Payment Event</span>
-          </button>
-
-          <button
-            onClick={() => exportToCsv(filteredTransactions)}
+            onClick={() => exportToExcel(filteredTransactions)}
             disabled={filteredTransactions.length === 0}
             className="flex items-center gap-2 text-xs md:text-sm bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm font-semibold cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            <span>Export Ledger</span>
+            <span>Export Document</span>
           </button>
-          
-          <a
-            href="https://dashboard.stripe.com/test/payments"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 text-xs md:text-sm bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl transition-colors shadow-lg shadow-black/5 font-semibold"
-          >
-            <CreditCard className="w-4 h-4" />
-            <span>Stripe Dashboard</span>
-          </a>
         </div>
       </div>
 
