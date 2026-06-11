@@ -153,17 +153,12 @@ export default function CheckoutSuccessClient({ initialData }: CheckoutSuccessCl
               <span>Open Flipbook Reader</span>
             </Link>
 
-            {ebook.file_url && (
-              <a 
-                href={ebook.file_url}
-                target="_blank"
-                download
-                className="flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 text-white font-bold px-6 py-4 rounded-2xl transition-all hover:scale-102 cursor-pointer border border-slate-200/20 text-center"
-              >
-                <Download className="w-5 h-5 text-emerald-500" />
-                <span>Download PDF File</span>
-              </a>
-            )}
+            <Link 
+              href="/ebooks"
+              className="flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-950 dark:hover:bg-slate-850 text-white font-bold px-6 py-4 rounded-2xl transition-all hover:scale-102 cursor-pointer border border-slate-200/20 text-center"
+            >
+              <span>Return to Store</span>
+            </Link>
           </div>
 
         </div>
