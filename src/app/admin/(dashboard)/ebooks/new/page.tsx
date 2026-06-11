@@ -10,6 +10,7 @@ import Link from "next/link";
 
 export default function NewEbook() {
   const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("Dr. Kamran Akram");
   const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [price, setPrice] = useState("9.99");
@@ -67,7 +68,7 @@ export default function NewEbook() {
       }
   };
 
-  const uploadSingleFile = async (targetFile: File): Promise<string> => {
+  const uploadSingleFile = async (targetFile: File): Promise<{ url: string; path?: string; isPrivate?: boolean }> => {
     if (!token) throw new Error("Unauthorized");
     
     const fd = new FormData();
@@ -81,7 +82,7 @@ export default function NewEbook() {
     
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || "Upload failed");
-    return json.url;
+    return json;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,21 +99,27 @@ export default function NewEbook() {
       // 1. Upload Cover Image if selected
       let finalCoverUrl = null;
       if (coverFile) {
-          finalCoverUrl = await uploadSingleFile(coverFile);
+          const coverRes = await uploadSingleFile(coverFile);
+          finalCoverUrl = coverRes.url;
       }
 
       // 2. Upload PDF File if selected
       let finalFileUrl = fileUrl;
+      let finalPdfStoragePath = null;
       if (pdfFile) {
           toast.loading("Uploading PDF book file...", { id: toastId });
-          finalFileUrl = await uploadSingleFile(pdfFile);
+          const pdfRes = await uploadSingleFile(pdfFile);
+          finalPdfStoragePath = pdfRes.path || null;
+          finalFileUrl = ""; // clear public download file url
       }
 
       // 3. Save to Supabase
       const { error } = await supabaseClient.from("ebooks").insert({
           title,
+          author,
           description,
-          file_url: finalFileUrl,
+          file_url: finalFileUrl || null,
+          pdf_storage_path: finalPdfStoragePath,
           cover_url: finalCoverUrl,
           price: price ? parseFloat(price) : 0, // 0 means Free!
           discount_price: discountPrice ? parseFloat(discountPrice) : null,
@@ -191,6 +198,11 @@ export default function NewEbook() {
                          <div>
                              <label className="block text-sm font-medium text-slate-700 mb-2">Title</label>
                              <input value={title} onChange={e => setTitle(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold" required placeholder="Ebook Title" />
+                         </div>
+
+                         <div>
+                             <label className="block text-sm font-medium text-slate-700 mb-2">Author</label>
+                             <input value={author} onChange={e => setAuthor(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold" required placeholder="Dr. Kamran Akram" />
                          </div>
                          
                          <div>

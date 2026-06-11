@@ -129,6 +129,38 @@ export async function POST(req: Request) {
           } else {
             console.log(`Successfully dispatched ebook download email & logged transaction for ${customerEmail}`);
           }
+
+          // Resolve user_id if they already have a profile with this email
+          let purchasedUserId = null;
+          try {
+            const { data: userProfile } = await supabase
+              .from("profiles")
+              .select("id")
+              .ilike("email", customerEmail)
+              .maybeSingle();
+
+            if (userProfile) {
+              purchasedUserId = userProfile.id;
+            }
+          } catch (profileErr) {
+            console.error("Failed to resolve profile for email:", customerEmail, profileErr);
+          }
+
+          // Log the secure eBook purchase
+          const { error: insertPurchaseError } = await supabase
+            .from("purchases")
+            .insert([{
+              user_id: purchasedUserId,
+              user_email: customerEmail,
+              ebook_id: ebookId,
+              stripe_checkout_id: session.id
+            }]);
+
+          if (insertPurchaseError) {
+            console.error("Failed to insert ebook purchase record:", insertPurchaseError);
+          } else {
+            console.log(`Logged eBook purchase for ${customerEmail}`);
+          }
         } catch (err: any) {
           console.error("Failed to process completed checkout session metadata:", err);
         }

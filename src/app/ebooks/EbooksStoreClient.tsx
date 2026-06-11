@@ -385,7 +385,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                           href={`/ebooks/${slugify(book.title)}`}
                           className="w-full text-center py-3.5 px-4 rounded-xl text-sm font-bold transition-colors flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 shadow-md"
                         >
-                          Buy Now
+                          {isPaid ? "Buy Now" : "Get Access"}
                         </Link>
                       </div>
                     </div>

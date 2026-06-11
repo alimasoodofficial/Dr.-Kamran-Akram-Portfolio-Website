@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,11 +21,13 @@ import {
   Users,
   CreditCard,
   Lock,
-  X
+  X,
+  Loader2
 } from "lucide-react";
 import BookCard from "@/components/ui/BookCard";
 import toast from "react-hot-toast";
 import { slugify } from "@/lib/utils";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 type Ebook = {
   id: string;
@@ -89,6 +91,55 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
   const [validatingPromo, setValidatingPromo] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; percent: number } | null>(null);
   const [promoError, setPromoError] = useState("");
+
+  const [hasAccess, setHasAccess] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        let stripeSessionId = null;
+        let stripeEmail = null;
+        try {
+          const cached = sessionStorage.getItem("kamran_last_checkout");
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            stripeSessionId = parsed.receiptNo;
+            stripeEmail = parsed.email;
+          }
+        } catch (e) {}
+
+        // Fallback to verified email from sessionStorage
+        let verifiedEmail = null;
+        try {
+          verifiedEmail = sessionStorage.getItem("kamran_verified_email_" + ebook.id);
+        } catch (e) {}
+
+        const emailToCheck = stripeEmail || verifiedEmail || null;
+
+        const res = await fetch("/api/ebooks/read-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ebookId: ebook.id,
+            accessToken: session?.access_token || null,
+            stripeSessionId: stripeSessionId,
+            email: emailToCheck
+          })
+        });
+        if (res.ok) {
+          setHasAccess(true);
+        }
+      } catch (e) {
+        console.error("Access verification error:", e);
+      } finally {
+        setCheckingAccess(false);
+      }
+    };
+    checkAccess();
+  }, [ebook.id]);
 
   const meta = generateBookMeta(ebook.id, ebook.title);
   
@@ -426,36 +477,43 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             </div>
           </div>
 
-          {/* 🌟 Download CTA Area */}
+          {/* 🌟 Ebook Access & Purchase Area */}
           <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent dark:from-emerald-500/5 dark:via-teal-500/5 rounded-3xl p-8 border border-emerald-500/20 dark:border-emerald-500/10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-1.5 text-center md:text-left">
               <h4 className="text-xl font-bold text-slate-900 dark:text-white font-heading">
-                {isPaid ? "Instant Premium Access" : "Get Instant Lifetime Access"}
+                {hasAccess ? "Lifetime Reading Access" : "Instant eBook Access"}
               </h4>
               <p className="text-slate-500 text-sm">
-                {isPaid 
-                  ? "Purchase lifetime access to direct PDF download & interactive browser Flipbook." 
-                  : "Download this e-book directly to your device. 100% free."
+                {hasAccess 
+                  ? "You have full access to read this publication in our secure 3D flipbook reader." 
+                  : "Purchase lifetime access to read this technical publication in our secure 3D flipbook reader."
                 }
               </p>
             </div>
 
-            {isPaid ? (
+            {checkingAccess ? (
+              <button 
+                disabled
+                className="w-full md:w-auto flex items-center justify-center gap-2.5 bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-550 font-extrabold px-8 py-4 rounded-2xl transition-all select-none"
+              >
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Checking Access...</span>
+              </button>
+            ) : hasAccess ? (
+              <Link 
+                href={`/ebooks/${slugify(ebook.title)}/read`}
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-102 transition-all cursor-pointer select-none text-center"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>Open Flipbook Reader</span>
+              </Link>
+            ) : (
               <button 
                 onClick={() => setPurchaseModalOpen(true)}
                 className="w-full md:w-auto flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
               >
                 <CreditCard className="w-5 h-5" />
                 <span>Buy E-Book (${Number(displayPrice).toFixed(2)})</span>
-              </button>
-            ) : (
-              <button 
-                onClick={handleDownload}
-                disabled={downloading}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-102 disabled:opacity-50 transition-all cursor-pointer select-none"
-              >
-                <Download className={`w-5 h-5 ${downloading ? "animate-bounce" : ""}`} />
-                <span>{downloading ? "Starting Download..." : "Free Download PDF"}</span>
               </button>
             )}
           </div>

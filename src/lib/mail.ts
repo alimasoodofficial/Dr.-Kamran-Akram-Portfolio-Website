@@ -32,29 +32,81 @@ export async function sendMeetingInvitation({
     to,
     subject: `Meeting Invitation: Consultation with Dr. Muhammad Kamran`,
     html: `
-      <div style="font-family: sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-        <h2 style="color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 10px;">Booking Confirmed!</h2>
-        <p>Hi <strong>${name}</strong>,</p>
-        <p>Your <strong>${duration}-minute</strong> consultation has been successfully scheduled.</p>
-        
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p style="margin: 0;"><strong>Date:</strong> ${date}</p>
-          <p style="margin: 0;"><strong>Time:</strong> ${time} (AEST/AEDT)</p>
-          <p style="margin: 0;"><strong>Platform:</strong> ${platform}</p>
-        </div>
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px;">
+                  <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">Booking Confirmed!</h2>
+                  
+                  <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">Hi <strong>${name}</strong>,</p>
+                  <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6;">Your <strong>${duration}-minute</strong> consultation has been successfully scheduled. Below are the details for your appointment:</p>
+                  
+                  <!-- Details Box -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f0fdf4; border: 1px solid #d1fae5; border-radius: 12px; margin-bottom: 24px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #047857; font-weight: 600; width: 90px; vertical-align: top;">Date:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">${date}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Time:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">${time} (AEST/AEDT)</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Platform:</td>
+                            <td style="font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">${platform}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
 
-        <p>You can join the meeting using the link below:</p>
-        <p style="text-align: center; margin: 30px 0;">
-          <a href="${meetingLink}" style="background: #ef4444; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Join Meeting</a>
-        </p>
+                  <p style="margin: 0 0 24px 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                    You can join the meeting using the button below at the scheduled time:
+                  </p>
 
-        <p>If you need to reschedule or have any questions, please reply to this email.</p>
-        
-        <p style="margin-top: 40px; font-size: 0.8em; color: #64748b;">
-          Regards,<br>
-          <strong>Dr. Muhammad Kamran Team</strong>
-        </p>
-      </div>
+                  <!-- CTA Button -->
+                  <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 30px auto;">
+                    <tr>
+                      <td align="center" bgcolor="#10b981" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);">
+                        <a href="${meetingLink}" target="_blank" style="font-size: 15px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 15px 35px; border-radius: 12px; display: inline-block; background-color: #10b981; border: 1px solid #10b981;">
+                          💻 Join Meeting
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                    If you need to reschedule or have any questions, please reply directly to this email.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     `,
   };
 
@@ -85,62 +137,82 @@ export async function sendEbookPurchaseConfirmation({
     to,
     subject: `Your E-Book is Ready: ${ebookTitle}`,
     html: `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; padding: 32px; border-radius: 20px; background: #ffffff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
-        
-        {/* Header Header Brand */}
-        <div style="text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px; margin-bottom: 28px;">
-          <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px;">Dr. Kamran Akram</span>
-          <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; tracking: 1px; margin-top: 4px;">Knowledge Center & Publications</div>
-        </div>
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px;">
+                  <h2 style="margin: 0 0 12px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">Thank You for Your Purchase!</h2>
+                  <p style="margin: 0 0 24px 0; color: #64748b; font-size: 15px; text-align: center; line-height: 1.5;">Your payment was successful. You now have lifetime access to this resource.</p>
+                  
+                  <!-- Book Details Box -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f0fdf4; border: 1px solid #d1fae5; border-radius: 12px; margin-bottom: 24px;">
+                    <tr>
+                      ${ebookCover ? `
+                      <td style="padding: 20px; width: 70px; vertical-align: middle;">
+                        <img src="${ebookCover}" alt="${ebookTitle}" style="width: 70px; height: 95px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 10px rgba(6, 78, 59, 0.15); display: block;" />
+                      </td>
+                      ` : ''}
+                      <td style="padding: 20px; ${ebookCover ? 'padding-left: 0;' : ''} vertical-align: middle; text-align: left;">
+                        <span style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px;">Purchased E-Book</span>
+                        <h4 style="margin: 0; color: #064e3b; font-size: 16px; font-weight: 800; line-height: 1.4;">${ebookTitle}</h4>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: #047857; font-weight: 500;">Format: Secure Interactive Flipbook</p>
+                      </td>
+                    </tr>
+                  </table>
 
-        <h2 style="color: #0f172a; font-size: 20px; font-weight: 800; margin-top: 0; text-align: center;">Thank You for Your Purchase!</h2>
-        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: 4px; margin-bottom: 24px;">Your payment was successful. You now have lifetime access to this resource.</p>
-        
-        <!-- Book Details Box -->
-        <div style="background: #f8fafc; border: 1px solid #f1f5f9; padding: 20px; border-radius: 16px; margin: 24px 0; display: flex; align-items: center; gap: 16px;">
-          ${ebookCover ? `<img src="${ebookCover}" alt="${ebookTitle}" style="width: 70px; height: 95px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />` : ''}
-          <div style="flex: 1;">
-            <span style="font-size: 10px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px;">Purchased E-Book</span>
-            <h4 style="margin: 4px 0 0 0; color: #0f172a; font-size: 16px; font-weight: 800; line-height: 1.3;">${ebookTitle}</h4>
-            <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">Format: Secure PDF & Interactive Flipbook</p>
-          </div>
-        </div>
+                  <p style="margin: 0 0 24px 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                    To read your eBook, click the button below. If prompted in the reader, simply enter your purchase email address (<strong style="color: #0f172a;">${to}</strong>) to verify your access.
+                  </p>
 
-        <p style="font-size: 14px; color: #475569;">You can read this publication in two different ways. Choose your preferred format below:</p>
+                  <!-- CTA Button -->
+                  <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 30px auto;">
+                    <tr>
+                      <td align="center" bgcolor="#10b981" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);">
+                        <a href="${flipbookUrl}" target="_blank" style="font-size: 15px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 15px 35px; border-radius: 12px; display: inline-block; background-color: #10b981; border: 1px solid #10b981;">
+                          📖 Open Interactive Flipbook
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
 
-        <!-- CTA Options -->
-        <div style="margin: 32px 0; text-align: center; display: block;">
-          
-          <!-- Option 1: 3D Flipbook -->
-          <div style="margin-bottom: 20px;">
-            <a href="${flipbookUrl}" style="display: inline-block; background: #10b981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2); width: 80%;">
-              📖 Open Interactive 3D Flipbook
-            </a>
-            <p style="font-size: 11px; color: #94a3b8; margin-top: 6px; margin-bottom: 0;">Read directly in your browser with dynamic page-turning animations.</p>
-          </div>
+                  <p style="margin: 0; font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                    Read directly in your browser with secure page-turning controls. No downloads required.
+                  </p>
+                </td>
+              </tr>
 
-          <!-- Option 2: Download PDF -->
-          <div>
-            <a href="${downloadUrl}" style="display: inline-block; background: #0f172a; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; width: 80%;">
-              📥 Download PDF File
-            </a>
-            <p style="font-size: 11px; color: #94a3b8; margin-top: 6px; margin-bottom: 0;">Save the PDF document directly to your computer or mobile device.</p>
-          </div>
-
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
-        
-        <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-bottom: 0;">
-          If you have any questions or experience download issues, please reach out to <a href="mailto:${process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com'}" style="color: #10b981; text-decoration: none;">support</a>.<br><br>
-          © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
-        </p>
-      </div>
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    If you have any questions or experience access issues, please reach out to <a href="mailto:${process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com'}" style="color: #10b981; text-decoration: none; font-weight: 600;">support</a>.
+                  </p>
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     `,
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Purchase confirmation email successfully sent to:", to, "Result:", result);
     return { success: true };
   } catch (error) {
     console.error('Error sending purchase confirmation email:', error);
@@ -167,33 +239,85 @@ export async function sendEbookAdminNotification({
     to: adminEmail,
     subject: `🚨 E-Book Sold: ${ebookTitle}`,
     html: `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; padding: 32px; border-radius: 20px; background: #ffffff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
-        
-        <div style="text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px; margin-bottom: 28px;">
-          <span style="font-size: 24px; font-weight: 800; color: #3b82f6; letter-spacing: -0.5px;">Sales Notification</span>
-          <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; tracking: 1px; margin-top: 4px;">Dr. Kamran Akram Store</div>
-        </div>
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #3b82f6; letter-spacing: -0.5px; display: block;">Sales Notification</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Store</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px;">
+                  <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">🎉 E-Book Successfully Sold!</h2>
+                  
+                  <!-- Details Box 1: Order Summary -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 20px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Order Summary</h4>
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">E-Book Title:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${ebookTitle}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Price Paid:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #10b981; font-weight: 800; vertical-align: top;">$${pricePaid.toFixed(2)} USD</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #64748b; vertical-align: top;">Promo Code:</td>
+                            <td style="font-size: 14px; color: #0f172a; vertical-align: top;">
+                              ${promocodeUsed ? `<span style="background-color: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; display: inline-block;">${promocodeUsed}</span>` : '<span style="color: #94a3b8;">None</span>'}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
 
-        <h2 style="color: #0f172a; font-size: 20px; font-weight: 800; margin-top: 0; text-align: center;">🎉 E-Book Successfully Sold!</h2>
-        
-        <div style="background: #f8fafc; border: 1px solid #f1f5f9; padding: 20px; border-radius: 16px; margin: 24px 0;">
-          <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 16px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Order Summary</h4>
-          <p style="margin: 6px 0; font-size: 14px;"><strong>E-Book Title:</strong> ${ebookTitle}</p>
-          <p style="margin: 6px 0; font-size: 14px;"><strong>Price Paid:</strong> <span style="color: #10b981; font-weight: 800;">$${pricePaid.toFixed(2)} USD</span></p>
-          <p style="margin: 6px 0; font-size: 14px;"><strong>Promo Code:</strong> ${promocodeUsed ? `<span style="background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 12px;">${promocodeUsed}</span>` : '<span style="color: #94a3b8;">None</span>'}</p>
-        </div>
+                  <!-- Details Box 2: Customer Details -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Customer Details</h4>
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Name:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${customerName}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #64748b; vertical-align: top;">Email:</td>
+                            <td style="font-size: 14px; color: #0f172a; vertical-align: top;"><a href="mailto:${customerEmail}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">${customerEmail}</a></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
 
-        <div style="background: #f8fafc; border: 1px solid #f1f5f9; padding: 20px; border-radius: 16px; margin: 24px 0;">
-          <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 16px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Customer Details</h4>
-          <p style="margin: 6px 0; font-size: 14px;"><strong>Name:</strong> ${customerName}</p>
-          <p style="margin: 6px 0; font-size: 14px;"><strong>Email:</strong> <a href="mailto:${customerEmail}" style="color: #3b82f6; text-decoration: none;">${customerEmail}</a></p>
-        </div>
+                  <p style="margin: 30px 0 0 0; font-size: 12px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                    This is an automated notification from your digital storefront.
+                  </p>
+                </td>
+              </tr>
 
-        <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-top: 30px; margin-bottom: 0;">
-          This is an automated notification from your digital storefront.<br>
-          © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
-        </p>
-      </div>
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     `,
   };
 

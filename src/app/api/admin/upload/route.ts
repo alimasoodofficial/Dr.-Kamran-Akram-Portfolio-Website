@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       .replace(/-+/g, "-");
     const fileName = `${prefix}-${Date.now()}-${cleanOrigName}`;
 
-    const bucketName = "website images & videos";
+    const bucketName = isPdf ? "ebooks-vault" : "website images & videos";
     const { data, error } = await supabaseService.storage.from(bucketName).upload(fileName, buffer, {
       cacheControl: "3600",
       upsert: false
@@ -36,10 +36,22 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    // Retrieve public URL
-    const { data: urlData } = supabaseService.storage.from(bucketName).getPublicUrl(data.path);
-    
-    return NextResponse.json({ url: urlData.publicUrl });
+    if (isPdf) {
+      // PDF files are private, so we return the storage path inside the ebooks-vault bucket.
+      return NextResponse.json({ 
+        url: fileName, 
+        path: fileName, 
+        isPrivate: true 
+      });
+    } else {
+      // Retrieve public URL for other assets (covers, gallery)
+      const { data: urlData } = supabaseService.storage.from(bucketName).getPublicUrl(data.path);
+      return NextResponse.json({ 
+        url: urlData.publicUrl, 
+        path: data.path, 
+        isPrivate: false 
+      });
+    }
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

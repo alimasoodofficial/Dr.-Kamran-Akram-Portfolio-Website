@@ -48,23 +48,63 @@ export async function sendNewsletterEmails(
     : "";
 
   const htmlTemplate = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
-      ${heroImageHtml}
-      <h1 style="color: #111; font-size: 24px;">${newsletter.title}</h1>
-      ${subtitleHtml}
-      <p style="font-size: 16px; color: #444;">${plainTextPreview}</p>
-      
-      <div style="margin-top: 30px; text-align: center;">
-        <a href="${readMoreLink}" style="display: inline-block; padding: 12px 24px; background-color: #10B981; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
-          Read More
-        </a>
-      </div>
-      
-      <hr style="margin-top: 40px; border: none; border-top: 1px solid #eee;" />
-      <p style="font-size: 12px; color: #999; text-align: center;">
-        You're receiving this email because you subscribed to updates.
-      </p>
-    </div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+              </td>
+            </tr>
+            
+            <!-- Content Body -->
+            <tr>
+              <td style="padding: 32px;">
+                ${newsletter.hero_image_url ? `
+                <div style="text-align: center; margin-bottom: 24px;">
+                  <img src="${newsletter.hero_image_url}" alt="Hero Image" style="max-width: 100%; height: auto; border-radius: 12px; display: block; margin: 0 auto;" />
+                </div>
+                ` : ''}
+
+                <h1 style="margin: 0 0 8px 0; color: #0f172a; font-size: 22px; font-weight: 800; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">${newsletter.title}</h1>
+                
+                ${newsletter.subtitle ? `
+                <p style="margin: 0 0 20px 0; font-size: 16px; color: #64748b; font-style: italic; line-height: 1.5;">${newsletter.subtitle}</p>
+                ` : ''}
+
+                <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6;">${plainTextPreview}</p>
+                
+                <!-- CTA Button -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 30px auto;">
+                  <tr>
+                    <td align="center" bgcolor="#10b981" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);">
+                      <a href="${readMoreLink}" target="_blank" style="font-size: 15px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 15px 35px; border-radius: 12px; display: inline-block; background-color: #10b981; border: 1px solid #10b981;">
+                        📖 Read Full Article
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  You are receiving this email because you subscribed to updates from Dr. Kamran Akram.
+                </p>
+                <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   `;
 
   // For real production we might want to batch standard Bcc emails

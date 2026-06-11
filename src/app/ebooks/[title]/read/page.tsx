@@ -1,8 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { notFound } from "next/navigation";
-import FlipbookClient from "./FlipbookClient";
 import { Suspense } from "react";
 import { slugify } from "@/lib/utils";
+import FlipbookWrapper from "./FlipbookWrapper";
 
 // Enable revalidation for fresh stats
 export const revalidate = 60;
@@ -64,7 +64,7 @@ export default async function EbookReaderPage({ params }: PageProps) {
   return (
     <div className="min-h-screen pt-28 pb-16 bg-gradient-to-br from-slate-50 via-emerald-50/10 to-teal-50/20 dark:from-gray-950 dark:via-slate-950 dark:to-black">
       <Suspense fallback={<ReaderSkeleton />}>
-        <FlipbookClient ebook={ebook} />
+        <FlipbookWrapper ebook={ebook} />
       </Suspense>
     </div>
   );

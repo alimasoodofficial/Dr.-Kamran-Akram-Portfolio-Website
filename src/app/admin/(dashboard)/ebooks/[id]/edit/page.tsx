@@ -15,8 +15,10 @@ interface PageProps {
 export default function EditEbook({ params }: PageProps) {
   const { id } = use(params);
   const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("Dr. Kamran Akram");
   const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
+  const [pdfStoragePath, setPdfStoragePath] = useState<string | null>(null);
   const [price, setPrice] = useState("9.99");
   const [discountPrice, setDiscountPrice] = useState("");
   const [discountExpiresAt, setDiscountExpiresAt] = useState("");
@@ -58,15 +60,19 @@ export default function EditEbook({ params }: PageProps) {
       if (error) throw error;
       if (data) {
         setTitle(data.title);
+        setAuthor(data.author || "Dr. Kamran Akram");
         setDescription(data.description || "");
         setFileUrl(data.file_url || "");
+        setPdfStoragePath(data.pdf_storage_path || null);
         setImageUrl(data.cover_url || "");
         setPreviewUrl(data.cover_url || null);
         setPrice(data.price !== null && data.price !== undefined ? String(data.price) : "0.00");
         setDiscountPrice(data.discount_price ? String(data.discount_price) : "");
         
-        // If there's an existing file url, extract the filename for the display
-        if (data.file_url) {
+        // If there's an existing file url or pdf_storage_path, extract the filename for the display
+        if (data.pdf_storage_path) {
+          setPdfFileName(data.pdf_storage_path);
+        } else if (data.file_url) {
           try {
             const urlParts = data.file_url.split("/");
             const lastPart = urlParts[urlParts.length - 1];
@@ -120,7 +126,7 @@ export default function EditEbook({ params }: PageProps) {
     setCoverPreviewUrl(url);
   };
 
-  const uploadSingleFile = async (targetFile: File): Promise<string> => {
+  const uploadSingleFile = async (targetFile: File): Promise<{ url: string; path?: string; isPrivate?: boolean }> => {
     if (!token) throw new Error("Unauthorized");
 
     const fd = new FormData();
@@ -134,7 +140,7 @@ export default function EditEbook({ params }: PageProps) {
 
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || "Upload failed");
-    return json.url;
+    return json;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -146,14 +152,18 @@ export default function EditEbook({ params }: PageProps) {
       // 1. Upload Cover Image if changed
       let finalCoverUrl = imageUrl;
       if (coverFile) {
-        finalCoverUrl = await uploadSingleFile(coverFile);
+        const coverRes = await uploadSingleFile(coverFile);
+        finalCoverUrl = coverRes.url;
       }
 
       // 2. Upload PDF File if changed
       let finalFileUrl = fileUrl;
+      let finalPdfStoragePath = pdfStoragePath;
       if (pdfFile) {
         toast.loading("Uploading PDF book file...", { id: toastId });
-        finalFileUrl = await uploadSingleFile(pdfFile);
+        const pdfRes = await uploadSingleFile(pdfFile);
+        finalPdfStoragePath = pdfRes.path || null;
+        finalFileUrl = ""; // Clear manual file url since we are using private bucket
       }
 
       // 3. Update Supabase
@@ -161,8 +171,10 @@ export default function EditEbook({ params }: PageProps) {
         .from("ebooks")
         .update({
           title,
+          author,
           description,
-          file_url: finalFileUrl,
+          file_url: finalFileUrl || null,
+          pdf_storage_path: finalPdfStoragePath,
           cover_url: finalCoverUrl,
           price: price ? parseFloat(price) : 0, // 0 means Free!
           discount_price: discountPrice ? parseFloat(discountPrice) : null,
@@ -263,6 +275,19 @@ export default function EditEbook({ params }: PageProps) {
                   className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
                   required
                   placeholder="Ebook Title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Author
+                </label>
+                <input
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
+                  required
+                  placeholder="Dr. Kamran Akram"
                 />
               </div>
 
