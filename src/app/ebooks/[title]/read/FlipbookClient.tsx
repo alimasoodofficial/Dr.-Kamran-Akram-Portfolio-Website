@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+// @ts-ignore
+import HTMLFlipBook from "react-pageflip";
 import { slugify } from "@/lib/utils";
 import { 
   ArrowLeft, 
@@ -30,10 +32,11 @@ type Ebook = {
   cover_url?: string;
   file_url?: string;
 };
-
 type FlipbookClientProps = {
   ebook: Ebook;
 };
+
+const BookFlip = HTMLFlipBook as any;
 
 export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   // Auth & Access States
@@ -43,8 +46,6 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   
   // Login Form States
   const [emailInput, setEmailInput] = useState<string>("");
-  const [otpInput, setOtpInput] = useState<string>("");
-  const [otpSent, setOtpSent] = useState<boolean>(false);
   const [submittingAuth, setSubmittingAuth] = useState<boolean>(false);
 
   // PDF.js States
@@ -53,26 +54,27 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   const [currentPage, setCurrentPage] = useState<number>(0); // 0 = Cover/Spread 0, 1 = Spread 1, etc.
   const [pdfLoading, setPdfLoading] = useState<boolean>(false);
   const [rendering, setRendering] = useState<boolean>(false);
+  const [pageAspectRatio, setPageAspectRatio] = useState<number>(0.75); // Default 3:4 aspect ratio
 
   // Reader Settings
   const [fullScreen, setFullScreen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [screenWidth, setScreenWidth] = useState<number>(360);
 
-  // Canvas Refs
-  const leftCanvasRef = useRef<HTMLCanvasElement>(null);
-  const rightCanvasRef = useRef<HTMLCanvasElement>(null);
-  const singleCanvasRef = useRef<HTMLCanvasElement>(null);
+  // References for react-pageflip and rendering tracking
+  const bookRef = useRef<any>(null);
   const flipbookRef = useRef<HTMLDivElement>(null);
-
-  // Active rendering tasks tracking to prevent overlaps
+  const renderedPagesRef = useRef<{ [key: number]: boolean }>({});
+  const lastRenderedZoomRef = useRef<number>(zoomLevel);
   const activeRenderTasksRef = useRef<{ [key: string]: any }>({});
 
   // 1. Detect screen size (Responsive layout)
   useEffect(() => {
     const checkSize = () => {
       setIsMobile(window.innerWidth < 768);
+      setScreenWidth(window.innerWidth);
     };
     checkSize();
     window.addEventListener("resize", checkSize);
@@ -155,6 +157,14 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         stripeSessionId = urlSessionId;
       }
 
+      // Check for email verified directly via reader login form
+      let verifiedEmail = null;
+      try {
+        verifiedEmail = sessionStorage.getItem("kamran_verified_email_" + ebook.id);
+      } catch (e) {}
+
+      const emailToCheck = stripeEmail || verifiedEmail || null;
+
       const res = await fetch("/api/ebooks/read-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -162,7 +172,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           ebookId: ebook.id,
           accessToken: session?.access_token || null,
           stripeSessionId: stripeSessionId || null,
-          email: stripeEmail || null
+          email: emailToCheck
         })
       });
 
@@ -234,6 +244,18 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         setPdfDoc(doc);
         setNumPages(doc.numPages);
         setCurrentPage(0); // Start at cover
+
+        if (doc.numPages > 0) {
+          try {
+            const firstPage = await doc.getPage(1);
+            const viewport = firstPage.getViewport({ scale: 1 });
+            if (viewport.width && viewport.height) {
+              setPageAspectRatio(viewport.width / viewport.height);
+            }
+          } catch (aspectErr) {
+            console.error("Error reading first page aspect ratio:", aspectErr);
+          }
+        }
       } catch (err: any) {
         console.error("PDF.js loading error:", err);
         toast.error("Error initializing secure book viewer.");
@@ -245,9 +267,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
     loadPdfDoc();
   }, [authorized, signedUrl]);
 
+  // Callback Refs to handle dynamic canvas mounting with AnimatePresence
   // Helper: Render individual PDF page to a canvas with render cancellation protection
-  const renderPageToCanvas = async (pageNum: number, canvas: HTMLCanvasElement, key: string) => {
+  const renderPageToCanvas = async (pageNum: number, canvas: HTMLCanvasElement) => {
     if (!pdfDoc) return;
+    const key = `page-${pageNum}`;
     
     // Cancel any active rendering on this canvas key
     if (activeRenderTasksRef.current[key]) {
@@ -282,68 +306,91 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       delete activeRenderTasksRef.current[key];
     } catch (err: any) {
       if (err.name === "RenderingCancelledException" || err.message?.includes("cancelled")) {
-        // Ignored: expected when flipping pages quickly
+        // Ignored: expected when rendering is cancelled
       } else {
         console.error("Error rendering PDF page:", err);
       }
     }
   };
 
-  // 7. Render dynamic pages on page navigation or zoom changes
+  const renderPage = async (pageNum: number, force = false) => {
+    if (!pdfDoc || pageNum < 1 || pageNum > numPages) return;
+    
+    // Avoid double rendering
+    if (renderedPagesRef.current[pageNum] && !force) return;
+    
+    renderedPagesRef.current[pageNum] = true;
+
+    // Wait for the canvas to be in the DOM
+    let canvas = document.getElementById(`page-canvas-${pageNum}`) as HTMLCanvasElement;
+    if (!canvas) {
+      // Retry up to 10 times with a small delay
+      for (let i = 0; i < 10; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        canvas = document.getElementById(`page-canvas-${pageNum}`) as HTMLCanvasElement;
+        if (canvas) break;
+      }
+    }
+
+    if (canvas) {
+      await renderPageToCanvas(pageNum, canvas);
+    } else {
+      // Reset rendered status so it can be retried
+      delete renderedPagesRef.current[pageNum];
+    }
+  };
+
+  // Load initial pages and then the rest in the background
   useEffect(() => {
     if (!pdfDoc) return;
 
-    const renderViewer = async () => {
-      setRendering(true);
-      try {
-        if (isMobile) {
-          // Mobile: render single page (currentPage is 1-indexed for mobile)
-          const pageNum = Math.max(1, Math.min(currentPage + 1, numPages));
-          const canvas = singleCanvasRef.current;
-          if (canvas) {
-            await renderPageToCanvas(pageNum, canvas, "single");
-          }
-        } else {
-          // Desktop: Double Page Spread
-          if (currentPage === 0) {
-            // Cover: Page 1 in right side/centered
-            const rightCanvas = rightCanvasRef.current;
-            if (rightCanvas) {
-              await renderPageToCanvas(1, rightCanvas, "right-cover");
-            }
-          } else {
-            // Left page: currentPage * 2
-            const leftPageNum = currentPage * 2;
-            const leftCanvas = leftCanvasRef.current;
-            if (leftCanvas && leftPageNum <= numPages) {
-              await renderPageToCanvas(leftPageNum, leftCanvas, "left-page");
-            }
-            
-            // Right page: currentPage * 2 + 1
-            const rightPageNum = currentPage * 2 + 1;
-            const rightCanvas = rightCanvasRef.current;
-            if (rightCanvas) {
-              if (rightPageNum <= numPages) {
-                await renderPageToCanvas(rightPageNum, rightCanvas, "right-page");
-              } else {
-                // Clear right canvas if past last page
-                const ctx = rightCanvas.getContext("2d");
-                ctx?.clearRect(0, 0, rightCanvas.width, rightCanvas.height);
-              }
-            }
-          }
+    // Reset rendered pages tracker when document changes
+    renderedPagesRef.current = {};
+    activeRenderTasksRef.current = {};
+
+    const loadSequentially = async () => {
+      // Prioritize pages 1, 2, 3, 4, 5
+      const initialPages = [1, 2, 3, 4, 5];
+      for (const p of initialPages) {
+        if (p <= numPages) {
+          await renderPage(p);
         }
-      } catch (err) {
-        console.error("Render spread error:", err);
-      } finally {
-        setRendering(false);
+      }
+
+      // Render the rest in the background with small breaks to keep UI completely smooth
+      for (let p = 6; p <= numPages; p++) {
+        if (!pdfDoc) break; // if user closed/changed document
+        await renderPage(p);
+        await new Promise((resolve) => setTimeout(resolve, 60)); // yield thread
       }
     };
 
-    renderViewer();
-  }, [currentPage, pdfDoc, zoomLevel, isMobile]);
+    loadSequentially();
+  }, [pdfDoc]);
 
-  // Page Flip Audio Synthesis (pink noise)
+  // Handle zoom changes or active page navigation priority
+  useEffect(() => {
+    if (!pdfDoc) return;
+
+    const activePageNum = currentPage + 1;
+    const forceRerender = zoomLevel !== lastRenderedZoomRef.current;
+    
+    if (forceRerender) {
+      // Reset rendered tracker if zoom changed, so pages will rerender at new scale
+      renderedPagesRef.current = {};
+      lastRenderedZoomRef.current = zoomLevel;
+    }
+
+    // Render current active page and its immediate neighbors (activePageNum - 2 to activePageNum + 3)
+    const startPage = Math.max(1, activePageNum - 2);
+    const endPage = Math.min(numPages, activePageNum + 3);
+
+    for (let p = startPage; p <= endPage; p++) {
+      renderPage(p, forceRerender);
+    }
+  }, [currentPage, zoomLevel, pdfDoc]);
+
+  // Page Flip Audio Synthesis (White noise bandpass sweep + sine thump)
   const playPageFlipSound = () => {
     if (!soundEnabled) return;
     try {
@@ -351,63 +398,79 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
       
-      const bufferSize = ctx.sampleRate * 0.15;
+      const duration = 0.35;
+      const bufferSize = ctx.sampleRate * duration;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
       
-      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      // White noise generation
       for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-        data[i] *= 0.08; // Volume down
-        b6 = white * 0.115926;
+        data[i] = Math.random() * 2 - 1;
       }
 
       const noise = ctx.createBufferSource();
       noise.buffer = buffer;
 
+      // Swept bandpass filter for the page rustle
       const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(450, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.12);
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(1800, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + duration);
+      filter.Q.setValueAtTime(2.0, ctx.currentTime);
 
+      // Main volume envelope for rustle
       const gainNode = ctx.createGain();
-      gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      gainNode.gain.setValueAtTime(0.0, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.04);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
+      // Low frequency thump for the page slap
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(110, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.18);
+
+      oscGain.gain.setValueAtTime(0.0, ctx.currentTime);
+      oscGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.03);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+
+      // Connections
       noise.connect(filter);
       filter.connect(gainNode);
       gainNode.connect(ctx.destination);
-      
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+
+      // Start and Stop
       noise.start();
+      osc.start();
+
+      noise.stop(ctx.currentTime + duration);
+      osc.stop(ctx.currentTime + duration);
     } catch (e) {
-      console.warn("Web Audio API failed:", e);
+      console.warn("Web Audio API page flip sound failed:", e);
     }
   };
 
+  const onFlip = (e: any) => {
+    setCurrentPage(e.data);
+    playPageFlipSound();
+  };
+
   // Navigation handlers
-  const maxSpreadIndex = isMobile ? numPages - 1 : Math.ceil((numPages - 1) / 2);
+  const maxSpreadIndex = numPages - 1;
 
   const handleNext = () => {
-    if (currentPage < maxSpreadIndex) {
-      setCurrentPage((prev) => prev + 1);
-      playPageFlipSound();
-    } else {
-      toast("You have reached the end of this eBook!", { icon: "📖", id: "end-toast" });
+    if (bookRef.current) {
+      bookRef.current.pageFlip().flipNext();
     }
   };
 
   const handlePrev = () => {
-    if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
-      playPageFlipSound();
+    if (bookRef.current) {
+      bookRef.current.pageFlip().flipPrev();
     }
   };
 
@@ -446,54 +509,40 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
     return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
 
-  // Secure Passwordless OTP Login
-  const handleRequestOtp = async (e: React.FormEvent) => {
+  // Direct Email Purchase Verification (Bypasses Supabase OTP Auth)
+  const handleVerifyEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!emailInput.trim()) return;
 
     setSubmittingAuth(true);
-    const toastId = toast.loading("Verifying email and sending access code...");
+    const toastId = toast.loading("Verifying your purchase email...");
     try {
-      const { error } = await supabaseClient.auth.signInWithOtp({
-        email: emailInput.trim(),
-        options: {
-          shouldCreateUser: true
+      const res = await fetch("/api/ebooks/read-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ebookId: ebook.id,
+          email: emailInput.trim(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.signedUrl) {
+        // Save verified email to sessionStorage
+        try {
+          sessionStorage.setItem("kamran_verified_email_" + ebook.id, emailInput.trim());
+        } catch (e) {
+          console.error("Failed to cache verified email:", e);
         }
-      });
-
-      if (error) throw error;
-
-      toast.success("Access code sent! Check your inbox.", { id: toastId });
-      setOtpSent(true);
+        setSignedUrl(data.signedUrl);
+        setAuthorized(true);
+        toast.success("Purchase verified! Loading book...", { id: toastId });
+      } else {
+        toast.error(data.error || "No purchase record found for this email address.", { id: toastId });
+      }
     } catch (err: any) {
-      toast.error(err.message || "Failed to send access code.", { id: toastId });
-    } finally {
-      setSubmittingAuth(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpInput.trim() || !emailInput.trim()) return;
-
-    setSubmittingAuth(true);
-    const toastId = toast.loading("Verifying access code...");
-    try {
-      const { data, error } = await supabaseClient.auth.verifyOtp({
-        email: emailInput.trim(),
-        token: otpInput.trim(),
-        type: "email"
-      });
-
-      if (error) throw error;
-
-      toast.success("Identity verified! Loading publication...", { id: toastId });
-      
-      // Reset state and fetch url
-      setOtpSent(false);
-      fetchAccessUrl();
-    } catch (err: any) {
-      toast.error(err.message || "Invalid access code. Please try again.", { id: toastId });
+      toast.error(err.message || "Failed to verify purchase.", { id: toastId });
     } finally {
       setSubmittingAuth(false);
     }
@@ -526,79 +575,34 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-6">
-            {!otpSent ? (
-              <form onSubmit={handleRequestOtp} className="space-y-4 text-left">
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Purchaser Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-3 border rounded-xl bg-slate-50 dark:bg-slate-950 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                    disabled={submittingAuth}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/60 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer"
+            <form onSubmit={handleVerifyEmail} className="space-y-4 text-left">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Purchaser Email Address
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  required
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full pl-10 pr-4 py-3 border rounded-xl bg-slate-50 dark:bg-slate-950 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   disabled={submittingAuth}
-                >
-                  {submittingAuth ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <span>Request Access Code</span>
-                  )}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
-                <div className="space-y-1 text-center bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-2">
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                    We sent a 6-digit access code to
-                  </p>
-                  <p className="text-xs font-bold text-emerald-500 truncate">{emailInput}</p>
-                </div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Enter 6-Digit Code
-                </label>
-                <div className="relative">
-                  <Key className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otpInput}
-                    onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ""))}
-                    placeholder="123456"
-                    className="w-full pl-10 pr-4 py-3 border rounded-xl bg-slate-50 dark:bg-slate-950 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 tracking-[0.2em] font-mono text-center font-bold text-lg"
-                    disabled={submittingAuth}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/60 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer"
-                  disabled={submittingAuth}
-                >
-                  {submittingAuth ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <span>Verify Code</span>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setOtpSent(false)}
-                  className="w-full text-center text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 mt-2 transition-colors cursor-pointer"
-                >
-                  Change email address
-                </button>
-              </form>
-            )}
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/60 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer"
+                disabled={submittingAuth}
+              >
+                {submittingAuth ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <span>Verify Email & Access Book</span>
+                )}
+              </button>
+            </form>
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 flex flex-col gap-2">
@@ -665,14 +669,14 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       {/* 📖 The Flipbook Core viewport */}
       <div 
         ref={flipbookRef}
-        className={`w-full max-w-5xl flex items-center justify-center relative overflow-hidden select-none bg-slate-100 dark:bg-slate-950/40 rounded-3xl p-4 md:p-8 transition-all duration-300 border border-slate-200/50 dark:border-slate-800/40 shadow-inner ${fullScreen ? "h-screen rounded-none p-4 bg-slate-950" : "min-h-[560px]"}`}
+        className={`w-full max-w-[1280px] flex flex-col items-center justify-center relative overflow-hidden select-none bg-[#0c1520] rounded-3xl py-6 px-0 md:p-8 md:px-20 transition-all duration-300 border border-slate-900 shadow-2xl ${fullScreen ? "h-screen rounded-none p-0 bg-[#060b11]" : "min-h-[560px]"}`}
       >
         
         {/* Navigation Overlays */}
         <button
           onClick={handlePrev}
           disabled={currentPage === 0}
-          className="absolute left-4 z-20 p-3 bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-white rounded-full shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-105 disabled:opacity-30 disabled:scale-100 transition-all cursor-pointer"
+          className="absolute left-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden md:block"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
@@ -680,116 +684,170 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         <button
           onClick={handleNext}
           disabled={currentPage >= maxSpreadIndex}
-          className="absolute right-4 z-20 p-3 bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-white rounded-full shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-105 disabled:opacity-30 disabled:scale-100 transition-all cursor-pointer"
+          className="absolute right-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden md:block"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
 
         {/* Loading Spinner */}
-        {(pdfLoading || rendering) && (
-          <div className="absolute inset-0 bg-slate-100/60 dark:bg-slate-950/60 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3">
+        {pdfLoading && (
+          <div className="absolute inset-0 bg-[#0c1520]/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Rendering PDF spreads...</p>
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Loading PDF document...</p>
           </div>
         )}
 
         {/* 📚 Book Body Wrapper */}
-        <motion.div 
-          className="w-full flex justify-center items-center relative transition-transform duration-300"
-          style={{ transform: `scale(${zoomLevel})` }}
-          layout
-        >
-          <AnimatePresence mode="wait">
-            {isMobile ? (
-              /* ================== MOBILE SPREAD (Single Page) ================== */
-              <motion.div
-                key={`mobile-page-${currentPage}`}
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.2 }}
-                className="w-full max-w-[420px] bg-white dark:bg-slate-950 rounded-2xl overflow-hidden shadow-2xl relative border border-slate-350 dark:border-slate-800 flex justify-center items-center"
-              >
-                <canvas ref={singleCanvasRef} className="max-w-full h-auto object-contain pointer-events-none" />
-              </motion.div>
-            ) : (
-              /* ================== DESKTOP SPREAD (Double Page) ================== */
-              currentPage === 0 ? (
-                /* Cover Page (Spread 0) */
-                <motion.div
-                  key="cover-page"
-                  initial={{ opacity: 0, rotateY: 35 }}
-                  animate={{ opacity: 1, rotateY: 0 }}
-                  exit={{ opacity: 0, rotateY: -35 }}
-                  transition={{ duration: 0.4 }}
-                  onClick={handleNext}
-                  className="w-full max-w-[420px] bg-white dark:bg-slate-950 rounded-2xl shadow-2xl relative flex justify-center items-center border-4 border-slate-300 dark:border-slate-800 cursor-pointer overflow-hidden transform-gpu"
-                  style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-                >
-                  <canvas ref={rightCanvasRef} className="max-w-full h-auto object-contain pointer-events-none" />
-                  {/* spine inner shading left */}
-                  <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-black/25 via-transparent to-transparent pointer-events-none" />
-                  
-                  <div className="absolute bottom-4 right-4 bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider shadow animate-pulse">
-                    Click to open ➔
-                  </div>
-                </motion.div>
-              ) : (
-                /* Inner Double Page Spread */
-                <motion.div
-                  key={`spread-${currentPage}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full grid grid-cols-2 gap-0.5 bg-slate-300 dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative border-4 border-slate-400 dark:border-slate-800 max-w-[860px]"
-                >
-                  {/* 📖 Middle spine shadows */}
-                  <div className="absolute left-1/2 top-0 bottom-0 w-8 -ml-4 bg-gradient-to-r from-black/15 via-black/35 to-black/15 z-10 pointer-events-none" />
-                  <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-black/40 z-20 pointer-events-none" />
+        {pdfDoc && numPages > 0 && (
+          <div 
+            className="w-full flex justify-center items-center relative transition-transform duration-300"
+            style={{ transform: `scale(${zoomLevel})` }}
+          >
+            <BookFlip 
+              width={isMobile ? screenWidth : 400} 
+              height={isMobile ? Math.round(screenWidth / pageAspectRatio) : Math.round(400 / pageAspectRatio)}
+              size="stretch"
+              minWidth={320}
+              maxWidth={800}
+              minHeight={400}
+              maxHeight={1100}
+              maxShadowOpacity={0.4}
+              drawShadow={true}
+              showCover={true}
+              mobileScrollSupport={true}
+              ref={bookRef}
+              onFlip={onFlip}
+              className="shadow-2xl mx-auto"
+            >
+              {Array.from({ length: numPages }, (_, index) => {
+                const pageNum = index + 1;
+                const isCover = pageNum === 1;
+                const isBackCover = pageNum === numPages;
+                const isLeftPage = pageNum % 2 === 0;
 
-                  {/* Left Page Canvas */}
-                  <div className="bg-white dark:bg-slate-950 flex justify-center items-center relative overflow-hidden aspect-[3/4]">
-                    <canvas ref={leftCanvasRef} className="max-w-full h-auto object-contain pointer-events-none" />
-                    <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-black/10 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-4 text-[9px] font-bold text-slate-400 font-mono">
-                      Page {currentPage * 2}
-                    </div>
-                  </div>
-
-                  {/* Right Page Canvas */}
-                  <div className="bg-white dark:bg-slate-950 flex justify-center items-center relative overflow-hidden aspect-[3/4]">
-                    {currentPage * 2 + 1 <= numPages ? (
-                      <>
-                        <canvas ref={rightCanvasRef} className="max-w-full h-auto object-contain pointer-events-none" />
-                        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-black/10 to-transparent pointer-events-none" />
-                        <div className="absolute bottom-3 right-4 text-[9px] font-bold text-slate-400 font-mono">
-                          Page {currentPage * 2 + 1}
+                return (
+                  <div 
+                    key={pageNum} 
+                    className="page overflow-hidden relative bg-white dark:bg-slate-950 w-full h-full"
+                    data-density={isCover || isBackCover ? "hard" : "soft"}
+                  >
+                    {isCover ? (
+                      /* Cover Page */
+                      <div className="w-full h-full relative overflow-hidden bg-slate-900 shadow-2xl border-y border-r border-slate-950">
+                        {ebook.cover_url ? (
+                          <img 
+                            src={ebook.cover_url} 
+                            alt={ebook.title} 
+                            className="w-full h-full object-cover pointer-events-none"
+                          />
+                        ) : (
+                          <canvas id="page-canvas-1" className="w-full h-full object-contain pointer-events-none" />
+                        )}
+                        <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-black/45 via-black/15 to-transparent z-10 pointer-events-none" />
+                        <div className="absolute left-4 top-0 bottom-0 w-[1px] bg-white/10 z-10 pointer-events-none" />
+                      </div>
+                    ) : isBackCover ? (
+                      /* Back Cover backing */
+                      <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex flex-col justify-between p-8 relative overflow-hidden border-y border-l border-emerald-950/20 shadow-2xl">
+                        {/* Premium Textures & Spine Crease Shadows */}
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-black/[0.04] pointer-events-none" />
+                        {/* Spine Crease / Shading (Since it's back cover, spine is on the left edge if it's right-hand page) */}
+                        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-black/30 via-black/10 to-transparent pointer-events-none z-10" />
+                        <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-white/10 z-10 pointer-events-none" />
+                        
+                        {/* Top Accent */}
+                        <div className="flex justify-between items-center opacity-60 text-[9px] font-bold uppercase tracking-widest border-b border-white/10 pb-4">
+                          <span>Kamran Publications</span>
+                          <Sparkles className="w-3.5 h-3.5" />
                         </div>
-                      </>
+
+                        {/* Center Content */}
+                        <div className="text-center space-y-6 my-auto pt-6">
+                          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto border border-white/20 shadow-lg">
+                            <BookOpen className="w-8 h-8 text-emerald-100" />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <h3 className="font-extrabold !text-white text-xl tracking-tight leading-tight">End of Book</h3>
+                            <p className="text-emerald-100/90 text-sm font-medium">Thanks for reading!</p>
+                          </div>
+
+                          <div className="w-12 h-[1px] bg-white/20 mx-auto" />
+
+                          <div className="space-y-1">
+                            <h4 className="font-bold !text-white text-xs tracking-wider">Dr.Muhamad Kamran </h4>
+                            <p className="text-[9px] text-emerald-200/80 uppercase tracking-widest font-mono">Ebook Series</p>
+                          </div>
+                        </div>
+
+                        {/* Bottom Copyright & Branding */}
+                        <div className="text-center space-y-3 pt-6 border-t border-white/10">
+                          <p className="text-[8px] text-emerald-100/60 leading-relaxed max-w-[220px] mx-auto font-medium">
+                            This secure publication is protected under digital copyright laws. All rights reserved.
+                          </p>
+                          <div className="text-[8px] text-emerald-200 font-extrabold uppercase tracking-widest font-mono">
+                            © {new Date().getFullYear()} Dr. Kamran Akram
+                          </div>
+                        </div>
+                      </div>
                     ) : (
-                      /* End Cover backing */
-                      <div className="w-full h-full bg-slate-900 text-white flex flex-col justify-between p-8 relative overflow-hidden">
-                        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-black/45 via-transparent to-transparent pointer-events-none" />
-                        <div className="text-center pt-12 space-y-3">
-                          <BookOpen className="w-10 h-10 text-emerald-500 mx-auto" />
-                          <h4 className="font-extrabold text-white text-base">Dr. Kamran Akram</h4>
-                          <p className="text-[9px] text-slate-500 uppercase tracking-widest">Ebook Publication Series</p>
-                        </div>
-                        <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-[200px] mx-auto">
-                          This secure publication is protected under digital copyright laws. All rights reserved.
-                        </p>
-                        <div className="text-center pb-4 text-[9px] text-slate-600 font-bold uppercase tracking-widest">
-                          End of Book
+                      /* Standard Inner Page */
+                      <div 
+                        className={`w-full h-full relative overflow-hidden shadow-inner ${
+                          isLeftPage 
+                            ? "bg-gradient-to-r from-[#fafafa] to-[#f5f5f5] dark:from-slate-900 dark:to-slate-950" 
+                            : "bg-gradient-to-l from-[#fafafa] to-[#f5f5f5] dark:from-slate-900 dark:to-slate-950"
+                        }`}
+                      >
+                        {/* Page stack effect */}
+                        {isLeftPage ? (
+                          <>
+                            <div className="absolute left-0 top-1 bottom-1 w-[1px] bg-slate-350 dark:bg-slate-800 pointer-events-none z-10" />
+                            <div className="absolute left-[1px] top-2 bottom-2 w-[1px] bg-slate-200 dark:bg-slate-900 pointer-events-none z-10" />
+                            <div className="absolute left-[2px] top-3 bottom-3 w-[1px] bg-slate-100 dark:bg-slate-950 pointer-events-none z-10" />
+                            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/12 via-black/4 to-transparent pointer-events-none z-10" />
+                          </>
+                        ) : (
+                          <>
+                            <div className="absolute right-0 top-1 bottom-1 w-[1px] bg-slate-350 dark:bg-slate-800 pointer-events-none z-10" />
+                            <div className="absolute right-[1px] top-2 bottom-2 w-[1px] bg-slate-200 dark:bg-slate-900 pointer-events-none z-10" />
+                            <div className="absolute right-[2px] top-3 bottom-3 w-[1px] bg-slate-100 dark:bg-slate-950 pointer-events-none z-10" />
+                            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/12 via-black/4 to-transparent pointer-events-none z-10" />
+                          </>
+                        )}
+
+                        <canvas id={`page-canvas-${pageNum}`} className="w-full h-full object-contain pointer-events-none" />
+
+                        <div className={`absolute bottom-3 ${isLeftPage ? "left-6" : "right-6"} text-[9px] font-bold text-slate-400 font-mono`}>
+                          Page {pageNum}
                         </div>
                       </div>
                     )}
                   </div>
-                </motion.div>
-              )
-            )}
-          </AnimatePresence>
-        </motion.div>
+                );
+              })}
+            </BookFlip>
+          </div>
+        )}
+
+        {/* Mobile-only navigation buttons below the book */}
+        <div className="flex md:hidden items-center justify-center gap-6 mt-6 pb-2 z-20">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 0}
+            className="p-3 bg-[#0f172a]/90 hover:bg-slate-800 active:bg-slate-700 text-white rounded-full shadow-lg border border-slate-850 disabled:opacity-20 transition-all cursor-pointer"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={currentPage >= maxSpreadIndex}
+            className="p-3 bg-[#0f172a]/90 hover:bg-slate-800 active:bg-slate-700 text-white rounded-full shadow-lg border border-slate-850 disabled:opacity-20 transition-all cursor-pointer"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {/* 🧭 Control Panel Bottom Progress */}
@@ -812,7 +870,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
             />
           </div>
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">
-            {isMobile ? `Page ${currentPage + 1} of ${numPages}` : `Spread ${currentPage} of ${maxSpreadIndex}`}
+            Page {currentPage + 1} of {numPages}
           </span>
         </div>
 

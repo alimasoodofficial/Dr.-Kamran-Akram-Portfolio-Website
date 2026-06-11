@@ -310,6 +310,37 @@ export async function confirmEbookPurchase(sessionId: string, origin: string) {
       return { success: false, error: "Failed to save transaction details." };
     }
 
+    // 9. Resolve user_id if they already have a profile with this email, and log purchase
+    let purchasedUserId = null;
+    try {
+      const { data: userProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("email", customerEmail)
+        .maybeSingle();
+
+      if (userProfile) {
+        purchasedUserId = userProfile.id;
+      }
+    } catch (profileErr) {
+      console.error("Failed to resolve profile for email in confirmEbookPurchase:", customerEmail, profileErr);
+    }
+
+    const { error: insertPurchaseError } = await supabase
+      .from("purchases")
+      .insert([{
+        user_id: purchasedUserId,
+        user_email: customerEmail,
+        ebook_id: ebookId,
+        stripe_checkout_id: sessionId
+      }]);
+
+    if (insertPurchaseError) {
+      console.error("Failed to insert ebook purchase record in confirmEbookPurchase:", insertPurchaseError);
+    } else {
+      console.log(`Logged eBook purchase for ${customerEmail} in confirmEbookPurchase`);
+    }
+
     console.log(`Successfully completed ebook purchase for ${customerEmail} via success page callback.`);
 
     return {

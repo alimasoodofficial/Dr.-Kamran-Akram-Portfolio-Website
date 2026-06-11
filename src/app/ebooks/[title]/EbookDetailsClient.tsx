@@ -111,6 +111,14 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
           }
         } catch (e) {}
 
+        // Fallback to verified email from sessionStorage
+        let verifiedEmail = null;
+        try {
+          verifiedEmail = sessionStorage.getItem("kamran_verified_email_" + ebook.id);
+        } catch (e) {}
+
+        const emailToCheck = stripeEmail || verifiedEmail || null;
+
         const res = await fetch("/api/ebooks/read-token", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -118,7 +126,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             ebookId: ebook.id,
             accessToken: session?.access_token || null,
             stripeSessionId: stripeSessionId,
-            email: stripeEmail
+            email: emailToCheck
           })
         });
         if (res.ok) {

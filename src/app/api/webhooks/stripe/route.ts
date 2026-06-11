@@ -136,7 +136,7 @@ export async function POST(req: Request) {
             const { data: userProfile } = await supabase
               .from("profiles")
               .select("id")
-              .eq("email", customerEmail)
+              .ilike("email", customerEmail)
               .maybeSingle();
 
             if (userProfile) {

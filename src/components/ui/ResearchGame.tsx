@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 // --- Configuration ---
 const TIME_LIMIT = 20;
@@ -35,6 +36,9 @@ const BAD_MOVES = [
 ];
 
 export default function ResearchGamePopup() {
+  const pathname = usePathname();
+  const isReadPage = pathname ? /\/ebooks\/[^/]+\/read\/?$/.test(pathname) : false;
+
   const [isOpen, setIsOpen] = useState(false);
   const [gameState, setGameState] = useState<
     "idle" | "playing" | "won" | "lost"

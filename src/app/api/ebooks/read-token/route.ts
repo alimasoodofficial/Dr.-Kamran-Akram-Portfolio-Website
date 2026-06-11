@@ -38,7 +38,7 @@ export async function POST(req: Request) {
             .from("purchases")
             .select("*")
             .eq("ebook_id", ebookId)
-            .or(`user_id.eq.${userId},user_email.eq.${userEmail}`)
+            .or(`user_id.eq.${userId},user_email.ilike.${userEmail}`)
             .maybeSingle();
 
           if (purchase) {
@@ -69,6 +69,28 @@ export async function POST(req: Request) {
         authorized = true;
 
         // If user is also authenticated but purchase user_id wasn't set, link it
+        if (userId && !purchase.user_id) {
+          await supabaseService
+            .from("purchases")
+            .update({ user_id: userId })
+            .eq("id", purchase.id);
+        }
+      }
+    }
+
+    // 2.5. If not authorized yet and plain email is provided, check purchases table (case-insensitive email matching)
+    if (!authorized && email) {
+      const { data: purchase } = await supabaseService
+        .from("purchases")
+        .select("*")
+        .eq("ebook_id", ebookId)
+        .ilike("user_email", email.trim())
+        .maybeSingle();
+
+      if (purchase) {
+        authorized = true;
+        
+        // If user is authenticated but purchase user_id wasn't set, link it
         if (userId && !purchase.user_id) {
           await supabaseService
             .from("purchases")

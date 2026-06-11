@@ -30,133 +30,107 @@ export interface RescheduleEmailData {
   newEndTime: string;
 }
 
-/**
- * Send confirmation email to the user
- */
 export async function sendUserConfirmation(data: BookingEmailData) {
   const { userName, userEmail, country, startTime, endTime, notes } = data;
 
   const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .header {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 30px;
-          border-radius: 10px 10px 0 0;
-          text-align: center;
-        }
-        .content {
-          background: #f9fafb;
-          padding: 30px;
-          border-radius: 0 0 10px 10px;
-        }
-        .booking-details {
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          margin: 20px 0;
-          border-left: 4px solid #667eea;
-        }
-        .detail-row {
-          margin: 10px 0;
-          padding: 8px 0;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #667eea;
-          display: inline-block;
-          width: 120px;
-        }
-        .tz-note {
-          background: #eef2ff;
-          border: 1px solid #c7d2fe;
-          border-radius: 6px;
-          padding: 10px 15px;
-          margin: 15px 0;
-          font-size: 13px;
-          color: #4338ca;
-        }
-        .footer {
-          text-align: center;
-          margin-top: 30px;
-          padding-top: 20px;
-          border-top: 2px solid #e5e7eb;
-          color: #6b7280;
-          font-size: 14px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1 style="margin: 0;">✅ Booking Confirmed!</h1>
-        <p style="margin: 10px 0 0 0;">Your appointment has been successfully scheduled</p>
-      </div>
-      <div class="content">
-        <p>Dear <strong>${userName}</strong>,</p>
-        <p>Thank you for booking an appointment with Dr. Muhammad Kamran. Your booking has been confirmed!</p>
-        
-        <div class="booking-details">
-          <h3 style="margin-top: 0; color: #667eea;">📅 Appointment Details</h3>
-          <div class="detail-row">
-            <span class="detail-label">Date & Time:</span>
-            <span>${new Date(startTime).toLocaleString('en-AU', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Duration:</span>
-            <span>${Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000)} minutes</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Country:</span>
-            <span>${country}</span>
-          </div>
-          ${notes ? `
-          <div class="detail-row">
-            <span class="detail-label">Your Notes:</span>
-            <span>${notes}</span>
-          </div>
-          ` : ''}
-        </div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+              </td>
+            </tr>
+            
+            <!-- Content Body -->
+            <tr>
+              <td style="padding: 32px;">
+                <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">✅ Booking Confirmed!</h2>
+                
+                <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+                <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6;">Thank you for booking an appointment with Dr. Muhammad Kamran. Your booking has been confirmed! Here are the details:</p>
+                
+                <!-- Details Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f0fdf4; border: 1px solid #d1fae5; border-radius: 12px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h3 style="margin: 0 0 12px 0; color: #064e3b; font-size: 16px; font-weight: 800;">📅 Appointment Details</h3>
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #047857; font-weight: 600; width: 110px; vertical-align: top;">Date & Time:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">
+                            ${new Date(startTime).toLocaleString('en-AU', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Duration:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">
+                            ${Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000)} minutes
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: ${notes ? '8px' : '0px'}; font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Country:</td>
+                          <td style="padding-bottom: ${notes ? '8px' : '0px'}; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">${country}</td>
+                        </tr>
+                        ${notes ? `
+                        <tr>
+                          <td style="font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Your Notes:</td>
+                          <td style="font-size: 14px; color: #064e3b; font-weight: 500; font-style: italic; vertical-align: top;">"${notes}"</td>
+                        </tr>
+                        ` : ''}
+                      </table>
+                    </td>
+                  </tr>
+                </table>
 
-        <div class="tz-note">
-          ⏰ <strong>Important:</strong> All appointment times are in Australian Eastern Time (AEST/AEDT). 
-          Please convert to your local time accordingly.
-        </div>
+                <!-- Timezone Alert Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 12px 16px; font-size: 13px; color: #1e40af; line-height: 1.5;">
+                      ⏰ <strong>Important:</strong> All appointment times are in Australian Eastern Time (AEST/AEDT). Please convert to your local timezone accordingly.
+                    </td>
+                  </tr>
+                </table>
 
-        <p><strong>What's Next?</strong></p>
-        <ul>
-          <li>You will receive a reminder email 24 hours before your appointment</li>
-          <li>Please arrive 5 minutes early</li>
-          <li>If you need to reschedule, please contact us at least 24 hours in advance</li>
-        </ul>
+                <h3 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800;">📋 What's Next?</h3>
+                <ul style="margin: 0 0 24px 0; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.6;">
+                  <li style="margin-bottom: 6px;">You will receive a meeting link and details separately before your appointment</li>
+                  <li style="margin-bottom: 6px;">Please arrive 5 minutes early to test your setup</li>
+                  <li>If you need to reschedule, please contact us at least 24 hours in advance</li>
+                </ul>
+              </td>
+            </tr>
 
-        <div class="footer">
-          <p>This is an automated confirmation email. Please do not reply to this email.</p>
-          <p>If you have any questions, please contact us at ${process.env.EMAIL_SERVER_USER}</p>
-          <p style="margin-top: 20px;">© ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.</p>
-        </div>
-      </div>
-    </body>
-    </html>
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0 0 8px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  This is an automated confirmation email.
+                </p>
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  If you have any questions, please contact us at <a href="mailto:${process.env.EMAIL_SERVER_USER}" style="color: #10b981; text-decoration: none; font-weight: 600;">${process.env.EMAIL_SERVER_USER}</a>.
+                </p>
+                <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   `;
 
   const mailOptions = {
@@ -176,129 +150,116 @@ export async function sendAdminNotification(data: BookingEmailData) {
   const { userName, userEmail, country, startTime, endTime, notes } = data;
 
   const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .header {
-          background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-          color: white;
-          padding: 30px;
-          border-radius: 10px 10px 0 0;
-          text-align: center;
-        }
-        .content {
-          background: #f9fafb;
-          padding: 30px;
-          border-radius: 0 0 10px 10px;
-        }
-        .lead-details {
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          margin: 20px 0;
-          border-left: 4px solid #f59e0b;
-        }
-        .detail-row {
-          margin: 10px 0;
-          padding: 8px 0;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #f59e0b;
-          display: inline-block;
-          width: 120px;
-        }
-        .alert {
-          background: #fef3c7;
-          border-left: 4px solid #f59e0b;
-          padding: 15px;
-          margin: 20px 0;
-          border-radius: 4px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1 style="margin: 0;">🔔 New Booking Alert!</h1>
-        <p style="margin: 10px 0 0 0;">You have a new appointment booking</p>
-      </div>
-      <div class="content">
-        <div class="alert">
-          <strong>⚡ Action Required:</strong> A new client has booked an appointment with you.
-        </div>
-        
-        <div class="lead-details">
-          <h3 style="margin-top: 0; color: #f59e0b;">👤 Client Information</h3>
-          <div class="detail-row">
-            <span class="detail-label">Name:</span>
-            <span><strong>${userName}</strong></span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Email:</span>
-            <span><a href="mailto:${userEmail}">${userEmail}</a></span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Country:</span>
-            <span>${country}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Date & Time:</span>
-            <span>${new Date(startTime).toLocaleString('en-AU', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Duration:</span>
-            <span>${Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000)} minutes</span>
-          </div>
-          ${notes ? `
-          <div class="detail-row">
-            <span class="detail-label">Client Notes:</span>
-            <span style="font-style: italic;">"${notes}"</span>
-          </div>
-          ` : ''}
-          <div class="detail-row">
-            <span class="detail-label">Booked At:</span>
-            <span>${new Date().toLocaleString('en-AU', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-        </div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-size: 24px; font-weight: 800; color: #f59e0b; letter-spacing: -0.5px; display: block;">Booking Alert</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Admin</span>
+              </td>
+            </tr>
+            
+            <!-- Content Body -->
+            <tr>
+              <td style="padding: 32px;">
+                <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center;">🔔 New Booking Alert!</h2>
+                
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 12px 16px; font-size: 13px; color: #b45309; line-height: 1.5; font-weight: 600;">
+                      ⚡ Action Required: A new client has booked an appointment with you.
+                    </td>
+                  </tr>
+                </table>
 
-        <p><strong>📋 Next Steps:</strong></p>
-        <ul>
-          <li>Review the client's notes (if any)</li>
-          <li>Prepare any necessary materials for the appointment</li>
-          <li>The client has received an automatic confirmation email</li>
-        </ul>
+                <!-- Details Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h3 style="margin: 0 0 12px 0; color: #f59e0b; font-size: 16px; font-weight: 800;">👤 Client Information</h3>
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Name:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${userName}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Email:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">
+                            <a href="mailto:${userEmail}" style="color: #3b82f6; text-decoration: none;">${userEmail}</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Country:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; vertical-align: top;">${country}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Date & Time:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">
+                            ${new Date(startTime).toLocaleString('en-AU', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: ${notes ? '8px' : '0px'}; font-size: 14px; color: #64748b; vertical-align: top;">Duration:</td>
+                          <td style="padding-bottom: ${notes ? '8px' : '0px'}; font-size: 14px; color: #0f172a; vertical-align: top;">
+                            ${Math.round((new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000)} minutes
+                          </td>
+                        </tr>
+                        ${notes ? `
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Client Notes:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-style: italic; vertical-align: top;">"${notes}"</td>
+                        </tr>
+                        ` : ''}
+                        <tr>
+                          <td style="font-size: 14px; color: #64748b; vertical-align: top;">Booked At:</td>
+                          <td style="font-size: 14px; color: #64748b; vertical-align: top;">
+                            ${new Date().toLocaleString('en-AU', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
 
-        <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-          This is an automated notification from your booking system.
-        </p>
-      </div>
-    </body>
-    </html>
+                <h3 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800;">📋 Next Steps:</h3>
+                <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.6;">
+                  <li style="margin-bottom: 6px;">Review the client's details and notes</li>
+                  <li style="margin-bottom: 6px;">Prepare any necessary materials for the appointment</li>
+                  <li>The client has received an automatic confirmation email</li>
+                </ul>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                  This is an automated notification from your booking system.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   `;
 
   const mailOptions = {
@@ -318,133 +279,104 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
   const { userName, userEmail, oldStartTime, oldEndTime, newStartTime, newEndTime } = data;
 
   const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .header {
-          background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-          color: white;
-          padding: 30px;
-          border-radius: 10px 10px 0 0;
-          text-align: center;
-        }
-        .content {
-          background: #f9fafb;
-          padding: 30px;
-          border-radius: 0 0 10px 10px;
-        }
-        .time-change {
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          margin: 20px 0;
-          border-left: 4px solid #3b82f6;
-        }
-        .old-time {
-          color: #ef4444;
-          text-decoration: line-through;
-          opacity: 0.7;
-        }
-        .new-time {
-          color: #10b981;
-          font-weight: bold;
-          font-size: 1.1em;
-        }
-        .detail-row {
-          margin: 10px 0;
-          padding: 8px 0;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #3b82f6;
-          display: inline-block;
-          width: 130px;
-        }
-        .tz-note {
-          background: #eef2ff;
-          border: 1px solid #c7d2fe;
-          border-radius: 6px;
-          padding: 10px 15px;
-          margin: 15px 0;
-          font-size: 13px;
-          color: #4338ca;
-        }
-        .footer {
-          text-align: center;
-          margin-top: 30px;
-          padding-top: 20px;
-          border-top: 2px solid #e5e7eb;
-          color: #6b7280;
-          font-size: 14px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1 style="margin: 0;">📅 Appointment Rescheduled</h1>
-        <p style="margin: 10px 0 0 0;">Your appointment time has been updated</p>
-      </div>
-      <div class="content">
-        <p>Dear <strong>${userName}</strong>,</p>
-        <p>Your appointment with Dr. Muhammad Kamran has been rescheduled. Please see the updated details below:</p>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+              </td>
+            </tr>
+            
+            <!-- Content Body -->
+            <tr>
+              <td style="padding: 32px;">
+                <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">📅 Appointment Rescheduled</h2>
+                
+                <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+                <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6;">Your appointment with Dr. Muhammad Kamran has been rescheduled. Please see the updated details below:</p>
+                
+                <!-- Details Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f0fdf4; border: 1px solid #d1fae5; border-radius: 12px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h3 style="margin: 0 0 16px 0; color: #064e3b; font-size: 16px; font-weight: 800;">🔄 Schedule Change</h3>
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="padding-bottom: 12px; font-size: 14px; color: #047857; font-weight: 600; width: 120px; vertical-align: top;">Previous Time:</td>
+                          <td style="padding-bottom: 12px; font-size: 14px; color: #ef4444; text-decoration: line-through; vertical-align: top;">
+                            ${new Date(oldStartTime).toLocaleString('en-AU', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 12px; font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">New Time:</td>
+                          <td style="padding-bottom: 12px; font-size: 15px; color: #10b981; font-weight: 700; vertical-align: top;">
+                            ✅ ${new Date(newStartTime).toLocaleString('en-AU', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">Duration:</td>
+                          <td style="font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">
+                            ${Math.round((new Date(newEndTime).getTime() - new Date(newStartTime).getTime()) / 60000)} minutes
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
 
-        <div class="time-change">
-          <h3 style="margin-top: 0; color: #3b82f6;">🔄 Schedule Change</h3>
-          <div class="detail-row">
-            <span class="detail-label">Previous Time:</span>
-            <span class="old-time">${new Date(oldStartTime).toLocaleString('en-AU', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">New Time:</span>
-            <span class="new-time">✅ ${new Date(newStartTime).toLocaleString('en-AU', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Duration:</span>
-            <span>${Math.round((new Date(newEndTime).getTime() - new Date(newStartTime).getTime()) / 60000)} minutes</span>
-          </div>
-        </div>
+                <!-- Timezone Alert Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 12px 16px; font-size: 13px; color: #1e40af; line-height: 1.5;">
+                      ⏰ <strong>Important:</strong> All appointment times are in Australian Eastern Time (AEST/AEDT). Please convert to your local timezone accordingly.
+                    </td>
+                  </tr>
+                </table>
 
-        <div class="tz-note">
-          ⏰ <strong>Important:</strong> All appointment times are in Australian Eastern Time (AEST/AEDT). 
-          Please convert to your local time accordingly.
-        </div>
+                <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                  If you have any questions or concerns about the new time, please don't hesitate to contact us.
+                </p>
+              </td>
+            </tr>
 
-        <p>If you have any questions or concerns about the new time, please don't hesitate to contact us.</p>
-
-        <div class="footer">
-          <p>This is an automated notification. Please do not reply to this email.</p>
-          <p>If you have any questions, please contact us at ${process.env.EMAIL_SERVER_USER}</p>
-          <p style="margin-top: 20px;">© ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.</p>
-        </div>
-      </div>
-    </body>
-    </html>
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0 0 8px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  This is an automated notification.
+                </p>
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  If you have any questions, please contact us at <a href="mailto:${process.env.EMAIL_SERVER_USER}" style="color: #10b981; text-decoration: none; font-weight: 600;">${process.env.EMAIL_SERVER_USER}</a>.
+                </p>
+                <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   `;
 
   const mailOptions = {
@@ -464,97 +396,91 @@ export async function sendAdminRescheduleNotification(data: RescheduleEmailData)
   const { userName, userEmail, country, oldStartTime, newStartTime, newEndTime } = data;
 
   const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .header {
-          background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-          color: white;
-          padding: 30px;
-          border-radius: 10px 10px 0 0;
-          text-align: center;
-        }
-        .content {
-          background: #f9fafb;
-          padding: 30px;
-          border-radius: 0 0 10px 10px;
-        }
-        .details {
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          margin: 20px 0;
-          border-left: 4px solid #8b5cf6;
-        }
-        .detail-row {
-          margin: 10px 0;
-          padding: 8px 0;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #8b5cf6;
-          display: inline-block;
-          width: 130px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1 style="margin: 0;">📅 Booking Rescheduled</h1>
-        <p style="margin: 10px 0 0 0;">A booking has been moved to a new time</p>
-      </div>
-      <div class="content">
-        <div class="details">
-          <h3 style="margin-top: 0; color: #8b5cf6;">📋 Reschedule Details</h3>
-          <div class="detail-row">
-            <span class="detail-label">Client:</span>
-            <span><strong>${userName}</strong> (${country})</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Email:</span>
-            <span><a href="mailto:${userEmail}">${userEmail}</a></span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Previous Time:</span>
-            <span style="color: #ef4444; text-decoration: line-through;">${new Date(oldStartTime).toLocaleString('en-AU', {
-              weekday: 'short',
-              month: 'short',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">New Time:</span>
-            <span style="color: #10b981; font-weight: bold;">${new Date(newStartTime).toLocaleString('en-AU', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'Australia/Sydney',
-            })} (AEST)</span>
-          </div>
-        </div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <span style="font-size: 24px; font-weight: 800; color: #8b5cf6; letter-spacing: -0.5px; display: block;">Booking Rescheduled</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Admin</span>
+              </td>
+            </tr>
+            
+            <!-- Content Body -->
+            <tr>
+              <td style="padding: 32px;">
+                <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center;">📅 Booking Rescheduled</h2>
+                
+                <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6; text-align: center;">A booking has been moved to a new time. Details below:</p>
 
-        <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-          The client has been notified about this change via email.
-        </p>
-      </div>
-    </body>
-    </html>
+                <!-- Details Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h3 style="margin: 0 0 12px 0; color: #8b5cf6; font-size: 16px; font-weight: 800;">📋 Reschedule Details</h3>
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; width: 130px; vertical-align: top;">Client:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${userName} (${country})</td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Email:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">
+                            <a href="mailto:${userEmail}" style="color: #3b82f6; text-decoration: none;">${userEmail}</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Previous Time:</td>
+                          <td style="padding-bottom: 8px; font-size: 14px; color: #ef4444; text-decoration: line-through; vertical-align: top;">
+                            ${new Date(oldStartTime).toLocaleString('en-AU', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="font-size: 14px; color: #64748b; vertical-align: top;">New Time:</td>
+                          <td style="font-size: 14px; color: #10b981; font-weight: bold; vertical-align: top;">
+                            ${new Date(newStartTime).toLocaleString('en-AU', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: 'Australia/Sydney',
+                            })} (AEST)
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin: 0; font-size: 13px; color: #64748b; text-align: center;">
+                  The client has been notified about this change via email.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                  This is an automated notification from your booking system.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   `;
 
   const mailOptions = {
