@@ -146,11 +146,11 @@ export default function CheckoutSuccessClient({ initialData }: CheckoutSuccessCl
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 pt-6">
             <Link 
-              href={`/ebooks/${slugify(ebook.title)}/read`}
+              href="/ebooks/library"
               className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 transition-all hover:scale-102 cursor-pointer text-center"
             >
               <BookOpen className="w-5 h-5" />
-              <span>Open Flipbook Reader</span>
+              <span>Go to E-Book Library</span>
             </Link>
 
             <Link 
