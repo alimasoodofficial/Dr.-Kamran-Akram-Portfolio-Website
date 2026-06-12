@@ -330,4 +330,72 @@ export async function sendEbookAdminNotification({
   }
 }
 
+export async function sendEbookLibraryVerificationCode({
+  to,
+  code,
+}: {
+  to: string;
+  code: string;
+}) {
+  const mailOptions = {
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
+    to,
+    subject: `${code} is your eBook Library verification code`,
+    html: `
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px; text-align: center;">
+                  <h2 style="margin: 0 0 12px 0; color: #0f172a; font-size: 22px; font-weight: 800; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">Verify Your Email Address</h2>
+                  <p style="margin: 0 0 24px 0; color: #64748b; font-size: 15px; line-height: 1.5;">You requested to access your eBook Library. Use the verification code below to sign in. This code is valid for 5 minutes.</p>
+                  
+                  <!-- Code Box -->
+                  <div style="background-color: #f0fdf4; border: 1px solid #d1fae5; border-radius: 12px; padding: 20px; margin: 24px auto; max-width: 280px;">
+                    <span style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 8px;">Verification Code</span>
+                    <span style="font-size: 36px; font-weight: 800; color: #064e3b; letter-spacing: 4px; font-family: Courier, monospace; display: block;">${code}</span>
+                  </div>
+
+                  <p style="margin: 0 0 24px 0; font-size: 13px; color: #94a3b8; line-height: 1.5;">
+                    If you did not request this code, you can safely ignore this email.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `,
+  };
+
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Library verification email successfully sent to:", to, "Result:", result);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending library verification email:', error);
+    return { success: false, error };
+  }
+}
+
+
 

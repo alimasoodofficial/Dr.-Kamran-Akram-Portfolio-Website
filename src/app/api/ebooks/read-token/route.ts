@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { getSupabaseService } from "@/lib/supabaseService";
+import { getSupabaseService, syncPurchasesForEmail } from "@/lib/supabaseService";
+import crypto from "crypto";
 
 export async function POST(req: Request) {
   try {
-    const { ebookId, accessToken, stripeSessionId, email } = await req.json();
+    const { ebookId, accessToken, stripeSessionId, libraryToken } = await req.json();
 
     if (!ebookId) {
       return NextResponse.json({ error: "Missing ebookId" }, { status: 400 });
@@ -34,6 +35,9 @@ export async function POST(req: Request) {
 
         // If not admin, check purchases by user_id or email
         if (!authorized) {
+          if (userEmail) {
+            await syncPurchasesForEmail(userEmail);
+          }
           const { data: purchase, error: purchaseErr } = await supabaseService
             .from("purchases")
             .select("*")
@@ -58,6 +62,18 @@ export async function POST(req: Request) {
 
     // 2. If not authorized yet and stripeSessionId is provided, check purchases table
     if (!authorized && stripeSessionId) {
+      // Resolve transaction email to run sync
+      const { data: tx } = await supabaseService
+        .from("transactions")
+        .select("customer_email")
+        .eq("stripe_session_id", stripeSessionId)
+        .eq("item_type", "ebook")
+        .maybeSingle();
+        
+      if (tx?.customer_email) {
+        await syncPurchasesForEmail(tx.customer_email);
+      }
+
       const { data: purchase } = await supabaseService
         .from("purchases")
         .select("*")
@@ -78,25 +94,50 @@ export async function POST(req: Request) {
       }
     }
 
-    // 2.5. If not authorized yet and plain email is provided, check purchases table (case-insensitive email matching)
-    if (!authorized && email) {
-      const { data: purchase } = await supabaseService
-        .from("purchases")
-        .select("*")
-        .eq("ebook_id", ebookId)
-        .ilike("user_email", email.trim())
-        .maybeSingle();
+    // 3. If libraryToken is provided, verify HMAC signature & expiration, then check purchases
+    if (!authorized && libraryToken) {
+      try {
+        const secret = process.env.JWT_SECRET || process.env.STRIPE_SECRET_KEY || "kamran_secret_key_123_abc";
+        const lastDotIndex = libraryToken.lastIndexOf(".");
+        if (lastDotIndex !== -1) {
+          const tokenData = libraryToken.substring(0, lastDotIndex);
+          const signature = libraryToken.substring(lastDotIndex + 1);
+          const expectedSignature = crypto.createHmac("sha256", secret).update(tokenData).digest("hex");
+          
+          if (signature === expectedSignature) {
+            const [tokenEmail, tokenTimestampStr] = tokenData.split(":");
+            const tokenTimestamp = Number(tokenTimestampStr);
+            const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+            
+            // Check token expiration (7 days)
+            if (Date.now() - tokenTimestamp <= sevenDaysMs) {
+              const sanitizedEmail = tokenEmail.trim().toLowerCase();
+              
+              await syncPurchasesForEmail(sanitizedEmail);
 
-      if (purchase) {
-        authorized = true;
-        
-        // If user is authenticated but purchase user_id wasn't set, link it
-        if (userId && !purchase.user_id) {
-          await supabaseService
-            .from("purchases")
-            .update({ user_id: userId })
-            .eq("id", purchase.id);
+              const { data: purchase } = await supabaseService
+                .from("purchases")
+                .select("*")
+                .eq("ebook_id", ebookId)
+                .ilike("user_email", sanitizedEmail)
+                .maybeSingle();
+
+              if (purchase) {
+                authorized = true;
+
+                // If user is authenticated but purchase user_id wasn't set, link it
+                if (userId && !purchase.user_id) {
+                  await supabaseService
+                    .from("purchases")
+                    .update({ user_id: userId })
+                    .eq("id", purchase.id);
+                }
+              }
+            }
+          }
         }
+      } catch (err) {
+        console.error("Error verifying libraryToken in read-token:", err);
       }
     }
 

@@ -43,11 +43,6 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   const [authorized, setAuthorized] = useState<boolean | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [tokenLoading, setTokenLoading] = useState<boolean>(true);
-  
-  // Login Form States
-  const [emailInput, setEmailInput] = useState<string>("");
-  const [submittingAuth, setSubmittingAuth] = useState<boolean>(false);
-
   // PDF.js States
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [numPages, setNumPages] = useState<number>(0);
@@ -138,13 +133,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       
       // Look for stripe session cache from sessionStorage
       let stripeSessionId = null;
-      let stripeEmail = null;
       try {
         const cached = sessionStorage.getItem("kamran_last_checkout");
         if (cached) {
           const parsed = JSON.parse(cached);
           stripeSessionId = parsed.receiptNo;
-          stripeEmail = parsed.email;
         }
       } catch (e) {
         console.error("sessionStorage cache error:", e);
@@ -157,13 +150,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         stripeSessionId = urlSessionId;
       }
 
-      // Check for email verified directly via reader login form
-      let verifiedEmail = null;
+      // Check for library token in sessionStorage
+      let libraryToken = null;
       try {
-        verifiedEmail = sessionStorage.getItem("kamran_verified_email_" + ebook.id);
+        libraryToken = sessionStorage.getItem("kamran_library_token");
       } catch (e) {}
-
-      const emailToCheck = stripeEmail || verifiedEmail || null;
 
       const res = await fetch("/api/ebooks/read-token", {
         method: "POST",
@@ -172,7 +163,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           ebookId: ebook.id,
           accessToken: session?.access_token || null,
           stripeSessionId: stripeSessionId || null,
-          email: emailToCheck
+          libraryToken: libraryToken || null
         })
       });
 
@@ -509,45 +500,6 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
     return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
 
-  // Direct Email Purchase Verification (Bypasses Supabase OTP Auth)
-  const handleVerifyEmail = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!emailInput.trim()) return;
-
-    setSubmittingAuth(true);
-    const toastId = toast.loading("Verifying your purchase email...");
-    try {
-      const res = await fetch("/api/ebooks/read-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ebookId: ebook.id,
-          email: emailInput.trim(),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.signedUrl) {
-        // Save verified email to sessionStorage
-        try {
-          sessionStorage.setItem("kamran_verified_email_" + ebook.id, emailInput.trim());
-        } catch (e) {
-          console.error("Failed to cache verified email:", e);
-        }
-        setSignedUrl(data.signedUrl);
-        setAuthorized(true);
-        toast.success("Purchase verified! Loading book...", { id: toastId });
-      } else {
-        toast.error(data.error || "No purchase record found for this email address.", { id: toastId });
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to verify purchase.", { id: toastId });
-    } finally {
-      setSubmittingAuth(false);
-    }
-  };
-
   // Render Loader
   if (tokenLoading) {
     return (
@@ -574,35 +526,16 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
             </p>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-slate-800/80 pt-6">
-            <form onSubmit={handleVerifyEmail} className="space-y-4 text-left">
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Purchaser Email Address
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-3 border rounded-xl bg-slate-50 dark:bg-slate-950 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                  disabled={submittingAuth}
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/60 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer"
-                disabled={submittingAuth}
-              >
-                {submittingAuth ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <span>Verify Email & Access Book</span>
-                )}
-              </button>
-            </form>
+          <div className="border-t border-slate-100 dark:border-slate-800/80 pt-6 space-y-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Please login to your eBook library to verify ownership and read this book.
+            </p>
+            <Link
+              href="/ebooks/library"
+              className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer animate-pulse"
+            >
+              <span>Go to My Library Dashboard</span>
+            </Link>
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 flex flex-col gap-2">

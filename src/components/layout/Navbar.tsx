@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { navLinks } from "@/data/navLinks";
 import { freeResources } from "@/data/freeResourcesMenu";
 import { aboutMeItems } from "@/data/aboutMeMenu";
+import { ebookMenuItems } from "@/data/ebookMenu";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
 import Image from "next/image";
@@ -191,8 +192,62 @@ export default function Navbar() {
             </div>
           </div>
 
+          {/* eBooks Mega Dropdown */}
+          <div className="group relative px-3 py-2">
+            <button className="flex items-center gap-1 transition-colors hover:text-primary font-medium">
+              eBooks
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mt-0.5 transition-transform group-hover:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              className="invisible opacity-0 group-hover:visible group-hover:opacity-100
+              transition-all duration-300 ease-in-out
+              absolute top-full left-1/2 -translate-x-1/2 mt-4 
+              bg-white dark:bg-[#1a1b26] border border-gray-100 dark:border-gray-700
+              rounded-2xl shadow-2xl backdrop-blur-lg p-6 z-50 min-w-[550px]"
+            >
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 font-heading">
+                eBooks & Publications
+              </h3>
+
+              <div className="grid grid-cols-1 gap-4">
+                {ebookMenuItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
+                  >
+                    <div className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}>
+                      <i className={`${item.icon} text-white text-xl`} aria-hidden="true" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900 dark:text-white mb-1">
+                        {item.title}
+                      </p>
+                      <p className="text-sm text-gray-650 dark:text-gray-405 leading-tight">
+                        {item.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Other Links */}
-          {/* Filter out 'Free Resources', 'About Me', 'Resume', 'Projects', 'Gallery' from navigation */}
+          {/* Filter out 'Free Resources', 'About Me', 'Resume', 'Projects', 'Gallery', 'eBooks' from navigation */}
           {navLinks
             .filter(
               (link) =>
@@ -201,7 +256,9 @@ export default function Navbar() {
                 link.label !== "About" &&
                 link.label !== "Resume" &&
                 link.label !== "Projects" &&
-                link.label !== "Gallery",
+                link.label !== "Gallery" &&
+                link.label !== "eBooks" &&
+                link.label !== "ebooks",
             )
             .map((link) => {
               const isActive =
@@ -286,7 +343,9 @@ export default function Navbar() {
                     link.label !== "About" &&
                     link.label !== "Resume" &&
                     link.label !== "Projects" &&
-                    link.label !== "Gallery",
+                    link.label !== "Gallery" &&
+                    link.label !== "eBooks" &&
+                    link.label !== "ebooks",
                 )
                 .map((link) => {
                   const isActive =
@@ -333,6 +392,35 @@ export default function Navbar() {
                           aria-hidden="true"
                         />
                       )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-white text-base mb-1">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
+                        {item.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* eBooks Section */}
+            <div className="flex flex-col space-y-4 border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 px-2 uppercase tracking-wider">
+                eBooks
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                {ebookMenuItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
+                  >
+                    <div className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-emerald-500 to-green-600"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}>
+                      <i className={`${item.icon} text-white text-xl`} aria-hidden="true" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-900 dark:text-white text-base mb-1">
