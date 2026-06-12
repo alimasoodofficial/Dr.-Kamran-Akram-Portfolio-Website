@@ -168,10 +168,31 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                   <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
                   Premium Spotlight
                 </span>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
-                  <Tag className="w-3.5 h-3.5" />
-                  ${Number(featuredEbook.price || 0).toFixed(2)} USD
-                </span>
+                {(() => {
+                  const basePrice = featuredEbook.price !== undefined && featuredEbook.price !== null ? Number(featuredEbook.price) : 9.99;
+                  const now = new Date();
+                  const hasActiveDiscount = 
+                    featuredEbook.discount_price !== undefined && 
+                    featuredEbook.discount_price !== null && 
+                    Number(featuredEbook.discount_price) > 0 && 
+                    (!featuredEbook.discount_expires_at || new Date(featuredEbook.discount_expires_at) > now);
+                  const activePrice = hasActiveDiscount ? Number(featuredEbook.discount_price) : basePrice;
+                  
+                  return (
+                    <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1.5 flex-wrap">
+                      <Tag className="w-3.5 h-3.5" />
+                      {hasActiveDiscount ? (
+                        <>
+                          <span>${Number(activePrice).toFixed(2)} USD</span>
+                          <span className="text-slate-400/80 dark:text-slate-500/80 line-through text-[10px] font-normal">${Number(basePrice).toFixed(2)}</span>
+                          <span className="text-[10px] font-black text-rose-500 uppercase tracking-tight">Sale</span>
+                        </>
+                      ) : (
+                        <span>${Number(basePrice).toFixed(2)} USD</span>
+                      )}
+                    </span>
+                  );
+                })()}
                 <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                   {featuredEbook.category}
                 </span>
@@ -284,9 +305,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                   book.discount_price !== undefined && 
                   book.discount_price !== null && 
                   Number(book.discount_price) > 0 && 
-                  book.discount_expires_at !== undefined && 
-                  book.discount_expires_at !== null && 
-                  new Date(book.discount_expires_at) > now;
+                  (!book.discount_expires_at || new Date(book.discount_expires_at) > now);
                 
                 const activePrice = hasActiveDiscount ? Number(book.discount_price) : basePrice;
                 const isPaid = activePrice > 0;

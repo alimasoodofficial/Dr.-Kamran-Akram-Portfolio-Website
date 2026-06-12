@@ -239,9 +239,7 @@ export default function AdminEbooksClient({
                   ebook.discount_price !== undefined && 
                   ebook.discount_price !== null && 
                   Number(ebook.discount_price) > 0 && 
-                  ebook.discount_expires_at !== undefined && 
-                  ebook.discount_expires_at !== null && 
-                  new Date(ebook.discount_expires_at) > now;
+                  (!ebook.discount_expires_at || new Date(ebook.discount_expires_at) > now);
                 
                 const activePrice = hasActiveDiscount ? Number(ebook.discount_price) : basePrice;
                 const isPaid = activePrice > 0;

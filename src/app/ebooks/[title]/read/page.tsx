@@ -62,7 +62,7 @@ export default async function EbookReaderPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16 bg-gradient-to-br from-slate-50 via-emerald-50/10 to-teal-50/20 dark:from-gray-950 dark:via-slate-950 dark:to-black">
+    <div className="min-h-screen pt-28 pb-16 bg-transparent">
       <Suspense fallback={<ReaderSkeleton />}>
         <FlipbookWrapper ebook={ebook} />
       </Suspense>

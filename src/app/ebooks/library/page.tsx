@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function LibraryPage() {
   return (
-    <div className="min-h-screen pb-24 bg-gradient-to-br from-slate-50 via-emerald-50/10 to-teal-50/20 dark:from-gray-950 dark:via-slate-950 dark:to-black">
+    <div className="min-h-screen pb-24 bg-transparent">
       <Banner
         title="My E-Book Library"
         description="Verify your email to access your library of purchased technical publications. Read directly in our secure interactive 3D flipbook viewer."

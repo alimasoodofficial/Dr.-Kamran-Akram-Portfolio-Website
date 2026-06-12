@@ -103,9 +103,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
     ebook.discount_price !== undefined && 
     ebook.discount_price !== null && 
     Number(ebook.discount_price) > 0 && 
-    ebook.discount_expires_at !== undefined && 
-    ebook.discount_expires_at !== null && 
-    new Date(ebook.discount_expires_at) > now;
+    (!ebook.discount_expires_at || new Date(ebook.discount_expires_at) > now);
     
   let activePrice = hasActiveDiscount ? Number(ebook.discount_price) : basePrice;
 
@@ -404,7 +402,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
           </div>
 
           {/* 📊 Premium Product Specifications Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <BookOpen className="w-6 h-6 text-emerald-500 mx-auto" />
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Page Count</p>
@@ -413,17 +411,13 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <FileText className="w-6 h-6 text-emerald-500 mx-auto" />
-              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">File Format</p>
-              <p className="font-extrabold text-slate-800 dark:text-white text-lg">Secure PDF</p>
+              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Format</p>
+              <p className="font-extrabold text-slate-800 dark:text-white text-lg">FlipBook</p>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
-              <Download className="w-6 h-6 text-emerald-500 mx-auto" />
-              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">File Size</p>
-              <p className="font-extrabold text-slate-800 dark:text-white text-lg">{meta.size} MB</p>
-            </div>
+            
 
-            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
+            <div className="col-span-2 sm:col-span-1 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <Users className="w-6 h-6 text-emerald-500 mx-auto" />
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Downloads</p>
               <p className="font-extrabold text-slate-800 dark:text-white text-lg">{downloadCount} DLs</p>
@@ -444,14 +438,14 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             <div className="flex flex-col gap-3 w-full md:w-auto">
               <button 
                 onClick={() => setPurchaseModalOpen(true)}
-                className="w-full md:w-auto flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
+                className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
               >
                 <CreditCard className="w-5 h-5" />
-                <span>Buy E-Book (${Number(displayPrice).toFixed(2)})</span>
+                <span>Buy Now</span>
               </button>
               <Link 
                 href="/ebooks/library" 
-                className="w-full md:w-auto flex items-center justify-center gap-2 border-2 border-emerald-500/80 hover:border-emerald-600 dark:border-emerald-500/40 dark:hover:border-emerald-500/80 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold px-8 py-3.5 rounded-2xl transition-all hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:scale-102 text-center text-sm select-none"
+                className="w-full md:w-auto flex items-center justify-center gap-2  text-white bg-emerald-500 hover:bg-emerald-500/80 font-bold px-8 py-3.5 rounded-2xl transition-all hover:scale-102 text-center text-md select-none"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Already purchased? Go to Library</span>
@@ -534,27 +528,34 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedEbooks.map((book) => {
               const bookMeta = generateBookMeta(book.id, book.title);
-              const relatedPaid = Number(book.price || 0) > 0;
+              const relatedBasePrice = book.price !== undefined && book.price !== null ? Number(book.price) : 9.99;
+              const relatedHasActiveDiscount = 
+                book.discount_price !== undefined && 
+                book.discount_price !== null && 
+                Number(book.discount_price) > 0 && 
+                (!book.discount_expires_at || new Date(book.discount_expires_at) > now);
+              const relatedActivePrice = relatedHasActiveDiscount ? Number(book.discount_price) : relatedBasePrice;
+              const relatedPaid = relatedActivePrice > 0;
               return (
                 <div 
                   key={book.id}
                   className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="bg-[#1c2434] p-6 flex justify-center items-center relative overflow-hidden aspect-[4/3]">
+                  <div className="bg-white/80 p-6 flex justify-center items-center relative overflow-hidden aspect-[4/3]">
                     <div className="w-full flex justify-center">
                       <BookCard
                         title={book.title}
                         imageSrc={book.cover_url}
                         width={120}
                         height={165}
-                        coverColor="bg-slate-800"
+                        coverColor="bg-slate-950"
                         coverText={relatedPaid ? "PREMIUM" : "READ"}
                         buttonClassName="hidden"
                       />
                     </div>
                   </div>
 
-                  <div className="p-5 flex-1 flex flex-col justify-between bg-white dark:bg-slate-900">
+                  <div className="p-5 flex-1 flex flex-col justify-between bg-white dark:bg-gray-950">
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
@@ -577,21 +578,22 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                         </h4>
                       </Link>
 
-                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-3.5 bg-blue-500 rounded-sm"></div>
-                          <span>{bookMeta.pageCount} Pages</span>
-                        </div>
-                        <span>PDF</span>
-                      </div>
+                      
                     </div>
 
                     <div className="mt-5 space-y-4">
                       <div className="flex items-center flex-wrap gap-2">
                         {relatedPaid ? (
-                          <span className="text-xl font-black text-slate-900 dark:text-white">
-                            ${Number(book.price).toFixed(2)}
-                          </span>
+                          <>
+                            <span className="text-xl font-black text-slate-900 dark:text-white">
+                              ${Number(relatedActivePrice).toFixed(2)}
+                            </span>
+                            {relatedHasActiveDiscount && (
+                              <span className="text-sm font-medium text-slate-400 line-through">
+                                ${Number(relatedBasePrice).toFixed(2)}
+                              </span>
+                            )}
+                          </>
                         ) : (
                           <span className="text-xl font-black text-slate-900 dark:text-white">
                             FREE
@@ -601,7 +603,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
                       <Link
                         href={`/ebooks/${slugify(book.title)}`}
-                        className="w-full text-center py-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center justify-center bg-[#1c2434] hover:bg-[#283244] text-white dark:bg-slate-800 dark:hover:bg-slate-700 shadow-md"
+                        className="w-full text-center py-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 shadow-md"
                       >
                         {relatedPaid ? "Buy Now" : "Get Access"}
                       </Link>

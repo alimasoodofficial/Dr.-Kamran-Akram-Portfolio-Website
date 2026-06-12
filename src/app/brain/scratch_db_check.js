@@ -4,7 +4,7 @@ async function main() {
   const supabase = getSupabaseService();
   const { data: ebooks, error } = await supabase
     .from("ebooks")
-    .select("id, title, price, discount_price");
+    .select("id, title, price, discount_price, discount_expires_at");
 
   if (error) {
     console.error("Error fetching ebooks:", error);
