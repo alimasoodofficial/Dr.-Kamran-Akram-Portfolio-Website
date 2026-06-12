@@ -96,7 +96,7 @@ export default async function EbookDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-slate-50 via-emerald-50/10 to-teal-50/20 dark:from-gray-950 dark:via-slate-950 dark:to-black">
+    <div className="min-h-screen pt-28 pb-20 bg-transparent">
       <Suspense fallback={<DetailSkeleton />}>
         <EbookDetailsClient ebook={ebook} relatedEbooks={related} />
       </Suspense>

@@ -35,8 +35,7 @@ export async function POST(req: Request) {
     const hasActiveDiscount = 
       ebook.discount_price !== null && 
       Number(ebook.discount_price) > 0 && 
-      ebook.discount_expires_at && 
-      new Date(ebook.discount_expires_at) > now;
+      (!ebook.discount_expires_at || new Date(ebook.discount_expires_at) > now);
       
     if (hasActiveDiscount) {
       targetPrice = Number(ebook.discount_price);
