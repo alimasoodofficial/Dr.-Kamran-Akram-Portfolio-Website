@@ -195,7 +195,7 @@ export default function ConsultancyForm() {
             <input
               {...register("email", {
                 required: "Email is required",
-                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" },
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
               })}
               type="email"
               placeholder="you@example.com"

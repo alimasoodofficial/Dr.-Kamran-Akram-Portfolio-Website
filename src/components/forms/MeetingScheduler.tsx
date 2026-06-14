@@ -32,6 +32,28 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+const ZoomIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="6" fill="#2D8CFF" />
+    <path d="M6 15.5C6 16.328 6.672 17 7.5 17H13.5C14.328 17 15 16.328 15 15.5V10.5C15 9.672 14.328 9 13.5 9H7.5C6.672 9 6 9.672 6 10.5V15.5Z" fill="white" />
+    <path d="M16 11.1L18.4 9.3C18.8 9 19.4 9.3 19.4 9.8V14.2C19.4 14.7 18.8 15 18.4 14.7L16 12.9V11.1Z" fill="white" />
+  </svg>
+);
+
+const GoogleMeetIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 256 211" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <polygon fill="#00832D" points="144.822496 105.321856 169.778926 133.848796 203.341343 155.294133 209.178931 105.50196 203.341343 56.8331137 169.136495 75.6715889" />
+      <path d="M0.000557021739,150.659712 L0.000557021739,193.089915 C0.000557021739,202.77838 7.86384724,210.643527 17.5541688,210.643527 L59.9843714,210.643527 L68.7704609,178.585069 L59.9843714,150.659712 L30.8744153,141.873623 L0.000557021739,150.659712 Z" fill="#0066DA" />
+      <polygon fill="#E94235" points="59.9838143 0 0 59.9838143 30.875715 68.7494798 59.9838143 59.9838143 68.6102243 32.4390893" />
+      <polygon fill="#2684FC" points="0.000557021739 150.679394 59.9843714 150.679394 59.9843714 59.9832573 0.000557021739 59.9832573" />
+      <path d="M241.658683,25.3977775 L203.341157,56.8342278 L203.341157,155.29339 L241.818362,186.852385 C247.577967,191.364261 256.003849,187.251584 256.003849,179.930462 L256.003849,32.1785888 C256.003849,24.7757699 247.377439,20.6835169 241.658683,25.3977775" fill="#00AC47" />
+      <path d="M144.822496,105.321856 L144.822496,150.659712 L59.9843714,150.659712 L59.9843714,210.643527 L185.787731,210.643527 C195.478053,210.643527 203.341343,202.77838 203.341343,193.089915 L203.341343,155.294133 L144.822496,105.321856 Z" fill="#00AC47" />
+      <path d="M185.787731,0 L59.9843714,0 L59.9843714,59.9838143 L144.822496,59.9838143 L144.822496,105.32167 L203.341343,56.832928 L203.341343,17.5536117 C203.341343,7.86329022 195.478053,0 185.787731,0" fill="#FFBA00" />
+    </g>
+  </svg>
+);
+
 interface MeetingSchedulerProps {
   availability: AvailabilitySlot[];
   blockedDates: BlockedDate[];
@@ -110,6 +132,17 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
       });
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setStep("calendar");
   };
 
@@ -119,6 +152,16 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
       toast({
         title: "Selection Required",
         description: "Please select both a date and a time slot.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
         variant: "destructive"
       });
       return;
@@ -242,7 +285,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     </div>
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">Duration</p>
-                      <p className="font-bold">Flexible 30/60 Mins</p>
+                      <p className="font-bold">Flexible 15/30/60 Mins</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -252,6 +295,15 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">Platform</p>
                       <p className="font-bold">Zoom or Google Meet</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-white/10 rounded-2xl">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">For Queries</p>
+                      <p className="font-bold"><a href="mailto:hi@kamran.com">hi@kamran.com</a></p>
                     </div>
                   </div>
                 </div>
@@ -287,29 +339,26 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="grid grid-cols-1 gap-8 mb-8">
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Preferred Platform *</label>
                     <Select value={formData.platform} onValueChange={(v: string) => setFormData({...formData, platform: v as any})}>
-                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900  dark:text-white">
+                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-2xl bg-white dark:bg-slate-800">
-                        <SelectItem value="Zoom">Zoom Video</SelectItem>
-                        <SelectItem value="Google Meet">Google Meet</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Duration *</label>
-                    <Select value={formData.duration.toString()} onValueChange={(v: string) => setFormData({...formData, duration: parseInt(v) as 15 | 30 | 60})}>
-                      <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900  dark:border-slate-700 dark:text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-2xl bg-white dark:bg-slate-800">
-                        <SelectItem value="15">15 Minutes (Quick Chat)</SelectItem>
-                        <SelectItem value="30">30 Minutes (Standard)</SelectItem>
-                        <SelectItem value="60">60 Minutes (Deep Dive)</SelectItem>
+                      <SelectContent className="rounded-2xl bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700">
+                        <SelectItem value="Zoom">
+                          <span className="flex items-center gap-3">
+                            <ZoomIcon />
+                            <span>Zoom Video</span>
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="Google Meet">
+                          <span className="flex items-center gap-3">
+                            <GoogleMeetIcon />
+                            <span>Google Meet</span>
+                          </span>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -329,7 +378,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   onClick={handleNextStep}
                   className="w-full h-16 rounded-[1.25rem] bg-primary hover:bg-[#064e3b] text-white font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl shadow-primary/20"
                 >
-                  Pick a Time Slot <ChevronRight className="ml-2 w-5 h-5" />
+                  Pick a Time Slot <CalendarIcon className="ml-2 w-5 h-5" />
                 </Button>
               </div>
             </div>

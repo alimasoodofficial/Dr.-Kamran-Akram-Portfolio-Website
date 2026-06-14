@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { verifyAdminSession } from "@/lib/adminAuth";
 import { sendMeetingInvitation, sendBookingChangeNotification } from "@/lib/mail";
+import { sendUserRescheduleNotification, sendAdminRescheduleNotification } from "@/lib/email";
 import { generateMeetingLink } from "@/lib/meetings";
 
 export interface Booking {
@@ -461,7 +462,13 @@ export async function rescheduleBooking(id: string, newStartTime: string, durati
 
   const { data: currentBooking, error: fetchError } = await supabase
     .from("bookings")
-    .select("slot_id")
+    .select(`
+      *,
+      time_slots (
+        start_time,
+        end_time
+      )
+    `)
     .eq("id", id)
     .maybeSingle();
 
@@ -526,6 +533,34 @@ export async function rescheduleBooking(id: string, newStartTime: string, durati
       .from("time_slots")
       .update({ is_booked: false })
       .eq("id", oldSlotId);
+  }
+
+  // Send reschedule emails to both admin and client
+  try {
+    const oldSlot = currentBooking.time_slots;
+    const oldStartTime = oldSlot?.start_time || currentBooking.created_at;
+    const oldEndTime = oldSlot?.end_time || currentBooking.created_at;
+
+    const rescheduleData = {
+      userName: currentBooking.user_name || currentBooking.full_name || "",
+      userEmail: currentBooking.user_email || currentBooking.email || "",
+      country: currentBooking.country || "",
+      oldStartTime,
+      oldEndTime,
+      newStartTime: startObj.toISOString(),
+      newEndTime: endObj.toISOString(),
+    };
+
+    Promise.all([
+      sendUserRescheduleNotification(rescheduleData).catch((err) =>
+        console.error("Failed to send user reschedule email:", err)
+      ),
+      sendAdminRescheduleNotification(rescheduleData).catch((err) =>
+        console.error("Failed to send admin reschedule email:", err)
+      ),
+    ]);
+  } catch (emailErr) {
+    console.error("Failed to send reschedule emails:", emailErr);
   }
 
   return { success: true };

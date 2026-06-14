@@ -898,24 +898,24 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                             </td>
                             {/* Actions */}
                             <td className="p-6 text-right">
-                              <DropdownMenu>
+                              <DropdownMenu >
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
                                     <MoreVertical className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                                   </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5 dark:bg-slate-900 dark:border-slate-700">
-                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary cursor-pointer">
+                                <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5 bg-slate-50 ">
+                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary cursor-pointer focus:bg-amber-50 focus:text-primary dark:focus:bg-amber-950/20 dark:focus:text-primary">
                                     <CheckCircle2 className="w-4 h-4 mr-2" /> Mark Confirmed
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600 cursor-pointer">
+                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600 cursor-pointer focus:bg-amber-50 focus:text-amber-600 dark:focus:bg-amber-950/20 dark:focus:text-amber-500">
                                     <XCircle className="w-4 h-4 mr-2" /> Mark Cancelled
                                   </DropdownMenuItem>
                                   <div className="h-px bg-slate-100 dark:bg-slate-800 my-1.5" />
-                                  <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300 cursor-pointer">
+                                  <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300 cursor-pointer focus:bg-amber-50 focus:text-slate-700 dark:focus:bg-amber-950/20 dark:focus:text-slate-200">
                                     <Plus className="w-4 h-4 mr-2" /> Edit Details
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600 cursor-pointer">
+                                  <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600 cursor-pointer focus:bg-amber-50 focus:text-red-600 dark:focus:bg-amber-950/20 dark:focus:text-red-400">
                                     <Trash2 className="w-4 h-4 mr-2" /> Delete Booking
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -988,22 +988,22 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                         <div className="flex justify-end gap-2 pt-2">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="outline" className="w-full h-10 rounded-xl text-xs font-black uppercase tracking-wider dark:text-white dark:border-slate-700">
+                              <Button variant="outline" className="w-full h-10 rounded-xl text-xs font-black uppercase tracking-wider dark:text-white bg-white dark:border-slate-700">
                                 Actions
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-full min-w-[200px] rounded-xl p-2 dark:bg-slate-900 dark:border-slate-700">
-                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary">
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary cursor-pointer focus:bg-amber-50 focus:text-primary dark:focus:bg-amber-950/20 dark:focus:text-primary">
                                 <CheckCircle2 className="w-4 h-4 mr-2" /> Mark Confirmed
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600">
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600 cursor-pointer focus:bg-amber-50 focus:text-amber-600 dark:focus:bg-amber-950/20 dark:focus:text-amber-500">
                                 <XCircle className="w-4 h-4 mr-2" /> Mark Cancelled
                               </DropdownMenuItem>
                               <div className="h-px bg-slate-100 dark:bg-slate-800 my-1.5" />
-                              <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                              <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300 cursor-pointer focus:bg-amber-50 focus:text-slate-700 dark:focus:bg-amber-950/20 dark:focus:text-slate-200">
                                 <Plus className="w-4 h-4 mr-2" /> Edit Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600">
+                              <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600 cursor-pointer focus:bg-amber-50 focus:text-red-600 dark:focus:bg-amber-950/20 dark:focus:text-red-400">
                                 <Trash2 className="w-4 h-4 mr-2" /> Delete Booking
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -1024,300 +1024,334 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
           </div>
         </TabsContent>
 
-        <TabsContent value="availability">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <div className="lg:col-span-2 space-y-6">
-              <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
-                <CardHeader className="p-8 pb-4">
-                  <CardTitle className="text-2xl font-black dark:text-white">Weekly Schedule</CardTitle>
-                  <CardDescription className="dark:text-slate-400">Set your standard working hours for each day of the week.</CardDescription>
-                </CardHeader>
-                <CardContent className="p-8 space-y-6">
-                  {DAYS.map((day, index) => {
-                    const slot = availability.find(a => a.day_of_week === index);
-                    return (
-                      <div key={day} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                        <div className="flex items-center gap-4">
-                          <Switch 
-                            checked={slot?.is_enabled ?? false} 
-                            onCheckedChange={(checked: boolean) => handleAvailabilityToggle(index, checked)}
-                          />
-                          <span className={`text-sm font-black uppercase tracking-widest ${slot?.is_enabled ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>
-                            {day}
+        <TabsContent value="availability" className="space-y-8">
+          {/* 1st Section: Custom Date Settings */}
+          <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+            <CardHeader className="p-8 pb-4">
+              <CardTitle className="text-xl font-black dark:text-white">Custom Date Settings</CardTitle>
+              <CardDescription className="dark:text-slate-400">Configure schedule overrides or take specific days off.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 flex flex-col lg:flex-row gap-8 items-start">
+              <div className="w-full lg:w-auto flex-shrink-0 flex justify-center">
+                <Calendar
+                  selected={selectedBlockedDate}
+                  onSelect={handleDateSelect}
+                  className="rounded-xl border border-slate-100 dark:border-slate-700 p-4 dark:text-white bg-slate-50 dark:bg-slate-800/20"
+                />
+              </div>
+
+              <div className="flex-1 w-full space-y-4">
+                {selectedBlockedDate ? (
+                  <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                      <span className="text-sm font-black uppercase tracking-widest text-primary">
+                        Schedule for {format(selectedBlockedDate, "MMM d, yyyy")}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Availability Status</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setOverrideType("standard")}
+                          className={cn(
+                            "py-2 px-1 text-[10px] font-black uppercase tracking-wider rounded-lg border-2 transition-all cursor-pointer",
+                            overrideType === "standard"
+                              ? "bg-primary border-primary text-white"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/20"
+                          )}
+                        >
+                          Weekly
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setOverrideType("off")}
+                          className={cn(
+                            "py-2 px-1 text-[10px] font-black uppercase tracking-wider rounded-lg border-2 transition-all cursor-pointer",
+                            overrideType === "off"
+                              ? "bg-red-500 border-red-500 text-white"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-500/20"
+                          )}
+                        >
+                          Off
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setOverrideType("custom")}
+                          className={cn(
+                            "py-2 px-1 text-[10px] font-black uppercase tracking-wider rounded-lg border-2 transition-all cursor-pointer",
+                            overrideType === "custom"
+                              ? "bg-blue-500 border-blue-500 text-white"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-500/20"
+                          )}
+                        >
+                          Custom
+                        </button>
+                      </div>
+                    </div>
+
+                    {overrideType === "custom" && (
+                      <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">Custom Hours</label>
+                          <button
+                            type="button"
+                            onClick={() => setCustomRanges(prev => [...prev, { start: "09:00", end: "17:00" }])}
+                            className="text-[10px] text-blue-500 hover:text-blue-600 font-black uppercase tracking-wider cursor-pointer"
+                          >
+                            + Add Range
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {customRanges.map((range, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <Input
+                                type="time"
+                                value={range.start}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, start: val } : r));
+                                }}
+                                className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
+                              />
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">to</span>
+                              <Input
+                                type="time"
+                                value={range.end}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, end: val } : r));
+                                }}
+                                className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
+                              />
+                              {customRanges.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => setCustomRanges(prev => prev.filter((_, i) => i !== index))}
+                                  className="text-slate-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {overrideType !== "off" && allPotentialSlots.length > 0 && (
+                      <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">
+                            Slot Availability
+                          </label>
+                          <span className="text-[9px] text-slate-400 font-medium">
+                            Click a slot to toggle availability
                           </span>
                         </div>
-                        
-                        <div className="flex items-center gap-4">
-                          <Input 
-                            type="time" 
-                            value={slot?.start_time ?? "09:00"} 
-                            onChange={(e) => handleTimeChange(index, "start_time", e.target.value)}
-                            disabled={!slot?.is_enabled}
-                            className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
-                          />
-                          <span className="text-slate-300 font-bold">to</span>
-                          <Input 
-                            type="time" 
-                            value={slot?.end_time ?? "17:00"} 
-                            onChange={(e) => handleTimeChange(index, "end_time", e.target.value)}
-                            disabled={!slot?.is_enabled}
-                            className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
-                          />
+                        <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-1.5 max-h-48 overflow-y-auto p-2 border border-slate-100 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900">
+                          {allPotentialSlots.map((time: string) => {
+                            const isBlocked = blockedSlots.includes(time);
+                            return (
+                              <button
+                                key={time}
+                                type="button"
+                                onClick={() => {
+                                  setBlockedSlots(prev =>
+                                    isBlocked
+                                      ? prev.filter(t => t !== time)
+                                      : [...prev, time]
+                                  );
+                                }}
+                                className={cn(
+                                  "py-1.5 text-[10px] font-bold rounded-lg border transition-all text-center cursor-pointer",
+                                  isBlocked
+                                    ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/40 text-red-500 line-through decoration-red-400"
+                                    : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary/50 hover:bg-primary/5"
+                                )}
+                              >
+                                {time}
+                              </button>
+                            );
+                          })}
                         </div>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={handleSaveDateOverride}
+                      disabled={isSaving}
+                      className={cn(
+                        "w-full h-12 rounded-xl text-xs font-black uppercase tracking-widest text-white shadow-md transition-all cursor-pointer",
+                        overrideType === "standard"
+                          ? "bg-slate-650 hover:bg-slate-750"
+                          : overrideType === "off"
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-blue-500 hover:bg-blue-600"
+                      )}
+                    >
+                      {isSaving ? "Saving..." : "Save Date Schedule"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="w-full flex items-center justify-center py-12 px-6 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-center leading-relaxed">
+                      Select a date on the calendar<br />to edit its schedule overrides
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 2nd Section: Date-Specific Overrides */}
+          <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+            <CardHeader className="p-8 pb-4">
+              <CardTitle className="text-xl font-black dark:text-white">Date-Specific Overrides</CardTitle>
+              <CardDescription className="dark:text-slate-400 font-medium">Manage dates where you have disabled slot times or marked yourself off.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 pt-2">
+              {blockedDates.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {blockedDates.map((bd) => {
+                    const isCustom = bd.reason && (bd.reason.startsWith("CUSTOM:") || bd.reason.includes("CUSTOM:"));
+                    const hasBlockedSlots = bd.reason && bd.reason.includes("BLOCKED:");
+                    let displayReason = "OFF / Unavailable";
+                    let blockedTimes: string[] = [];
+                    
+                    if (bd.reason === "OFF") {
+                      displayReason = "OFF / Unavailable";
+                    } else {
+                      let baseHours = "Weekly Hours";
+                      if (isCustom) {
+                        const customMatch = bd.reason.match(/CUSTOM:([^;]+)/);
+                        if (customMatch) {
+                          baseHours = customMatch[1].split(",").map(range => {
+                            const [start, end] = range.split("-");
+                            return `${start} to ${end}`;
+                          }).join(", ");
+                        }
+                      }
+                      
+                      if (hasBlockedSlots) {
+                        const blockedMatch = bd.reason.match(/BLOCKED:([^;]+)/);
+                        if (blockedMatch) {
+                          blockedTimes = blockedMatch[1].split(",");
+                        }
+                      }
+                      
+                      displayReason = baseHours;
+                    }
+                    
+                    return (
+                      <div 
+                        key={bd.id} 
+                        className={cn(
+                          "relative p-5 rounded-2xl border transition-all flex flex-col justify-between gap-3 shadow-sm hover:shadow-md",
+                          isCustom 
+                            ? "bg-blue-50/40 dark:bg-blue-950/10 border-blue-100 dark:border-blue-900/20 border-l-4 border-l-blue-500" 
+                            : "bg-red-50/40 dark:bg-red-950/10 border-red-100 dark:border-red-900/20 border-l-4 border-l-red-500"
+                        )}
+                      >
+                        <button 
+                          onClick={() => handleRemoveBlockedDate(bd.id)} 
+                          className="absolute top-4 right-4 text-slate-400 hover:text-red-650 transition-colors p-1 cursor-pointer"
+                          title="Remove override"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+
+                        <div className="space-y-1 pr-6">
+                          <span className={cn(
+                            "text-sm font-black",
+                            isCustom ? "text-blue-700 dark:text-blue-400" : "text-red-700 dark:text-red-400"
+                          )}>
+                            {format(new Date(bd.date), "MMMM d, yyyy")}
+                          </span>
+                          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">
+                            Status: <span className="font-black text-slate-700 dark:text-slate-200">{isCustom ? "Custom Hours" : bd.reason === "OFF" ? "Unavailable" : "Weekly Schedule Modified"}</span>
+                          </p>
+                          <p className="text-xs text-slate-550 dark:text-slate-400">
+                            Hours: <span className="font-bold">{displayReason}</span>
+                          </p>
+                        </div>
+
+                        {blockedTimes.length > 0 && (
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                            <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">
+                              Blocked Slots ({blockedTimes.length})
+                            </span>
+                            <div className="flex flex-wrap gap-1">
+                              {blockedTimes.map(time => (
+                                <span key={time} className="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-bold bg-red-100/60 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200/50 dark:border-red-900/30">
+                                  {time}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
-                  <div className="pt-4">
-                    <Button onClick={saveAvailability} disabled={isSaving} className="w-full h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest shadow-xl hover:bg-[#064e3b]">
-                      {isSaving ? "Saving Configuration..." : "Save Weekly Schedule"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-750">
+                  <p className="text-xs text-slate-400 italic font-medium">No custom date schedules or overrides currently active.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-            <div className="space-y-6">
-              <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
-                <CardHeader className="p-8 pb-4">
-                  <CardTitle className="text-xl font-black dark:text-white">Custom Date Settings</CardTitle>
-                  <CardDescription className="dark:text-slate-400">Configure schedule overrides or take specific days off.</CardDescription>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <Calendar
-                    selected={selectedBlockedDate}
-                    onSelect={handleDateSelect}
-                    className="mb-6 rounded-xl border border-slate-100 dark:border-slate-700 p-4 dark:text-white"
-                  />
-
-                  {selectedBlockedDate ? (
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-4 mb-6">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-widest text-primary">
-                          Schedule for {format(selectedBlockedDate, "MMM d, yyyy")}
-                        </span>
-                      </div>
-
-                      <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Availability Status</label>
-                        <div className="grid grid-cols-3 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setOverrideType("standard")}
-                            className={cn(
-                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
-                              overrideType === "standard"
-                                ? "bg-primary border-primary text-white"
-                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/20"
-                            )}
-                          >
-                            Weekly
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setOverrideType("off")}
-                            className={cn(
-                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
-                              overrideType === "off"
-                                ? "bg-red-500 border-red-500 text-white"
-                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-500/20"
-                            )}
-                          >
-                            Off
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setOverrideType("custom")}
-                            className={cn(
-                              "py-2 px-1 text-[9px] font-black uppercase tracking-wider rounded-lg border-2 transition-all",
-                              overrideType === "custom"
-                                ? "bg-blue-500 border-blue-500 text-white"
-                                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-500/20"
-                            )}
-                          >
-                            Custom
-                          </button>
-                        </div>
-                      </div>
-
-                      {overrideType === "custom" && (
-                        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
-                          <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">Custom Hours</label>
-                            <button
-                              type="button"
-                              onClick={() => setCustomRanges(prev => [...prev, { start: "09:00", end: "17:00" }])}
-                              className="text-[10px] text-blue-500 hover:text-blue-600 font-black uppercase tracking-wider"
-                            >
-                              + Add Range
-                            </button>
-                          </div>
-                          <div className="space-y-2">
-                            {customRanges.map((range, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <Input
-                                  type="time"
-                                  value={range.start}
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, start: val } : r));
-                                  }}
-                                  className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
-                                />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">to</span>
-                                <Input
-                                  type="time"
-                                  value={range.end}
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    setCustomRanges(prev => prev.map((r, i) => i === index ? { ...r, end: val } : r));
-                                  }}
-                                  className="h-10 rounded-lg text-xs bg-white dark:bg-slate-900 dark:text-white flex-1"
-                                />
-                                {customRanges.length > 1 && (
-                                  <button
-                                    type="button"
-                                    onClick={() => setCustomRanges(prev => prev.filter((_, i) => i !== index))}
-                                    className="text-slate-400 hover:text-red-500 transition-colors p-1"
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {overrideType !== "off" && allPotentialSlots.length > 0 && (
-                        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
-                          <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-bold">
-                              Slot Availability
-                            </label>
-                            <span className="text-[9px] text-slate-400 font-medium">
-                              Click a slot to toggle availability
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto p-1 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50">
-                            {allPotentialSlots.map((time: string) => {
-                              const isBlocked = blockedSlots.includes(time);
-                              return (
-                                <button
-                                  key={time}
-                                  type="button"
-                                  onClick={() => {
-                                    setBlockedSlots(prev =>
-                                      isBlocked
-                                        ? prev.filter(t => t !== time)
-                                        : [...prev, time]
-                                    );
-                                  }}
-                                  className={cn(
-                                    "py-1.5 text-[10px] font-bold rounded-lg border transition-all text-center",
-                                    isBlocked
-                                      ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/40 text-red-500 line-through decoration-red-400"
-                                      : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary/50 hover:bg-primary/5"
-                                  )}
-                                >
-                                  {time}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      <Button
-                        onClick={handleSaveDateOverride}
-                        disabled={isSaving}
-                        className={cn(
-                          "w-full h-11 rounded-xl text-xs font-black uppercase tracking-widest text-white shadow-md transition-all",
-                          overrideType === "standard"
-                            ? "bg-slate-600 hover:bg-slate-700"
-                            : overrideType === "off"
-                              ? "bg-red-500 hover:bg-red-600"
-                              : "bg-blue-500 hover:bg-blue-600"
-                        )}
-                      >
-                        {isSaving ? "Saving..." : "Save Date Schedule"}
-                      </Button>
+          {/* 3rd Section: Weekly Schedule */}
+          <Card className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+            <CardHeader className="p-8 pb-4">
+              <CardTitle className="text-xl font-black dark:text-white">Weekly Schedule</CardTitle>
+              <CardDescription className="dark:text-slate-400">Set your standard working hours for each day of the week.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              {DAYS.map((day, index) => {
+                const slot = availability.find(a => a.day_of_week === index);
+                return (
+                  <div key={day} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                    <div className="flex items-center gap-4">
+                      <Switch 
+                        checked={slot?.is_enabled ?? false} 
+                        onCheckedChange={(checked: boolean) => handleAvailabilityToggle(index, checked)}
+                      />
+                      <span className={`text-sm font-black uppercase tracking-widest ${slot?.is_enabled ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>
+                        {day}
+                      </span>
                     </div>
-                  ) : (
-                    <div className="p-4 mb-6 text-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-relaxed">
-                        Select a date on the calendar<br />to edit its schedule
-                      </p>
+                    
+                    <div className="flex items-center gap-4">
+                      <Input 
+                        type="time" 
+                        value={slot?.start_time ?? "09:00"} 
+                        onChange={(e) => handleTimeChange(index, "start_time", e.target.value)}
+                        disabled={!slot?.is_enabled}
+                        className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
+                      />
+                      <span className="text-slate-300 font-bold">to</span>
+                      <Input 
+                        type="time" 
+                        value={slot?.end_time ?? "17:00"} 
+                        onChange={(e) => handleTimeChange(index, "end_time", e.target.value)}
+                        disabled={!slot?.is_enabled}
+                        className="w-32 h-12 rounded-xl bg-white dark:bg-slate-900 dark:text-white"
+                      />
                     </div>
-                  )}
-
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Date-Specific Overrides</p>
-                    {blockedDates.length > 0 ? (
-                      blockedDates.map((bd) => {
-                        const isCustom = bd.reason && (bd.reason.startsWith("CUSTOM:") || bd.reason.includes("CUSTOM:"));
-                        const hasBlockedSlots = bd.reason && bd.reason.includes("BLOCKED:");
-                        let displayReason = "OFF / Unavailable";
-                        
-                        if (bd.reason === "OFF") {
-                          displayReason = "OFF / Unavailable";
-                        } else {
-                          let baseHours = "Weekly Hours";
-                          if (isCustom) {
-                            const customMatch = bd.reason.match(/CUSTOM:([^;]+)/);
-                            if (customMatch) {
-                              baseHours = customMatch[1].split(",").map(range => {
-                                const [start, end] = range.split("-");
-                                return `${start} to ${end}`;
-                              }).join(", ");
-                            }
-                          }
-                          
-                          let blockedText = "";
-                          if (hasBlockedSlots) {
-                            const blockedMatch = bd.reason.match(/BLOCKED:([^;]+)/);
-                            if (blockedMatch) {
-                              blockedText = ` (Blocked: ${blockedMatch[1]})`;
-                            }
-                          }
-                          
-                          displayReason = `${baseHours}${blockedText}`;
-                        }
-                        
-                        return (
-                          <div 
-                            key={bd.id} 
-                            className={cn(
-                              "flex items-center justify-between p-3 rounded-xl border transition-all",
-                              isCustom 
-                                ? "bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/20" 
-                                : "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/20"
-                            )}
-                          >
-                            <div className="flex flex-col">
-                              <span className={cn(
-                                "text-xs font-black",
-                                isCustom ? "text-blue-700 dark:text-blue-400" : "text-red-700 dark:text-red-400"
-                              )}>
-                                {format(new Date(bd.date), "MMM d, yyyy")}
-                              </span>
-                              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 mt-0.5">
-                                {displayReason}
-                              </span>
-                            </div>
-                            <button onClick={() => handleRemoveBlockedDate(bd.id)} className="text-slate-400 hover:text-red-600 transition-colors">
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <p className="text-xs text-slate-400 italic font-medium">No custom date schedules set.</p>
-                    )}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                );
+              })}
+              
+              <div className="pt-4">
+                <Button onClick={saveAvailability} disabled={isSaving} className="w-full h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest shadow-xl hover:bg-[#064e3b] cursor-pointer">
+                  {isSaving ? "Saving Configuration..." : "Save Weekly Schedule"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
