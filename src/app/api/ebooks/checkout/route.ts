@@ -60,6 +60,21 @@ export async function POST(req: Request) {
 
     const priceAmount = Math.round(targetPrice * 100);
 
+    // If final price is 0, bypass Stripe and redirect to success page directly
+    if (priceAmount === 0) {
+      const emailHex = Buffer.from(email).toString("hex");
+      const freeSessionId = `free_${ebook.id}_${emailHex}_${Date.now()}`;
+      
+      const host = req.headers.get("host") || "localhost:3000";
+      const protocol = host.startsWith("localhost") ? "http" : "https";
+      const origin = `${protocol}://${host}`;
+      
+      return NextResponse.json({ 
+        sessionId: freeSessionId, 
+        url: `${origin}/ebooks/checkout-success?session_id=${freeSessionId}` 
+      });
+    }
+
     // Verify charge threshold
     if (priceAmount > 0 && priceAmount < 50) {
       return NextResponse.json({ error: "Stripe requires a minimum charge of $0.50 USD." }, { status: 400 });

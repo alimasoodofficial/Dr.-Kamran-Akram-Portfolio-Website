@@ -23,6 +23,7 @@ export default function EditEbook({ params }: PageProps) {
   const [discountPrice, setDiscountPrice] = useState("");
   const [discountExpiresAt, setDiscountExpiresAt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [isDownloadable, setIsDownloadable] = useState(false);
   
   // Cover image states
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -68,6 +69,8 @@ export default function EditEbook({ params }: PageProps) {
         setPreviewUrl(data.cover_url || null);
         setPrice(data.price !== null && data.price !== undefined ? String(data.price) : "0.00");
         setDiscountPrice(data.discount_price ? String(data.discount_price) : "");
+        setIsDownloadable(data.is_downloadable === true);
+
         
         // If there's an existing file url or pdf_storage_path, extract the filename for the display
         if (data.pdf_storage_path) {
@@ -179,6 +182,7 @@ export default function EditEbook({ params }: PageProps) {
           price: price ? parseFloat(price) : 0, // 0 means Free!
           discount_price: discountPrice ? parseFloat(discountPrice) : null,
           discount_expires_at: discountExpiresAt ? new Date(discountExpiresAt).toISOString() : null,
+          is_downloadable: isDownloadable,
         })
         .eq("id", id);
 
@@ -362,6 +366,22 @@ export default function EditEbook({ params }: PageProps) {
                   placeholder="9.99"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">Set to 0.00 to offer this e-book for free direct download.</p>
+              </div>
+
+              <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                <input
+                  type="checkbox"
+                  id="isDownloadable"
+                  checked={isDownloadable}
+                  onChange={(e) => setIsDownloadable(e.target.checked)}
+                  className="w-4 h-4 text-emerald-500 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer"
+                />
+                <div>
+                  <label htmlFor="isDownloadable" className="text-sm font-semibold text-slate-800 cursor-pointer select-none">
+                    Allow Direct Download
+                  </label>
+                  <p className="text-[10px] text-slate-400">If checked, customers can download this ebook as a PDF file. If unchecked, they can only read it in the library reader.</p>
+                </div>
               </div>
 
               <div>

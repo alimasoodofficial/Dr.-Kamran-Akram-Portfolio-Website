@@ -28,6 +28,7 @@ type Ebook = {
   price?: number;
   discount_price?: number;
   discount_expires_at?: string;
+  is_downloadable?: boolean;
 };
 
 type AdminEbooksClientProps = {
@@ -294,9 +295,14 @@ export default function AdminEbooksClient({
                         {ebook.title}
                       </h3>
                       <div className="flex items-center justify-between text-slate-400 text-xs mt-2">
-                        <div className="flex items-center gap-1">
-                          <Download className="w-3 h-3 text-emerald-500" />
-                          <span>{ebook.downloads || 0} downloads</span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-1">
+                            <Download className="w-3 h-3 text-emerald-500" />
+                            <span>{ebook.downloads || 0} downloads</span>
+                          </div>
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded w-max select-none uppercase tracking-wider ${ebook.is_downloadable ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'}`}>
+                            {ebook.is_downloadable ? 'Downloadable' : 'Flipbook Only'}
+                          </span>
                         </div>
                         <div className="flex flex-col items-end">
                           {isPaid ? (

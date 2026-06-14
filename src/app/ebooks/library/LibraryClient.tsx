@@ -18,7 +18,8 @@ import {
   ShieldCheck,
   ChevronRight,
   Book,
-  Sparkles
+  Sparkles,
+  Download
 } from "lucide-react";
 import toast from "react-hot-toast";
 import BookCard from "@/components/ui/BookCard";
@@ -34,6 +35,8 @@ type Purchase = {
     title: string;
     description?: string;
     cover_url?: string;
+    is_downloadable?: boolean;
+    file_url?: string;
   } | null;
   transaction: {
     customerName: string;
@@ -61,6 +64,7 @@ export default function LibraryClient() {
   // Dashboard Data
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loadingPurchases, setLoadingPurchases] = useState(false);
+  const [downloadingBookId, setDownloadingBookId] = useState<string | null>(null);
 
   // 1. Check for active session in sessionStorage on mount
   useEffect(() => {
@@ -184,6 +188,45 @@ export default function LibraryClient() {
   // 5. Launch Reader with cached credential
   const handleReadBook = (ebookId: string, title: string) => {
     router.push(`/ebooks/${slugify(title)}/read`);
+  };
+
+  const handleDownloadBook = async (ebookId: string, title: string) => {
+    if (downloadingBookId) return;
+    setDownloadingBookId(ebookId);
+    const toastId = toast.loading("Preparing the PDF...");
+
+    try {
+      const res = await fetch("/api/ebooks/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: ebookId,
+          libraryToken: sessionToken,
+          email: verifiedEmail
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to download ebook.");
+
+      toast.success("Download started!", { id: toastId });
+
+      if (data.file_url) {
+        const link = document.createElement("a");
+        link.href = data.file_url;
+        link.target = "_blank";
+        link.setAttribute("download", `${title.replace(/\s+/g, "_")}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        toast.error("No download URL returned.", { id: toastId });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred.", { id: toastId });
+    } finally {
+      setDownloadingBookId(null);
+    }
   };
 
   // 6. Logout
@@ -462,15 +505,35 @@ export default function LibraryClient() {
                           </div>
                         </div>
 
-                        {/* Read Button */}
-                        <button
-                          onClick={() => handleReadBook(purchase.ebookId, purchase.ebook!.title)}
-                          className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer group"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          <span>Open Flipbook Reader</span>
-                          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        {/* Actions */}
+                        {purchase.ebook.is_downloadable ? (
+                          <div className="flex flex-col sm:flex-row gap-2.5 w-full">
+                            <button
+                              onClick={() => handleReadBook(purchase.ebookId, purchase.ebook!.title)}
+                              className="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group"
+                            >
+                              <BookOpen className="w-4 h-4" />
+                              <span>Read Flipbook</span>
+                            </button>
+                            <button
+                              onClick={() => handleDownloadBook(purchase.ebookId, purchase.ebook!.title)}
+                              disabled={downloadingBookId === purchase.ebookId}
+                              className="flex-1 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>{downloadingBookId === purchase.ebookId ? "Downloading..." : "Download PDF"}</span>
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleReadBook(purchase.ebookId, purchase.ebook!.title)}
+                            className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-500/15 flex items-center justify-center gap-2 cursor-pointer group"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            <span>Open Flipbook Reader</span>
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </button>
+                        )}
                       </div>
                     </motion.div>
                   );

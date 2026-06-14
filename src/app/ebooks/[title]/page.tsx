@@ -15,6 +15,10 @@ type Ebook = {
   file_url?: string;
   downloads?: number;
   created_at?: string;
+  price?: number;
+  discount_price?: number;
+  discount_expires_at?: string;
+  is_downloadable?: boolean;
 };
 
 interface PageProps {

@@ -31,6 +31,7 @@ type Ebook = {
   price?: number;
   discount_price?: number;
   discount_expires_at?: string;
+  is_downloadable?: boolean;
 };
 
 type EbooksStoreClientProps = {
