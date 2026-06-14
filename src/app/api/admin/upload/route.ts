@@ -29,9 +29,11 @@ export async function POST(req: Request) {
     const fileName = `${prefix}-${Date.now()}-${cleanOrigName}`;
 
     const bucketName = isPdf ? "ebooks-vault" : "website images & videos";
+    const contentType = file.type || (isPdf ? "application/pdf" : "application/octet-stream");
     const { data, error } = await supabaseService.storage.from(bucketName).upload(fileName, buffer, {
       cacheControl: "3600",
-      upsert: false
+      upsert: false,
+      contentType
     });
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });

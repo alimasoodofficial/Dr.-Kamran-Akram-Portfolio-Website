@@ -40,6 +40,7 @@ type Ebook = {
   price?: number;
   discount_price?: number;
   discount_expires_at?: string;
+  is_downloadable?: boolean;
 };
 
 type EbookDetailsClientProps = {
@@ -113,6 +114,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
   const isPaid = activePrice > 0;
   const displayPrice = activePrice;
+  const isDownloadable = ebook.is_downloadable === true;
 
   const handleApplyPromo = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -149,7 +151,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
   const handleDownload = async () => {
     if (downloading) return;
     setDownloading(true);
-    const toastId = toast.loading("Preparing your secure download...");
+    const toastId = toast.loading("Preparing the PDF...");
 
     try {
       const res = await fetch("/api/ebooks/download", {
@@ -412,7 +414,9 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <FileText className="w-6 h-6 text-emerald-500 mx-auto" />
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Format</p>
-              <p className="font-extrabold text-slate-800 dark:text-white text-lg">FlipBook</p>
+              <p className="font-extrabold text-slate-800 dark:text-white text-lg">
+                {isDownloadable ? "PDF + FlipBook" : "FlipBook"}
+              </p>
             </div>
 
             
@@ -428,21 +432,38 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
           <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent dark:from-emerald-500/5 dark:via-teal-500/5 rounded-3xl p-8 border border-emerald-500/20 dark:border-emerald-500/10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-1.5 text-center md:text-left">
               <h4 className="text-xl font-bold text-slate-900 dark:text-white font-heading">
-                Instant eBook Access
+                {isPaid ? "Premium eBook Access" : "Free eBook Access"}
               </h4>
               <p className="text-slate-500 text-sm">
-                Purchase lifetime access to read this technical publication in our secure 3D flipbook reader.
+                {!isPaid && isDownloadable
+                  ? "Download this technical publication directly as a PDF file for offline reading."
+                  : !isPaid
+                  ? "Get free lifetime access to read this publication in our interactive 3D flipbook reader."
+                  : isDownloadable
+                  ? "Purchase lifetime access to read this technical publication in our 3D flipbook reader and download the PDF edition."
+                  : "Purchase lifetime access to read this technical publication in our secure 3D flipbook reader."}
               </p>
             </div>
 
             <div className="flex flex-col gap-3 w-full md:w-auto">
-              <button 
-                onClick={() => setPurchaseModalOpen(true)}
-                className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
-              >
-                <CreditCard className="w-5 h-5" />
-                <span>Buy Now</span>
-              </button>
+              {!isPaid && isDownloadable ? (
+                <button 
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-102 transition-all cursor-pointer select-none disabled:opacity-50"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>{downloading ? "Downloading..." : "Download Free PDF"}</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setPurchaseModalOpen(true)}
+                  className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
+                >
+                  {isPaid ? <CreditCard className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+                  <span>{isPaid ? "Buy Now" : "Get Free Access"}</span>
+                </button>
+              )}
               <Link 
                 href="/ebooks/library" 
                 className="w-full md:w-auto flex items-center justify-center gap-2  text-white bg-emerald-500 hover:bg-emerald-500/80 font-bold px-8 py-3.5 rounded-2xl transition-all hover:scale-102 text-center text-md select-none"

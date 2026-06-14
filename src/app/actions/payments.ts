@@ -191,6 +191,166 @@ export async function confirmEbookPurchase(sessionId: string, origin: string) {
   try {
     const supabase = getSupabaseService();
 
+    if (sessionId.startsWith("free_")) {
+      const parts = sessionId.split("_");
+      const ebookId = parts[1];
+      const emailHex = parts[2];
+      const customerEmail = Buffer.from(emailHex, "hex").toString("utf-8");
+      const customerName = customerEmail.split("@")[0];
+
+      // Check if transaction already exists
+      const { data: existingTx } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("stripe_session_id", sessionId)
+        .maybeSingle();
+
+      if (existingTx) {
+        // Fetch ebook for display
+        const { data: ebook } = await supabase
+          .from("ebooks")
+          .select("id, title, cover_url, file_url")
+          .eq("id", ebookId)
+          .single();
+
+        if (!ebook) {
+          return { success: false, error: "Ebook not found" };
+        }
+
+        return {
+          success: true,
+          alreadyCreated: true,
+          purchaseDetails: {
+            receiptNo: existingTx.id,
+            amountPaid: "0.00",
+            email: customerEmail,
+            ebook: {
+              id: ebook.id,
+              title: ebook.title,
+              cover_url: ebook.cover_url || null,
+              file_url: ebook.file_url || null,
+            }
+          }
+        };
+      }
+
+      // Fetch the ebook details
+      const { data: ebook, error: fetchError } = await supabase
+        .from("ebooks")
+        .select("*")
+        .eq("id", ebookId)
+        .single();
+
+      if (fetchError || !ebook) {
+        console.error("Free Ebook not found in DB:", fetchError);
+        return { success: false, error: "Ebook not found" };
+      }
+
+      // Increment download count
+      const currentDownloads = Number(ebook.downloads || 0);
+      await supabase
+        .from("ebooks")
+        .update({ downloads: currentDownloads + 1 })
+        .eq("id", ebookId);
+
+      // Construct download URL and flipbook URL
+      const downloadUrl = ebook.file_url || "";
+      const flipbookUrl = `${origin}/ebooks/${slugify(ebook.title)}/read`;
+
+      // Send confirmation email
+      try {
+        await sendEbookPurchaseConfirmation({
+          to: customerEmail,
+          ebookTitle: ebook.title,
+          ebookCover: ebook.cover_url || "",
+          downloadUrl,
+          flipbookUrl,
+        });
+      } catch (emailErr) {
+        console.error("Failed to send free purchase email:", emailErr);
+      }
+
+      // Send admin notification
+      try {
+        await sendEbookAdminNotification({
+          customerName,
+          customerEmail,
+          ebookTitle: ebook.title,
+          pricePaid: 0,
+          promocodeUsed: "",
+        });
+      } catch (adminEmailErr) {
+        console.error("Failed to send free admin notification:", adminEmailErr);
+      }
+
+      // Log transaction
+      const { data: newTx, error: insertTxError } = await supabase
+        .from("transactions")
+        .insert([{
+          stripe_session_id: sessionId,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          promocode_used: null,
+          price_paid: 0,
+          item_type: "ebook",
+          item_name: ebook.title
+        }])
+        .select()
+        .single();
+
+      if (insertTxError) {
+        console.error("Failed to insert free ebook transaction record:", insertTxError);
+        return { success: false, error: "Failed to save transaction details." };
+      }
+
+      // Resolve user_id if profile exists and insert to purchases
+      let purchasedUserId = null;
+      try {
+        const { data: userProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .ilike("email", customerEmail)
+          .maybeSingle();
+
+        if (userProfile) {
+          purchasedUserId = userProfile.id;
+        }
+      } catch (profileErr) {
+        console.error("Failed to resolve profile for email in confirmEbookPurchase:", customerEmail, profileErr);
+      }
+
+      const { error: insertPurchaseError } = await supabase
+        .from("purchases")
+        .insert([{
+          user_id: purchasedUserId,
+          user_email: customerEmail,
+          ebook_id: ebookId,
+          stripe_checkout_id: sessionId
+        }]);
+
+      if (insertPurchaseError) {
+        console.error("Failed to insert free ebook purchase record in confirmEbookPurchase:", insertPurchaseError);
+      } else {
+        console.log(`Logged free eBook purchase for ${customerEmail} in confirmEbookPurchase`);
+      }
+
+      return {
+        success: true,
+        alreadyCreated: false,
+        purchaseDetails: {
+          receiptNo: newTx.id,
+          amountPaid: "0.00",
+          email: customerEmail,
+          ebook: {
+            id: ebook.id,
+            title: ebook.title,
+            cover_url: ebook.cover_url || null,
+            file_url: ebook.file_url || null,
+          }
+        }
+      };
+    }
+
     // 1. Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
