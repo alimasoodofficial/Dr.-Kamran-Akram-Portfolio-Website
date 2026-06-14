@@ -397,5 +397,151 @@ export async function sendEbookLibraryVerificationCode({
   }
 }
 
+export async function sendBookingChangeNotification({
+  to,
+  name,
+  type,
+  details,
+}: {
+  to: string;
+  name: string;
+  type: 'changed' | 'cancelled' | 'confirmed';
+  details: {
+    date: string;
+    time: string;
+    duration: number;
+    platform: string;
+    meetingLink?: string;
+  };
+}) {
+  let subject = "";
+  let heading = "";
+  let messageText = "";
+  let statusBadgeColor = "";
+  let statusBadgeBg = "";
+
+  if (type === "changed") {
+    subject = "Consultation Schedule Updated - Dr. Muhammad Kamran";
+    heading = "Consultation Schedule Updated";
+    messageText = "Your consultation schedule has been updated by the administrator. Below are your new appointment details:";
+    statusBadgeColor = "#0369a1";
+    statusBadgeBg = "#e0f2fe";
+  } else if (type === "cancelled") {
+    subject = "Consultation Cancelled - Dr. Muhammad Kamran";
+    heading = "Consultation Cancelled";
+    messageText = "Your scheduled consultation has been cancelled. Below are the details of the cancelled session:";
+    statusBadgeColor = "#b91c1c";
+    statusBadgeBg = "#fee2e2";
+  } else {
+    subject = "Consultation Confirmed - Dr. Muhammad Kamran";
+    heading = "Consultation Confirmed";
+    messageText = "Your consultation has been confirmed by the administrator. Below are the details:";
+    statusBadgeColor = "#047857";
+    statusBadgeBg = "#d1fae5";
+  }
+
+  const mailOptions = {
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
+    to,
+    subject,
+    html: `
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px;">
+                  <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">${heading}</h2>
+                  
+                  <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">Hi <strong>${name}</strong>,</p>
+                  <p style="margin: 0 0 24px 0; color: #334155; font-size: 15px; line-height: 1.6;">${messageText}</p>
+                  
+                  <!-- Details Box -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: ${statusBadgeBg}; border: 1px solid ${statusBadgeColor}30; border-radius: 12px; margin-bottom: 24px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: ${statusBadgeColor}; font-weight: 600; width: 90px; vertical-align: top;">Status:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: ${statusBadgeColor}; font-weight: 700; vertical-align: top; text-transform: capitalize;">${type}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: ${statusBadgeColor}; font-weight: 600; width: 90px; vertical-align: top;">Date:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${details.date}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: ${statusBadgeColor}; font-weight: 600; vertical-align: top;">Time:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${details.time} (AEST/AEDT)</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: ${statusBadgeColor}; font-weight: 600; vertical-align: top;">Duration:</td>
+                            <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${details.duration} Minutes</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: ${statusBadgeColor}; font-weight: 600; vertical-align: top;">Platform:</td>
+                            <td style="font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">${details.platform}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+
+                  ${type !== "cancelled" && details.meetingLink ? `
+                  <p style="margin: 0 0 24px 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                    You can join the meeting using the button below at the scheduled time:
+                  </p>
+
+                  <!-- CTA Button -->
+                  <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 30px auto;">
+                    <tr>
+                      <td align="center" bgcolor="#10b981" style="border-radius: 12px; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);">
+                        <a href="${details.meetingLink}" target="_blank" style="font-size: 15px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 15px 35px; border-radius: 12px; display: inline-block; background-color: #10b981; border: 1px solid #10b981;">
+                          💻 Join Meeting
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  ` : ''}
+
+                  <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
+                    If you need to reschedule or have any questions, please reply directly to this email.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending booking update email:', error);
+    return { success: false, error };
+  }
+}
+
+
 
 

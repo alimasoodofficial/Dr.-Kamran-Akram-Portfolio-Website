@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const navItems = [
-  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
   { label: "Articles", href: "/admin/articles", icon: FileText },
   { label: "Ebooks", href: "/admin/ebooks", icon: BookOpen },

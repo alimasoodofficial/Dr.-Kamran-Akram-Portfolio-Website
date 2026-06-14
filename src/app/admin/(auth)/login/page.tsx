@@ -31,7 +31,7 @@ export default function AdminLogin() {
 
           if (res.ok) {
             document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=604800; SameSite=Lax; Secure`;
-            router.replace("/admin");
+            router.replace("/admin/dashboard");
             return;
           }
         }
@@ -81,7 +81,7 @@ export default function AdminLogin() {
         duration: 3000,
         icon: '👋' 
       });
-      router.push("/admin");
+      router.push("/admin/dashboard");
     } catch (error: any) {
       setErr(error.message);
       toast.error(error.message);

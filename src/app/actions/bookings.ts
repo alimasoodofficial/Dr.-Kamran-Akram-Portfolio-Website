@@ -3,7 +3,8 @@
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { verifyAdminSession } from "@/lib/adminAuth";
-import { sendMeetingInvitation } from "@/lib/mail";
+import { sendMeetingInvitation, sendBookingChangeNotification } from "@/lib/mail";
+import { sendUserRescheduleNotification, sendAdminRescheduleNotification } from "@/lib/email";
 import { generateMeetingLink } from "@/lib/meetings";
 
 export interface Booking {
@@ -195,6 +196,26 @@ export async function updateBookingStatus(id: string, status: string) {
     return { success: false, error: "Unauthorized access: Admin privileges required." };
   }
   const supabase = getSupabaseService();
+
+  // Fetch booking details first to send email
+  const { data: dbBooking, error: fetchError } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      time_slots (
+        start_time,
+        end_time
+      )
+    `)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (fetchError || !dbBooking) {
+    return { success: false, error: "Booking not found" };
+  }
+
+  const booking = mapDbToBooking(dbBooking);
+
   const { error } = await supabase
     .from("bookings")
     .update({ status })
@@ -202,6 +223,25 @@ export async function updateBookingStatus(id: string, status: string) {
 
   if (error) {
     return { success: false, error: error.message };
+  }
+
+  // Send email notification about status change
+  try {
+    const emailType = status === "cancelled" ? "cancelled" : status === "confirmed" ? "confirmed" : "changed";
+    await sendBookingChangeNotification({
+      to: booking.email,
+      name: booking.full_name,
+      type: emailType as any,
+      details: {
+        date: booking.date,
+        time: booking.time_slot,
+        duration: booking.duration,
+        platform: booking.platform,
+        meetingLink: dbBooking.meeting_link || ""
+      }
+    });
+  } catch (err) {
+    console.error("Failed to send status update email:", err);
   }
 
   return { success: true };
@@ -213,13 +253,24 @@ export async function deleteBooking(id: string) {
   }
   const supabase = getSupabaseService();
   
-  const { data: booking, error: fetchError } = await supabase
+  const { data: dbBooking, error: fetchError } = await supabase
     .from("bookings")
-    .select("slot_id")
+    .select(`
+      *,
+      time_slots (
+        start_time,
+        end_time
+      )
+    `)
     .eq("id", id)
     .maybeSingle();
 
-  const slotId = booking?.slot_id;
+  if (fetchError || !dbBooking) {
+    return { success: false, error: "Booking not found" };
+  }
+
+  const booking = mapDbToBooking(dbBooking);
+  const slotId = dbBooking.slot_id;
 
   const { error } = await supabase.from("bookings").delete().eq("id", id);
 
@@ -234,6 +285,24 @@ export async function deleteBooking(id: string) {
       .eq("id", slotId);
   }
 
+  // Send cancellation email
+  try {
+    await sendBookingChangeNotification({
+      to: booking.email,
+      name: booking.full_name,
+      type: "cancelled",
+      details: {
+        date: booking.date,
+        time: booking.time_slot,
+        duration: booking.duration,
+        platform: booking.platform,
+        meetingLink: dbBooking.meeting_link || ""
+      }
+    });
+  } catch (err) {
+    console.error("Failed to send cancellation email on delete:", err);
+  }
+
   return { success: true };
 }
 
@@ -243,6 +312,24 @@ export async function updateBooking(id: string, data: Partial<Omit<Booking, "id"
   }
   const supabase = getSupabaseService();
   
+  // Fetch current booking before update to verify it exists and enable diffing
+  const { data: dbBookingBefore, error: fetchBookingBeforeError } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      time_slots (
+        start_time,
+        end_time
+      )
+    `)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (fetchBookingBeforeError || !dbBookingBefore) {
+    return { success: false, error: "Booking not found to edit." };
+  }
+  const bookingBefore = mapDbToBooking(dbBookingBefore);
+
   const updatePayload: any = {};
   if (data.full_name) updatePayload.user_name = data.full_name;
   if (data.email) updatePayload.user_email = data.email;
@@ -258,17 +345,7 @@ export async function updateBooking(id: string, data: Partial<Omit<Booking, "id"
     const duration = data.duration || 30;
     const endTimeObj = new Date(startTimeObj.getTime() + duration * 60000);
     
-    const { data: currentBooking, error: fetchError } = await supabase
-      .from("bookings")
-      .select("slot_id")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (fetchError || !currentBooking) {
-      return { success: false, error: "Booking not found" };
-    }
-
-    const oldSlotId = currentBooking.slot_id;
+    const oldSlotId = dbBookingBefore.slot_id;
 
     const { data: slot, error: slotError } = await supabase
       .from("time_slots")
@@ -329,6 +406,49 @@ export async function updateBooking(id: string, data: Partial<Omit<Booking, "id"
     return { success: false, error: error.message };
   }
 
+  // Send updated email if critical details changed
+  try {
+    const { data: updatedDbBooking } = await supabase
+      .from("bookings")
+      .select(`
+        *,
+        time_slots (
+          start_time,
+          end_time
+        )
+      `)
+      .eq("id", id)
+      .maybeSingle();
+
+    if (updatedDbBooking) {
+      const updatedBooking = mapDbToBooking(updatedDbBooking);
+      
+      const dateChanged = bookingBefore.date !== updatedBooking.date;
+      const timeChanged = bookingBefore.time_slot !== updatedBooking.time_slot;
+      const durationChanged = bookingBefore.duration !== updatedBooking.duration;
+      const platformChanged = bookingBefore.platform !== updatedBooking.platform;
+      const statusChanged = bookingBefore.status !== updatedBooking.status;
+
+      if (dateChanged || timeChanged || durationChanged || platformChanged || statusChanged) {
+        const emailType = updatedBooking.status === "cancelled" ? "cancelled" : updatedBooking.status === "confirmed" ? "confirmed" : "changed";
+        await sendBookingChangeNotification({
+          to: updatedBooking.email,
+          name: updatedBooking.full_name,
+          type: emailType,
+          details: {
+            date: updatedBooking.date,
+            time: updatedBooking.time_slot,
+            duration: updatedBooking.duration,
+            platform: updatedBooking.platform,
+            meetingLink: updatedDbBooking.meeting_link || ""
+          }
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Failed to send updated booking email:", err);
+  }
+
   return { success: true };
 }
 
@@ -342,7 +462,13 @@ export async function rescheduleBooking(id: string, newStartTime: string, durati
 
   const { data: currentBooking, error: fetchError } = await supabase
     .from("bookings")
-    .select("slot_id")
+    .select(`
+      *,
+      time_slots (
+        start_time,
+        end_time
+      )
+    `)
     .eq("id", id)
     .maybeSingle();
 
@@ -407,6 +533,34 @@ export async function rescheduleBooking(id: string, newStartTime: string, durati
       .from("time_slots")
       .update({ is_booked: false })
       .eq("id", oldSlotId);
+  }
+
+  // Send reschedule emails to both admin and client
+  try {
+    const oldSlot = currentBooking.time_slots;
+    const oldStartTime = oldSlot?.start_time || currentBooking.created_at;
+    const oldEndTime = oldSlot?.end_time || currentBooking.created_at;
+
+    const rescheduleData = {
+      userName: currentBooking.user_name || currentBooking.full_name || "",
+      userEmail: currentBooking.user_email || currentBooking.email || "",
+      country: currentBooking.country || "",
+      oldStartTime,
+      oldEndTime,
+      newStartTime: startObj.toISOString(),
+      newEndTime: endObj.toISOString(),
+    };
+
+    Promise.all([
+      sendUserRescheduleNotification(rescheduleData).catch((err) =>
+        console.error("Failed to send user reschedule email:", err)
+      ),
+      sendAdminRescheduleNotification(rescheduleData).catch((err) =>
+        console.error("Failed to send admin reschedule email:", err)
+      ),
+    ]);
+  } catch (emailErr) {
+    console.error("Failed to send reschedule emails:", emailErr);
   }
 
   return { success: true };

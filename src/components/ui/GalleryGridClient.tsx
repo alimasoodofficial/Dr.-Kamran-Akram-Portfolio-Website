@@ -181,7 +181,7 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
                     <span className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-1 block">
                       {item.category}
                     </span>
-                    <h3 className="text-white font-bold text-xl leading-tight">
+                    <h3 className="!text-white font-bold text-xl leading-tight">
                       {item.title}
                     </h3>
                   </div>
@@ -221,7 +221,7 @@ export default function GalleryGridClient({ items }: { items: Item[] }) {
               </button>
 
               {/* Image Section */}
-              <div className="relative w-full md:w-[70%] h-1/2 md:h-full bg-black flex items-center justify-center">
+              <div className="relative w-full md:w-[70%] h-1/2 md:h-full bg-black  flex items-center justify-center">
                 <Image
                   src={selectedItem.image_url}
                   alt={selectedItem.title}

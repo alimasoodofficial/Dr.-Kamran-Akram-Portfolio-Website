@@ -41,7 +41,6 @@ export default async function GalleryPage() {
         lottieSrc="/lotties/gallery.lottie"
         showBreadcrumb={true}
         showImage={false}
-        gradientColors={["#e3eeff", "#f3e7e9", "#e3eeff"]}
         animationSpeed={10}
         containerClass=""
       />

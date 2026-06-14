@@ -1,10 +1,11 @@
 "use client";
 
 import AdminSidebar from "@/components/admin/Sidebar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { toast } from "react-hot-toast";
 
 export default function AdminDashboardLayout({
   children,
@@ -14,6 +15,103 @@ export default function AdminDashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Clear any pending toast show timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    // Dismiss the loading toast whenever pathname changes
+    toast.dismiss("page-loading-toast");
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest("a");
+      if (!target) return;
+
+      // Check modifier keys to let browser open in new tab/window naturally
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+
+      const href = target.getAttribute("href");
+      const targetAttr = target.getAttribute("target");
+      const download = target.getAttribute("download");
+
+      // Skip non-navigation URLs
+      if (!href || href.startsWith("#") || targetAttr === "_blank" || download !== null) {
+        return;
+      }
+
+      // Skip mailto and phone links
+      if (href.startsWith("mailto:") || href.startsWith("tel:")) {
+        return;
+      }
+
+      // Skip external links
+      const isExternal = href.startsWith("http://") || href.startsWith("https://");
+      if (isExternal && !href.startsWith(window.location.origin)) {
+        return;
+      }
+
+      // Resolve URL to absolute to compare pathname
+      try {
+        const targetUrl = new URL(href, window.location.href);
+        const currentPath = window.location.pathname;
+
+        // Skip if it's the exact same pathname and search query
+        if (targetUrl.pathname === currentPath && targetUrl.search === window.location.search) {
+          return;
+        }
+
+        // Only show loading toast for admin dashboard navigations
+        if (targetUrl.pathname.startsWith("/admin")) {
+          // Clear any existing timeout
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+
+          // Show a nice loading toast after 150ms delay to avoid flashing on instant loads
+          timeoutRef.current = setTimeout(() => {
+            toast.loading("Loading page...", {
+              id: "page-loading-toast",
+            });
+            timeoutRef.current = null;
+          }, 150);
+        }
+      } catch (err) {
+        console.error("Failed to parse URL in transition loader:", err);
+      }
+    };
+
+    const handlePopState = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        toast.loading("Loading page...", {
+          id: "page-loading-toast",
+        });
+        timeoutRef.current = null;
+      }, 150);
+    };
+
+    document.addEventListener("click", handleAnchorClick, { capture: true });
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      document.removeEventListener("click", handleAnchorClick, { capture: true });
+      window.removeEventListener("popstate", handlePopState);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      // Dismiss toast on unmount
+      toast.dismiss("page-loading-toast");
+    };
+  }, []);
 
   useEffect(() => {
     async function checkAuth() {
