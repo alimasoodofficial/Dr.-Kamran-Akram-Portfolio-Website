@@ -21,7 +21,11 @@ import {
   XCircle,
   MoreVertical,
   Check,
-  X
+  X,
+  Download,
+  Search,
+  SlidersHorizontal,
+  Filter
 } from "lucide-react";
 import { Booking, updateBookingStatus, deleteBooking, updateBooking, createBooking } from "@/app/actions/bookings";
 import { AvailabilitySlot, BlockedDate, updateAvailability, addBlockedDate, removeBlockedDate, getTimeSlots, saveDateOverride } from "@/app/actions/availability";
@@ -109,6 +113,113 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
   const [overrideType, setOverrideType] = useState<"standard" | "off" | "custom" >("standard");
   const [customRanges, setCustomRanges] = useState<{ start: string; end: string }[]>([{ start: "09:00", end: "17:00" }]);
   const [blockedSlots, setBlockedSlots] = useState<string[]>([]);
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterPlatform, setFilterPlatform] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+
+  // Statistics for Enterprise Analytics cards
+  const stats = useMemo(() => {
+    const total = bookings.length;
+    const confirmed = bookings.filter(b => b.status === "confirmed").length;
+    const pending = bookings.filter(b => b.status === "pending").length;
+    const cancelled = bookings.filter(b => b.status === "cancelled").length;
+    return { total, confirmed, pending, cancelled };
+  }, [bookings]);
+
+  // Filtered Bookings Memoized list
+  const filteredBookings = useMemo(() => {
+    return bookings.filter(booking => {
+      const matchesSearch = 
+        booking.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (booking.message && booking.message.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const matchesStatus = filterStatus === "all" || booking.status === filterStatus;
+      
+      const platformLower = booking.platform ? booking.platform.toLowerCase() : "";
+      const matchesPlatform = 
+        filterPlatform === "all" || 
+        (filterPlatform === "zoom" && platformLower.includes("zoom")) ||
+        (filterPlatform === "meet" && (platformLower.includes("meet") || platformLower.includes("google")));
+
+      let matchesDate = true;
+      if (startDate) {
+        matchesDate = matchesDate && booking.date >= startDate;
+      }
+      if (endDate) {
+        matchesDate = matchesDate && booking.date <= endDate;
+      }
+
+      return matchesSearch && matchesStatus && matchesPlatform && matchesDate;
+    });
+  }, [bookings, searchQuery, filterStatus, filterPlatform, startDate, endDate]);
+
+  // Download CSV Handler
+  const downloadCSV = () => {
+    const headers = ["ID", "Client Name", "Email", "Date", "Time Slot", "Platform", "Duration (mins)", "Status", "Notes/Message", "Created At"];
+    
+    const csvRows = [
+      headers.join(","),
+      ...filteredBookings.map(b => [
+        `"${b.id}"`,
+        `"${(b.full_name || "").replace(/"/g, '""')}"`,
+        `"${(b.email || "").replace(/"/g, '""')}"`,
+        `"${b.date}"`,
+        `"${b.time_slot}"`,
+        `"${b.platform}"`,
+        b.duration,
+        `"${b.status}"`,
+        `"${(b.message || "").replace(/"/g, '""').replace(/\n/g, ' ')}"`,
+        `"${b.created_at}"`
+      ].join(","))
+    ];
+
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `bookings_export_${format(new Date(), "yyyy-MM-dd_HHmmss")}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "CSV Export Successful",
+      description: `Downloaded ${filteredBookings.length} booking records based on active filters.`
+    });
+  };
+
+  // Download JSON Handler
+  const downloadJSON = () => {
+    const dataStr = JSON.stringify(filteredBookings, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `bookings_export_${format(new Date(), "yyyy-MM-dd_HHmmss")}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "JSON Export Successful",
+      description: `Downloaded ${filteredBookings.length} booking records based on active filters.`
+    });
+  };
+
+  // Clear Filters Handler
+  const clearFilters = () => {
+    setSearchQuery("");
+    setFilterStatus("all");
+    setFilterPlatform("all");
+    setStartDate("");
+    setEndDate("");
+  };
+
 
   const allPotentialSlots = useMemo(() => {
     if (!selectedBlockedDate) return [];
@@ -539,90 +650,375 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="bookings">
-          <div className="grid grid-cols-1 gap-6">
-            {bookings.length > 0 ? (
-              bookings.map((booking) => (
-                <Card key={booking.id} className="border-none shadow-xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden group">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col md:flex-row">
-                      <div className="p-8 md:w-1/4 bg-slate-50 dark:bg-slate-800 border-r border-slate-100 dark:border-slate-700 flex flex-col justify-center items-center text-center">
-                        <div className="flex items-center gap-2 mb-2">
-                           <CalendarIcon className="w-4 h-4 text-primary" />
-                           <span className="text-sm font-black text-slate-900 dark:text-white">{format(new Date(booking.date), "MMM d, yyyy")}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           <Clock className="w-4 h-4 text-primary" />
-                           <span className="text-lg font-black text-primary">{booking.time_slot}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="p-8 flex-1 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white">{booking.full_name}</h3>
-                            <Badge variant={booking.status === "confirmed" ? "default" : booking.status === "cancelled" ? "destructive" : "secondary"} className="rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-widest">
-                              {booking.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4">{booking.email}</p>
-                            <div className="flex flex-wrap gap-2 mt-3">
-                              {booking.platform && (
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
-                                  <Video className="w-3 h-3" />
-                                  <span>{booking.platform}</span>
+        <TabsContent value="bookings" className="space-y-6">
+          {/* KPI Analytics Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="border-none shadow-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-6 flex items-center justify-between group hover:shadow-lg transition-all duration-300 border-l-4 border-l-slate-400">
+              <div>
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Total Bookings</p>
+                <h3 className="text-3xl font-black text-slate-950 dark:text-white mt-1">{stats.total}</h3>
+              </div>
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                <Users className="w-6 h-6 text-slate-500" />
+              </div>
+            </Card>
+            
+            <Card className="border-none shadow-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-6 flex items-center justify-between group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
+              <div>
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Confirmed</p>
+                <h3 className="text-3xl font-black text-primary mt-1">{stats.confirmed}</h3>
+              </div>
+              <div className="p-3 bg-primary/10 rounded-xl">
+                <CheckCircle2 className="w-6 h-6 text-primary" />
+              </div>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-6 flex items-center justify-between group hover:shadow-lg transition-all duration-300 border-l-4 border-l-amber-500">
+              <div>
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Pending</p>
+                <h3 className="text-3xl font-black text-amber-500 mt-1">{stats.pending}</h3>
+              </div>
+              <div className="p-3 bg-amber-500/10 rounded-xl">
+                <Clock className="w-6 h-6 text-amber-500" />
+              </div>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-6 flex items-center justify-between group hover:shadow-lg transition-all duration-300 border-l-4 border-l-red-500">
+              <div>
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Cancelled</p>
+                <h3 className="text-3xl font-black text-red-500 mt-1">{stats.cancelled}</h3>
+              </div>
+              <div className="p-3 bg-red-500/10 rounded-xl">
+                <XCircle className="w-6 h-6 text-red-500" />
+              </div>
+            </Card>
+          </div>
+
+          {/* Search & Filter Panel */}
+          <Card className="border-none shadow-md bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                  Filters & Actions
+                </h2>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Button 
+                  onClick={downloadCSV}
+                  disabled={filteredBookings.length === 0}
+                  className="rounded-xl h-11 px-4 bg-slate-50 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs font-black uppercase tracking-wider flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Export CSV
+                </Button>
+                <Button 
+                  onClick={downloadJSON}
+                  disabled={filteredBookings.length === 0}
+                  className="rounded-xl h-11 px-4 bg-slate-50 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs font-black uppercase tracking-wider flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Export JSON
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              {/* Search */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Search client</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input 
+                    placeholder="Name, email, message..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-11 pl-9 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Status filter */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</label>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Platform Filter */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Type / Platform</label>
+                <Select value={filterPlatform} onValueChange={setFilterPlatform}>
+                  <SelectTrigger className="h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="zoom">Zoom</SelectItem>
+                    <SelectItem value="meet">Google Meet</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Start Date */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Start Date</label>
+                <Input 
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white"
+                />
+              </div>
+
+              {/* End Date */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">End Date</label>
+                <Input 
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 dark:text-white"
+                />
+              </div>
+            </div>
+
+            {(searchQuery || filterStatus !== "all" || filterPlatform !== "all" || startDate || endDate) && (
+              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 p-3 px-4 rounded-xl border border-slate-100 dark:border-slate-800/80">
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                  Showing <span className="text-primary font-black">{filteredBookings.length}</span> results out of <span className="font-bold">{bookings.length}</span> total
+                </p>
+                <Button 
+                  onClick={clearFilters}
+                  variant="ghost" 
+                  className="h-8 rounded-lg text-xs font-black uppercase tracking-wider text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                >
+                  <X className="w-3.5 h-3.5 mr-1" />
+                  Clear Filters
+                </Button>
+              </div>
+            )}
+          </Card>
+
+          {/* Bookings View: Enterprise Grid/Table on Desktop, Cards on Mobile */}
+          <div className="space-y-4">
+            {filteredBookings.length > 0 ? (
+              <>
+                {/* Desktop Enterprise Table View */}
+                <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-800">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
+                        <th className="p-6">Client</th>
+                        <th className="p-6">Appointment</th>
+                        <th className="p-6">Duration & Platform</th>
+                        <th className="p-6">Status</th>
+                        <th className="p-6">Client Message</th>
+                        <th className="p-6 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                      {filteredBookings.map((booking) => {
+                        const clientInitials = booking.full_name
+                          ? booking.full_name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase()
+                          : "C";
+                        return (
+                          <tr key={booking.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all duration-150">
+                            {/* Client Column */}
+                            <td className="p-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-sm tracking-wider">
+                                  {clientInitials}
                                 </div>
-                              )}
-                              {booking.duration && (
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                                <div>
+                                  <h4 className="text-sm font-black text-slate-900 dark:text-white">{booking.full_name}</h4>
+                                  <p className="text-xs text-slate-400 mt-0.5 font-medium">{booking.email}</p>
+                                </div>
+                              </div>
+                            </td>
+                            {/* Appointment Column */}
+                            <td className="p-6">
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2 text-xs font-black text-slate-900 dark:text-white">
+                                  <CalendarIcon className="w-3.5 h-3.5 text-primary" />
+                                  <span>{format(new Date(booking.date), "MMM d, yyyy")}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                  <span>{booking.time_slot} (AEDT)</span>
+                                </div>
+                              </div>
+                            </td>
+                            {/* Duration & Platform */}
+                            <td className="p-6">
+                              <div className="flex flex-wrap gap-1.5">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary">
                                   <Clock className="w-3 h-3" />
-                                  <span>{booking.duration} Min</span>
-                                </div>
+                                  {booking.duration} Min
+                                </span>
+                                <span className={cn(
+                                  "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider",
+                                  booking.platform?.toLowerCase().includes("zoom")
+                                    ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400"
+                                    : "bg-teal-100 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400"
+                                )}>
+                                  <Video className="w-3 h-3" />
+                                  {booking.platform}
+                                </span>
+                              </div>
+                            </td>
+                            {/* Status */}
+                            <td className="p-6">
+                              <Badge 
+                                variant={booking.status === "confirmed" ? "default" : booking.status === "cancelled" ? "destructive" : "secondary"} 
+                                className="rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-wider"
+                              >
+                                {booking.status}
+                              </Badge>
+                            </td>
+                            {/* Message / Notes */}
+                            <td className="p-6 max-w-xs">
+                              {booking.message ? (
+                                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed" title={booking.message}>
+                                  "{booking.message}"
+                                </p>
+                              ) : (
+                                <span className="text-xs text-slate-300 dark:text-slate-600 italic">No message</span>
                               )}
+                            </td>
+                            {/* Actions */}
+                            <td className="p-6 text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    <MoreVertical className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5 dark:bg-slate-900 dark:border-slate-700">
+                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary cursor-pointer">
+                                    <CheckCircle2 className="w-4 h-4 mr-2" /> Mark Confirmed
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600 cursor-pointer">
+                                    <XCircle className="w-4 h-4 mr-2" /> Mark Cancelled
+                                  </DropdownMenuItem>
+                                  <div className="h-px bg-slate-100 dark:bg-slate-800 my-1.5" />
+                                  <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300 cursor-pointer">
+                                    <Plus className="w-4 h-4 mr-2" /> Edit Details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600 cursor-pointer">
+                                    <Trash2 className="w-4 h-4 mr-2" /> Delete Booking
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Responsive Cards (Visible on smaller screens) */}
+                <div className="grid grid-cols-1 gap-4 lg:hidden">
+                  {filteredBookings.map((booking) => (
+                    <Card key={booking.id} className="border-none shadow-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+                      <CardContent className="p-6 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-sm tracking-wider">
+                              {booking.full_name ? booking.full_name[0].toUpperCase() : "C"}
                             </div>
+                            <div>
+                              <h4 className="text-sm font-black text-slate-900 dark:text-white">{booking.full_name}</h4>
+                              <p className="text-xs text-slate-400 font-medium">{booking.email}</p>
+                            </div>
+                          </div>
+                          <Badge 
+                            variant={booking.status === "confirmed" ? "default" : booking.status === "cancelled" ? "destructive" : "secondary"} 
+                            className="rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-wider"
+                          >
+                            {booking.status}
+                          </Badge>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                          <div>
+                            <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">Date</span>
+                            <span className="text-xs font-bold text-slate-850 dark:text-slate-200">
+                              {format(new Date(booking.date), "MMM d, yyyy")}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">Time</span>
+                            <span className="text-xs font-bold text-slate-850 dark:text-slate-200">
+                              {booking.time_slot}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">Duration</span>
+                            <span className="text-xs font-bold text-slate-850 dark:text-slate-200">
+                              {booking.duration} Minutes
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">Platform</span>
+                            <span className="text-xs font-bold text-slate-850 dark:text-slate-200">
+                              {booking.platform}
+                            </span>
+                          </div>
+                        </div>
+
+                        {booking.message && (
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700/80">
+                            <span className="block text-[8px] font-black uppercase tracking-wider text-slate-400 mb-1">Message</span>
+                            <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed font-medium">"{booking.message}"</p>
+                          </div>
+                        )}
+
+                        <div className="flex justify-end gap-2 pt-2">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl dark:border-slate-700">
-                                <MoreVertical className="w-4 h-4 dark:text-white" />
+                              <Button variant="outline" className="w-full h-10 rounded-xl text-xs font-black uppercase tracking-wider dark:text-white dark:border-slate-700">
+                                Actions
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 rounded-xl p-2 dark:bg-slate-900 dark:border-slate-700">
-                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-primary">
-                                <CheckCircle2 className="w-4 h-4 mr-3" /> Mark Confirmed
+                            <DropdownMenuContent align="end" className="w-full min-w-[200px] rounded-xl p-2 dark:bg-slate-900 dark:border-slate-700">
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "confirmed")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-primary">
+                                <CheckCircle2 className="w-4 h-4 mr-2" /> Mark Confirmed
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-amber-600">
-                                <XCircle className="w-4 h-4 mr-3" /> Mark Cancelled
+                              <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "cancelled")} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-amber-600">
+                                <XCircle className="w-4 h-4 mr-2" /> Mark Cancelled
                               </DropdownMenuItem>
-                              <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
-                              <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300">
-                                <Plus className="w-4 h-4 mr-3" /> Edit Details
+                              <div className="h-px bg-slate-100 dark:bg-slate-800 my-1.5" />
+                              <DropdownMenuItem onClick={() => handleEditClick(booking)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                                <Plus className="w-4 h-4 mr-2" /> Edit Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-3 font-bold text-xs uppercase tracking-widest text-red-600">
-                                <Trash2 className="w-4 h-4 mr-3" /> Delete Booking
+                              <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="rounded-lg p-2.5 font-bold text-xs uppercase tracking-widest text-red-600">
+                                <Trash2 className="w-4 h-4 mr-2" /> Delete Booking
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
-                      </div>
-                    </div>
-                    {booking.message && (
-                      <div className="px-8 pb-8">
-                        <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Message from client</p>
-                          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">"{booking.message}"</p>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
             ) : (
-              <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700">
-                <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                <h3 className="text-xl font-black text-slate-400">No bookings found</h3>
+              <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700 shadow-md">
+                <CalendarIcon className="w-12 h-12 text-slate-250 mx-auto mb-4" />
+                <h3 className="text-lg font-black text-slate-400 uppercase tracking-widest">No bookings found matching filters</h3>
+                <p className="text-xs text-slate-400 mt-1 font-medium">Try resetting your filter parameters or search query.</p>
               </div>
             )}
           </div>
