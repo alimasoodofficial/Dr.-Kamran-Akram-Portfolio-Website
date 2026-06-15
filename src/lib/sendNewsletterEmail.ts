@@ -23,9 +23,8 @@ export async function sendNewsletterEmails(
     },
   });
 
-  const from = `"${process.env.EMAIL_FROM || "Dr Muhammad Kamran"}" <${
-    process.env.EMAIL_SERVER_USER
-  }>`;
+  const from = `"${process.env.EMAIL_FROM || "Dr Muhammad Kamran"}" <${process.env.EMAIL_SERVER_USER
+    }>`;
 
   // Create a quick overview from content (strip markdown/HTML roughly, max 200 chars)
   const plainTextPreview =
@@ -55,7 +54,7 @@ export async function sendNewsletterEmails(
             <!-- Header -->
             <tr>
               <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                 <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
               </td>
             </tr>
@@ -94,10 +93,10 @@ export async function sendNewsletterEmails(
             <tr>
               <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
                 <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
-                  You are receiving this email because you subscribed to updates from Dr. Kamran Akram.
+                  You are receiving this email because you subscribed to updates from Dr. Muhammad Kamran.
                 </p>
                 <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -115,9 +114,8 @@ export async function sendNewsletterEmails(
       bcc: emails, // Use BCC to hide other subscribers' emails
       subject: newsletter.title,
       html: htmlTemplate,
-      text: `${newsletter.title}\n\n${
-        newsletter.subtitle || ""
-      }\n\n${plainTextPreview}\n\nRead more at: ${readMoreLink}`,
+      text: `${newsletter.title}\n\n${newsletter.subtitle || ""
+        }\n\n${plainTextPreview}\n\nRead more at: ${readMoreLink}`,
     });
     console.log(`Newsletter emails sent to ${emails.length} subscribers.`);
   } catch (error) {

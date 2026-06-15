@@ -130,3 +130,74 @@ export const CenterStatCard = () => (
     </div>
   </CardWrapper>
 );
+
+// --- 5. Specialization Card (Dynamic Image / Text) ---
+export const SpecializationCard = ({
+  cardType,
+  category,
+  title,
+  bgImage,
+  bgColor,
+  buttonText,
+  buttonLink,
+}: {
+  cardType: string;
+  category: string;
+  title: string;
+  bgImage?: string;
+  bgColor?: string;
+  buttonText?: string;
+  buttonLink?: string;
+}) => {
+  const overlayColor = "rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%";
+
+  if (cardType === "text") {
+    const bgClass = bgColor || "bento-card-green";
+    return (
+      <CardWrapper
+        className={`${bgClass} h-[460px] flex flex-col justify-between text-white`}
+      >
+        <div className="flex flex-col text-white">
+          <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
+            {category}
+          </span>
+          <h3 className="text-sm md:text-md font-medium leading-snug !text-white mt-4 font-body">
+            {title}
+          </h3>
+        </div>
+        
+        {buttonText && buttonLink && (
+          <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
+            <Link href={buttonLink} className="text-white w-full h-full flex items-center font-body">
+              <i className="fa-solid fa-arrow-right px-2"></i>
+              {buttonText}
+            </Link>
+          </div>
+        )}
+      </CardWrapper>
+    );
+  }
+
+  // Card type 'image'
+  const linkHref = buttonLink || "/free-resources/articles";
+  return (
+    <CardWrapper
+      className="h-[460px] bg-cover bg-center flex flex-col justify-end text-white"
+      style={{
+        backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}), url('${bgImage || "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"}')`,
+      }}
+    >
+      <Link href={linkHref} className="text-white">
+        <div className="relative z-10 text-white">
+          <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
+            {category}
+          </span>
+          <h3 className="text-sm md:text-md font-medium leading-tight !text-white font-body">
+            {title}
+          </h3>
+        </div>
+      </Link>
+    </CardWrapper>
+  );
+};
+

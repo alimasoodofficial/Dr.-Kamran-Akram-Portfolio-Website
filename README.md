@@ -1,4 +1,4 @@
-# Dr. Kamran Akram � Portfolio Website
+# Dr. Muhammad Kamran � Portfolio Website
 
 A modern, high-performance portfolio and consultancy site built with Next.js (App Router), Supabase, and Tailwind CSS.
 Includes a Gallery system with Admin CRUD, Calendly integration, and secure admin authentication.

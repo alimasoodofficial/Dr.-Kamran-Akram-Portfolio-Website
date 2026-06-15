@@ -22,7 +22,9 @@ import {
     Youtube,
     MousePointer2,
     Link2,
-    Loader2
+    Loader2,
+    Bold,
+    Italic
 } from "lucide-react";
 import Link from "next/link";
 
@@ -134,6 +136,59 @@ export default function NewsletterForm({ newsletter }: Props) {
         const newSections = [...sections];
         newSections[index] = { ...newSections[index], [field]: value };
         setSections(newSections);
+    };
+
+    const handleFormat = (sectionIndex: number, formatType: "bold" | "italic" | "link") => {
+        const textarea = document.getElementById(`textarea-${sectionIndex}`) as HTMLTextAreaElement | null;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(start, end);
+
+        let formattedText = "";
+        let selStart = start;
+        let selEnd = end;
+
+        if (formatType === "bold") {
+            if (selectedText) {
+                formattedText = `**${selectedText}**`;
+                selEnd = start + formattedText.length;
+            } else {
+                formattedText = "**bold text**";
+                selStart = start + 2;
+                selEnd = start + 11;
+            }
+        } else if (formatType === "italic") {
+            if (selectedText) {
+                formattedText = `*${selectedText}*`;
+                selEnd = start + formattedText.length;
+            } else {
+                formattedText = "*italic text*";
+                selStart = start + 1;
+                selEnd = start + 12;
+            }
+        } else if (formatType === "link") {
+            const url = prompt("Enter URL:", "https://");
+            if (url === null) return; // cancelled
+            if (selectedText) {
+                formattedText = `[${selectedText}](${url})`;
+                selEnd = start + formattedText.length;
+            } else {
+                formattedText = `[link text](${url})`;
+                selStart = start + 1;
+                selEnd = start + 10;
+            }
+        }
+
+        const newText = text.substring(0, start) + formattedText + text.substring(end);
+        updateSection(sectionIndex, "description", newText);
+
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(selStart, selEnd);
+        }, 0);
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: "hero" | { index: number }) => {
@@ -355,12 +410,43 @@ export default function NewsletterForm({ newsletter }: Props) {
                                             )}
 
                                             <div className="space-y-6">
-                                                <textarea
-                                                    placeholder={section.type === 'list' ? "Add bullet points (one per line)..." : "Share your insights here..."}
-                                                    value={section.description}
-                                                    onChange={e => updateSection(index, "description", e.target.value)}
-                                                    className="w-full border-none bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl p-6 text-slate-600 dark:text-slate-300 leading-relaxed focus:outline-none min-h-[150px] resize-none"
-                                                />
+                                                <div className="border border-slate-200/60 dark:border-slate-800 rounded-2xl overflow-hidden bg-slate-50/50 dark:bg-slate-800/50">
+                                                     {/* Formatting Toolbar */}
+                                                     <div className="flex items-center gap-1 bg-slate-100/60 dark:bg-slate-800/80 px-4 py-2 border-b border-slate-200/50 dark:border-slate-700/50">
+                                                         <button
+                                                             type="button"
+                                                             onClick={() => handleFormat(index, "bold")}
+                                                             className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors flex items-center justify-center"
+                                                             title="Bold"
+                                                         >
+                                                             <Bold className="h-3.5 w-3.5" />
+                                                         </button>
+                                                         <button
+                                                             type="button"
+                                                             onClick={() => handleFormat(index, "italic")}
+                                                             className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors flex items-center justify-center"
+                                                             title="Italic"
+                                                         >
+                                                             <Italic className="h-3.5 w-3.5" />
+                                                         </button>
+                                                         <button
+                                                             type="button"
+                                                             onClick={() => handleFormat(index, "link")}
+                                                             className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors flex items-center justify-center gap-1.5 px-2.5 text-xs font-semibold"
+                                                             title="Insert Link"
+                                                         >
+                                                             <Link2 className="h-3.5 w-3.5" /> Link
+                                                         </button>
+                                                     </div>
+
+                                                     <textarea
+                                                         id={`textarea-${index}`}
+                                                         placeholder={section.type === 'list' ? "Add bullet points (one per line)..." : "Share your insights here..."}
+                                                         value={section.description}
+                                                         onChange={e => updateSection(index, "description", e.target.value)}
+                                                         className="w-full border-none bg-transparent p-6 text-slate-600 dark:text-slate-300 leading-relaxed focus:outline-none min-h-[150px] resize-none"
+                                                     />
+                                                 </div>
 
                                                 {/* Buttons UI */}
                                                 <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">

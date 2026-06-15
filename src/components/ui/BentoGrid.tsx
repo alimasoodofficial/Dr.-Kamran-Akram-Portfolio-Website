@@ -1,6 +1,41 @@
-import { InfoCard, StripCard, ImageCard, CenterStatCard } from "./HeroCard";
+import { InfoCard, StripCard, ImageCard, CenterStatCard, SpecializationCard } from "./HeroCard";
+import { getSupabaseService } from "@/lib/supabaseService";
 
-export default function BentoGrid() {
+export default async function BentoGrid() {
+  // Default values to display if database check fails or table doesn't exist yet
+  let specializationData = {
+    cardType: "image",
+    category: "Specialization",
+    title: "Building Meaningful Ideas Across Science, Agriculture & Innovation",
+    bgImage: "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1",
+    bgColor: "bento-card-green",
+    buttonText: "",
+    buttonLink: "/free-resources/articles",
+  };
+
+  try {
+    const supabase = getSupabaseService();
+    const { data, error } = await supabase
+      .from("hero_settings")
+      .select("*")
+      .eq("id", "specialization")
+      .maybeSingle();
+
+    if (!error && data) {
+      specializationData = {
+        cardType: data.card_type || "image",
+        category: data.category || "Specialization",
+        title: data.title || "",
+        bgImage: data.image_url || "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1",
+        bgColor: data.bg_color || "bento-card-green",
+        buttonText: data.button_text || "",
+        buttonLink: data.button_link || "",
+      };
+    }
+  } catch (err) {
+    console.error("Failed to fetch dynamic hero specialization card settings:", err);
+  }
+
   return (
     <div className="w-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start animate-fadeInUp">
       {/* --- Column 1 --- */}
@@ -23,11 +58,14 @@ export default function BentoGrid() {
 
       {/* --- Column 2 --- */}
       <div className="flex flex-col gap-6 h-full">
-        <ImageCard
-          category="Specialization"
-          title="Building Meaningful Ideas Across Science, Agriculture & Innovation"
-          bgImage="https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"
-          overlayColor="rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%"
+        <SpecializationCard
+          cardType={specializationData.cardType}
+          category={specializationData.category}
+          title={specializationData.title}
+          bgImage={specializationData.bgImage}
+          bgColor={specializationData.bgColor}
+          buttonText={specializationData.buttonText}
+          buttonLink={specializationData.buttonLink}
         />
       </div>
 

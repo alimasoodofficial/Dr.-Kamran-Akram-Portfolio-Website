@@ -5,7 +5,7 @@ import { sendEbookPurchaseConfirmation, sendEbookAdminNotification } from "@/lib
 import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2022-11-15" as any,
+  apiVersion: "2023-10-16" as any,
 });
 
 // Disable body parsing so we can read the raw body for signature verification

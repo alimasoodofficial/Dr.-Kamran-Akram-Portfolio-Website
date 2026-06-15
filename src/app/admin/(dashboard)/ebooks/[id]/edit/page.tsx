@@ -15,7 +15,7 @@ interface PageProps {
 export default function EditEbook({ params }: PageProps) {
   const { id } = use(params);
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("Dr. Kamran Akram");
+  const [author, setAuthor] = useState("Dr. Muhammad Kamran");
   const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [pdfStoragePath, setPdfStoragePath] = useState<string | null>(null);
@@ -24,7 +24,7 @@ export default function EditEbook({ params }: PageProps) {
   const [discountExpiresAt, setDiscountExpiresAt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isDownloadable, setIsDownloadable] = useState(false);
-  
+
   // Cover image states
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export default function EditEbook({ params }: PageProps) {
       if (error) throw error;
       if (data) {
         setTitle(data.title);
-        setAuthor(data.author || "Dr. Kamran Akram");
+        setAuthor(data.author || "Dr. Muhammad Kamran");
         setDescription(data.description || "");
         setFileUrl(data.file_url || "");
         setPdfStoragePath(data.pdf_storage_path || null);
@@ -71,7 +71,7 @@ export default function EditEbook({ params }: PageProps) {
         setDiscountPrice(data.discount_price ? String(data.discount_price) : "");
         setIsDownloadable(data.is_downloadable === true);
 
-        
+
         // If there's an existing file url or pdf_storage_path, extract the filename for the display
         if (data.pdf_storage_path) {
           setPdfFileName(data.pdf_storage_path);
@@ -224,16 +224,16 @@ export default function EditEbook({ params }: PageProps) {
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-8">
-            
+
             {/* Left Form Column */}
             <div className="space-y-6">
-              
+
               {/* 📁 PDF EBOOK UPLOAD ZONE */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">1. Upload Ebook PDF File</label>
                 <div className="border-2 border-dashed border-blue-200 bg-blue-50/5 hover:bg-blue-50/20 rounded-xl p-6 text-center transition-colors relative group">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="application/pdf"
                     onChange={handlePdfChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -291,7 +291,7 @@ export default function EditEbook({ params }: PageProps) {
                   onChange={(e) => setAuthor(e.target.value)}
                   className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
                   required
-                  placeholder="Dr. Kamran Akram"
+                  placeholder="Dr. Muhammad Kamran"
                 />
               </div>
 

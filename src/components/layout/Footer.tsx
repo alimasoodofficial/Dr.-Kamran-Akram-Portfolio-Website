@@ -155,6 +155,16 @@ export default function Footer() {
           © {new Date().getFullYear()} Dr Muhammad Kamran | Developed by{" "}
           <span className="font-bold !text-white">DATA EXPERTS 360</span>
         </div>
+        {/* Right: Policy Links */}
+        <div className="flex items-center gap-4 text-sm font-medium">
+          <Link href="/privacy" className="hover:text-primary transition-colors">
+            Privacy Policy
+          </Link>
+          <span className="text-white/20">|</span>
+          <Link href="/terms" className="hover:text-primary transition-colors">
+            Terms & Conditions
+          </Link>
+        </div>
       </div>
     </footer>
   );

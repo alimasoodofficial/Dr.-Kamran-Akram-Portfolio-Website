@@ -354,7 +354,7 @@ export async function confirmEbookPurchase(sessionId: string, origin: string) {
     // 1. Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status !== "paid") {
+    if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
       return { success: false, error: "Payment has not been completed." };
     }
 
@@ -395,7 +395,7 @@ export async function confirmEbookPurchase(sessionId: string, origin: string) {
         success: true,
         alreadyCreated: true,
         purchaseDetails: {
-          receiptNo: (session.payment_intent as string) || "",
+          receiptNo: (session.payment_intent as string) || session.id || "",
           amountPaid: (session.amount_total ? (session.amount_total / 100).toFixed(2) : "0.00"),
           email: customerEmail,
           ebook: {
@@ -506,7 +506,7 @@ export async function confirmEbookPurchase(sessionId: string, origin: string) {
     return {
       success: true,
       purchaseDetails: {
-        receiptNo: (session.payment_intent as string) || "",
+        receiptNo: (session.payment_intent as string) || session.id || "",
         amountPaid: pricePaid.toFixed(2),
         email: customerEmail,
         ebook: {

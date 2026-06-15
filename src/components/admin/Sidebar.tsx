@@ -13,6 +13,7 @@ import {
   Globe,
   Calendar,
   CreditCard,
+  Sparkles,
 } from "lucide-react";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,7 @@ import { motion } from "framer-motion";
 
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "Hero Settings", href: "/admin/hero", icon: Sparkles },
   { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
   { label: "Articles", href: "/admin/articles", icon: FileText },
   { label: "Ebooks", href: "/admin/ebooks", icon: BookOpen },

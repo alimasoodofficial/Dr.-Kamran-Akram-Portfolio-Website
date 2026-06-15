@@ -2,7 +2,7 @@ import Banner from "@/components/sections/Banner";
 import LibraryClient from "./LibraryClient";
 
 export const metadata = {
-  title: "My Library - Dr. Kamran Akram",
+  title: "My Library - Dr. Muhammad Kamran",
   description: "Verify your email to access your library of purchased eBooks and publications.",
 };
 

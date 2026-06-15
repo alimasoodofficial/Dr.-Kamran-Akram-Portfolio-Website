@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { slugify } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2022-11-15" as any, // standard version overrides
+  apiVersion: "2023-10-16" as any, // standard version overrides
 });
 
 export async function POST(req: Request) {
@@ -60,34 +60,12 @@ export async function POST(req: Request) {
 
     const priceAmount = Math.round(targetPrice * 100);
 
-    // If final price is 0, bypass Stripe and redirect to success page directly
-    if (priceAmount === 0) {
-      const emailHex = Buffer.from(email).toString("hex");
-      const freeSessionId = `free_${ebook.id}_${emailHex}_${Date.now()}`;
-      
-      const host = req.headers.get("host") || "localhost:3000";
-      const protocol = host.startsWith("localhost") ? "http" : "https";
-      const origin = `${protocol}://${host}`;
-      
-      return NextResponse.json({ 
-        sessionId: freeSessionId, 
-        url: `${origin}/ebooks/checkout-success?session_id=${freeSessionId}` 
-      });
-    }
-
-    // Verify charge threshold
-    if (priceAmount > 0 && priceAmount < 50) {
-      return NextResponse.json({ error: "Stripe requires a minimum charge of $0.50 USD." }, { status: 400 });
-    }
-
     // Get origin for redirection
     const host = req.headers.get("host") || "localhost:3000";
     const protocol = host.startsWith("localhost") ? "http" : "https";
     const origin = `${protocol}://${host}`;
 
-    // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+    const sessionConfig: any = {
       customer_email: email,
       line_items: [
         {
@@ -112,7 +90,14 @@ export async function POST(req: Request) {
       },
       success_url: `${origin}/ebooks/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/ebooks/${slugify(ebook.title)}`,
-    });
+    };
+
+    if (priceAmount > 0) {
+      sessionConfig.payment_method_types = ["card"];
+    }
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (err: any) {

@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import GradientText from "@/components/ui/GradientText";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -119,10 +118,8 @@ export default function AdminDashboard() {
             <Activity className="w-4 h-4" />
             System Live
           </motion.div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
-            <GradientText colors={["#2563EB", "#7C3AED"]} animationSpeed={4}>
-              Analytics Dashboard
-            </GradientText>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight !bg-linear-to-r from-blue-600 to-blue-800 !bg-clip-text !text-transparent">
+            Analytics Dashboard
           </h1>
           <p className="text-slate-500 mt-3 text-lg">
             Welcome back, Dr. Kamran. Monitoring your digital ecosystem.
@@ -136,6 +133,7 @@ export default function AdminDashboard() {
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
           </div>
+          
           <Link 
             href="/"
             className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-blue-600"

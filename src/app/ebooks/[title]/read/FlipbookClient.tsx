@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 // @ts-ignore
 import HTMLFlipBook from "react-pageflip";
 import { slugify } from "@/lib/utils";
-import { 
-  ArrowLeft, 
-  ChevronLeft, 
-  ChevronRight, 
-  BookOpen, 
-  Maximize2, 
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  BookOpen,
+  Maximize2,
   RotateCcw,
   Volume2,
   VolumeX,
@@ -64,6 +64,17 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   const renderedPagesRef = useRef<{ [key: number]: boolean }>({});
   const lastRenderedZoomRef = useRef<number>(zoomLevel);
   const activeRenderTasksRef = useRef<{ [key: string]: any }>({});
+
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      scale: zoomLevel,
+      x: zoomLevel === 1 ? 0 : undefined,
+      y: zoomLevel === 1 ? 0 : undefined,
+      transition: { type: "spring", stiffness: 300, damping: 30 }
+    });
+  }, [zoomLevel, controls]);
 
   // 1. Detect screen size (Responsive layout)
   useEffect(() => {
@@ -130,7 +141,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
     if (!isRefreshing) setTokenLoading(true);
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      
+
       // Look for stripe session cache from sessionStorage
       let stripeSessionId = null;
       try {
@@ -154,7 +165,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       let libraryToken = null;
       try {
         libraryToken = sessionStorage.getItem("kamran_library_token");
-      } catch (e) {}
+      } catch (e) { }
 
       const res = await fetch("/api/ebooks/read-token", {
         method: "POST",
@@ -263,7 +274,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   const renderPageToCanvas = async (pageNum: number, canvas: HTMLCanvasElement) => {
     if (!pdfDoc) return;
     const key = `page-${pageNum}`;
-    
+
     // Cancel any active rendering on this canvas key
     if (activeRenderTasksRef.current[key]) {
       activeRenderTasksRef.current[key].cancel();
@@ -271,28 +282,28 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
     try {
       const page = await pdfDoc.getPage(pageNum);
-      
+
       // Determine viewport scale based on layout and zoom
       const baseScale = isMobile ? 1.0 : 1.4;
       const scale = baseScale * zoomLevel;
       const viewport = page.getViewport({ scale });
-      
+
       canvas.height = viewport.height;
       canvas.width = viewport.width;
-      
+
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       const renderContext = {
         canvasContext: ctx,
         viewport: viewport
       };
-      
+
       const renderTask = page.render(renderContext);
       activeRenderTasksRef.current[key] = renderTask;
-      
+
       await renderTask.promise;
       delete activeRenderTasksRef.current[key];
     } catch (err: any) {
@@ -306,10 +317,10 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
   const renderPage = async (pageNum: number, force = false) => {
     if (!pdfDoc || pageNum < 1 || pageNum > numPages) return;
-    
+
     // Avoid double rendering
     if (renderedPagesRef.current[pageNum] && !force) return;
-    
+
     renderedPagesRef.current[pageNum] = true;
 
     // Wait for the canvas to be in the DOM
@@ -365,7 +376,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
     const activePageNum = currentPage + 1;
     const forceRerender = zoomLevel !== lastRenderedZoomRef.current;
-    
+
     if (forceRerender) {
       // Reset rendered tracker if zoom changed, so pages will rerender at new scale
       renderedPagesRef.current = {};
@@ -388,12 +399,12 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
-      
+
       const duration = 0.35;
       const bufferSize = ctx.sampleRate * duration;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
-      
+
       // White noise generation
       for (let i = 0; i < bufferSize; i++) {
         data[i] = Math.random() * 2 - 1;
@@ -518,7 +529,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-full w-fit mx-auto">
             <Lock className="w-10 h-10" />
           </div>
-          
+
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight font-heading">Secure Reader Access</h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -539,8 +550,8 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 flex flex-col gap-2">
-            <Link 
-              href="/ebooks" 
+            <Link
+              href="/ebooks"
               className="text-xs text-slate-400 hover:text-emerald-500 font-bold transition-colors inline-flex items-center justify-center gap-1 group"
             >
               <span>Return to Publications Store</span>
@@ -554,10 +565,10 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   // Render Main Flipbook Viewer (Authorized)
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] gap-6 p-4">
-      
+
       {/* 🧭 Control Panel Top */}
       <div className="w-full max-w-5xl flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
-        <Link 
+        <Link
           href={`/ebooks/${slugify(ebook.title)}`}
           className="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-500 text-sm font-bold transition-colors group"
         >
@@ -573,7 +584,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
         {/* Toolbar Controls */}
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors cursor-pointer"
             title={soundEnabled ? "Mute Flip Sound" : "Enable Flip Sound"}
@@ -581,15 +592,15 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
 
-          <button 
-            onClick={() => setZoomLevel(prev => prev === 1 ? 1.15 : prev === 1.15 ? 1.3 : 1)}
+          <button
+            onClick={() => setZoomLevel(prev => prev === 1 ? 1.5 : prev === 1.5 ? 2.0 : 1)}
             className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors text-xs font-bold cursor-pointer"
             title="Zoom Page"
           >
-            {zoomLevel === 1 ? "100%" : zoomLevel === 1.15 ? "115%" : "130%"}
+            {zoomLevel === 1 ? "100%" : zoomLevel === 1.5 ? "150%" : "200%"}
           </button>
 
-          <button 
+          <button
             onClick={toggleFullScreen}
             className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors cursor-pointer"
             title="Toggle Fullscreen"
@@ -600,11 +611,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       </div>
 
       {/* 📖 The Flipbook Core viewport */}
-      <div 
+      <div
         ref={flipbookRef}
         className={`w-full max-w-[1280px] flex flex-col items-center justify-center relative overflow-hidden select-none bg-[#0c1520] rounded-3xl py-6 px-0 md:p-8 md:px-20 transition-all duration-300 border border-slate-900 shadow-2xl ${fullScreen ? "h-screen rounded-none p-0 bg-[#060b11]" : "min-h-[560px]"}`}
       >
-        
+
         {/* Navigation Overlays */}
         <button
           onClick={handlePrev}
@@ -632,12 +643,21 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
         {/* 📚 Book Body Wrapper */}
         {pdfDoc && numPages > 0 && (
-          <div 
-            className="w-full flex justify-center items-center relative transition-transform duration-300"
-            style={{ transform: `scale(${zoomLevel})` }}
+          <motion.div
+            className={`w-full flex justify-center items-center relative ${zoomLevel > 1 ? "cursor-grab active:cursor-grabbing select-none touch-none" : ""}`}
+            animate={controls}
+            drag={zoomLevel > 1}
+            dragConstraints={{
+              left: -800 * (zoomLevel - 1),
+              right: 800 * (zoomLevel - 1),
+              top: -1000 * (zoomLevel - 1),
+              bottom: 1000 * (zoomLevel - 1),
+            }}
+            dragElastic={0.15}
+            dragMomentum={true}
           >
-            <BookFlip 
-              width={isMobile ? screenWidth : 400} 
+            <BookFlip
+              width={isMobile ? screenWidth : 400}
               height={isMobile ? Math.round(screenWidth / pageAspectRatio) : Math.round(400 / pageAspectRatio)}
               size="stretch"
               minWidth={320}
@@ -651,6 +671,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
               ref={bookRef}
               onFlip={onFlip}
               className="shadow-2xl mx-auto"
+              useMouseEvents={zoomLevel === 1}
             >
               {Array.from({ length: numPages }, (_, index) => {
                 const pageNum = index + 1;
@@ -659,8 +680,8 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                 const isLeftPage = pageNum % 2 === 0;
 
                 return (
-                  <div 
-                    key={pageNum} 
+                  <div
+                    key={pageNum}
                     className="page overflow-hidden relative bg-white dark:bg-slate-950 w-full h-full"
                     data-density={isCover || isBackCover ? "hard" : "soft"}
                   >
@@ -668,9 +689,9 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                       /* Cover Page */
                       <div className="w-full h-full relative overflow-hidden bg-slate-900 shadow-2xl border-y border-r border-slate-950">
                         {ebook.cover_url ? (
-                          <img 
-                            src={ebook.cover_url} 
-                            alt={ebook.title} 
+                          <img
+                            src={ebook.cover_url}
+                            alt={ebook.title}
                             className="w-full h-full object-cover pointer-events-none"
                           />
                         ) : (
@@ -688,7 +709,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                         {/* Spine Crease / Shading (Since it's back cover, spine is on the left edge if it's right-hand page) */}
                         <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-black/30 via-black/10 to-transparent pointer-events-none z-10" />
                         <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-white/10 z-10 pointer-events-none" />
-                        
+
                         {/* Top Accent */}
                         <div className="flex justify-between items-center opacity-60 text-[9px] font-bold uppercase tracking-widest border-b border-white/10 pb-4">
                           <span>Kamran Publications</span>
@@ -700,7 +721,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                           <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto border border-white/20 shadow-lg">
                             <BookOpen className="w-8 h-8 text-emerald-100" />
                           </div>
-                          
+
                           <div className="space-y-2">
                             <h3 className="font-extrabold !text-white text-xl tracking-tight leading-tight">End of Book</h3>
                             <p className="text-emerald-100/90 text-sm font-medium">Thanks for reading!</p>
@@ -720,18 +741,17 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                             This secure publication is protected under digital copyright laws. All rights reserved.
                           </p>
                           <div className="text-[8px] text-emerald-200 font-extrabold uppercase tracking-widest font-mono">
-                            © {new Date().getFullYear()} Dr. Kamran Akram
+                            © {new Date().getFullYear()} Dr. Muhammad Kamran
                           </div>
                         </div>
                       </div>
                     ) : (
                       /* Standard Inner Page */
-                      <div 
-                        className={`w-full h-full relative overflow-hidden shadow-inner ${
-                          isLeftPage 
-                            ? "bg-gradient-to-r from-[#fafafa] to-[#f5f5f5] dark:from-slate-900 dark:to-slate-950" 
+                      <div
+                        className={`w-full h-full relative overflow-hidden shadow-inner ${isLeftPage
+                            ? "bg-gradient-to-r from-[#fafafa] to-[#f5f5f5] dark:from-slate-900 dark:to-slate-950"
                             : "bg-gradient-to-l from-[#fafafa] to-[#f5f5f5] dark:from-slate-900 dark:to-slate-950"
-                        }`}
+                          }`}
                       >
                         {/* Page stack effect */}
                         {isLeftPage ? (
@@ -761,7 +781,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                 );
               })}
             </BookFlip>
-          </div>
+          </motion.div>
         )}
 
         {/* Mobile-only navigation buttons below the book */}
@@ -797,7 +817,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         {/* Progress Bar */}
         <div className="flex-1 max-w-xs mx-auto flex flex-col items-center gap-1.5">
           <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div 
+            <div
               className="bg-emerald-500 h-full rounded-full transition-all duration-300"
               style={{ width: `${(currentPage / maxSpreadIndex) * 100}%` }}
             />

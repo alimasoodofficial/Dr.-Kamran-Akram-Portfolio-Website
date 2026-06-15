@@ -37,7 +37,7 @@ export default async function NewsletterPage() {
     <div className="min-h-screen pb-24 transition-colors duration-300">
       <Banner
         title="Get ideas delivered straight to your inbox"
-        description="Join the growing community of readers. Stay updated with the latest insights, exclusive content, deep-dives, and tech trends from Dr. Kamran Akram."
+        description="Join the growing community of readers. Stay updated with the latest insights, exclusive content, deep-dives, and tech trends from Dr. Muhammad Kamran."
         gradientColors={["#ffffff", "#7ebcf6", "#dcbaff"]}
         showImage={false}
         className="w-auto"

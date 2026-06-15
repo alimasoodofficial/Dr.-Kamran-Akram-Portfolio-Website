@@ -10,6 +10,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://imkamran.com';
+
 export async function sendMeetingInvitation({
   to,
   name,
@@ -39,7 +41,7 @@ export async function sendMeetingInvitation({
               <!-- Header -->
               <tr>
                 <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                   <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
                 </td>
               </tr>
@@ -98,8 +100,13 @@ export async function sendMeetingInvitation({
               <!-- Footer -->
               <tr>
                 <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                    <span style="color: #cbd5e1;">|</span>
+                    <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                  </p>
                   <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -144,7 +151,7 @@ export async function sendEbookPurchaseConfirmation({
               <!-- Header -->
               <tr>
                 <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                   <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
                 </td>
               </tr>
@@ -198,8 +205,13 @@ export async function sendEbookPurchaseConfirmation({
                   <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
                     If you have any questions or experience access issues, please reach out to <a href="mailto:${process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com'}" style="color: #10b981; text-decoration: none; font-weight: 600;">support</a>.
                   </p>
+                  <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                    <span style="color: #cbd5e1;">|</span>
+                    <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                  </p>
                   <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -247,7 +259,7 @@ export async function sendEbookAdminNotification({
               <tr>
                 <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
                   <span style="font-size: 24px; font-weight: 800; color: #3b82f6; letter-spacing: -0.5px; display: block;">Sales Notification</span>
-                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Store</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Muhammad Kamran Store</span>
                 </td>
               </tr>
               
@@ -310,7 +322,7 @@ export async function sendEbookAdminNotification({
               <tr>
                 <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
                   <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -349,7 +361,7 @@ export async function sendEbookLibraryVerificationCode({
               <!-- Header -->
               <tr>
                 <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                   <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
                 </td>
               </tr>
@@ -375,8 +387,13 @@ export async function sendEbookLibraryVerificationCode({
               <!-- Footer -->
               <tr>
                 <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                    <span style="color: #cbd5e1;">|</span>
+                    <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                  </p>
                   <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -452,7 +469,7 @@ export async function sendBookingChangeNotification({
               <!-- Header -->
               <tr>
                 <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                  <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                   <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
                 </td>
               </tr>
@@ -512,17 +529,44 @@ export async function sendBookingChangeNotification({
                   </table>
                   ` : ''}
 
+                  ${type === "cancelled" ? `
+                  <!-- Rebook Box -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px; text-align: center;">
+                    <tr>
+                      <td style="padding: 24px;">
+                        <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 16px; font-weight: 800;">Would you like to rebook?</h3>
+                        <p style="margin: 0 0 16px 0; color: #475569; font-size: 14px; line-height: 1.5;">You can easily select a new date and time that works best for you by scheduling another session.</p>
+                        <!-- CTA Button -->
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 10px auto;">
+                          <tr>
+                            <td align="center" bgcolor="#10b981" style="border-radius: 10px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);">
+                              <a href="${baseUrl}/consulting" target="_blank" style="font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 10px; display: inline-block; background-color: #10b981; border: 1px solid #10b981;">
+                                📅 Schedule New Consultation
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  ` : `
                   <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6; text-align: center;">
                     If you need to reschedule or have any questions, please reply directly to this email.
                   </p>
+                  `}
                 </td>
               </tr>
 
               <!-- Footer -->
               <tr>
                 <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                    <span style="color: #cbd5e1;">|</span>
+                    <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                  </p>
                   <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                    © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                   </p>
                 </td>
               </tr>

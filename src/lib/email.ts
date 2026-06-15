@@ -11,6 +11,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://imkamran.com';
+
 export interface BookingEmailData {
   userName: string;
   userEmail: string;
@@ -41,7 +43,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
             <!-- Header -->
             <tr>
               <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                 <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
               </td>
             </tr>
@@ -64,14 +66,14 @@ export async function sendUserConfirmation(data: BookingEmailData) {
                           <td style="padding-bottom: 8px; font-size: 14px; color: #047857; font-weight: 600; width: 110px; vertical-align: top;">Date & Time:</td>
                           <td style="padding-bottom: 8px; font-size: 14px; color: #064e3b; font-weight: 700; vertical-align: top;">
                             ${new Date(startTime).toLocaleString('en-AU', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                         <tr>
@@ -122,8 +124,13 @@ export async function sendUserConfirmation(data: BookingEmailData) {
                 <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
                   If you have any questions, please contact us at <a href="mailto:${process.env.EMAIL_SERVER_USER}" style="color: #10b981; text-decoration: none; font-weight: 600;">${process.env.EMAIL_SERVER_USER}</a>.
                 </p>
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                  <span style="color: #cbd5e1;">|</span>
+                  <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                </p>
                 <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -158,7 +165,7 @@ export async function sendAdminNotification(data: BookingEmailData) {
             <tr>
               <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
                 <span style="font-size: 24px; font-weight: 800; color: #f59e0b; letter-spacing: -0.5px; display: block;">Booking Alert</span>
-                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Admin</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Muhammad Kamran Admin</span>
               </td>
             </tr>
             
@@ -199,14 +206,14 @@ export async function sendAdminNotification(data: BookingEmailData) {
                           <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Date & Time:</td>
                           <td style="padding-bottom: 8px; font-size: 14px; color: #0f172a; font-weight: 700; vertical-align: top;">
                             ${new Date(startTime).toLocaleString('en-AU', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                         <tr>
@@ -225,13 +232,13 @@ export async function sendAdminNotification(data: BookingEmailData) {
                           <td style="font-size: 14px; color: #64748b; vertical-align: top;">Booked At:</td>
                           <td style="font-size: 14px; color: #64748b; vertical-align: top;">
                             ${new Date().toLocaleString('en-AU', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                       </table>
@@ -286,7 +293,7 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
             <!-- Header -->
             <tr>
               <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
-                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Kamran Akram</span>
+                <span style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; display: block;">Dr. Muhammad Kamran</span>
                 <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Knowledge Center & Publications</span>
               </td>
             </tr>
@@ -309,28 +316,28 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
                           <td style="padding-bottom: 12px; font-size: 14px; color: #047857; font-weight: 600; width: 120px; vertical-align: top;">Previous Time:</td>
                           <td style="padding-bottom: 12px; font-size: 14px; color: #ef4444; text-decoration: line-through; vertical-align: top;">
                             ${new Date(oldStartTime).toLocaleString('en-AU', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                         <tr>
                           <td style="padding-bottom: 12px; font-size: 14px; color: #047857; font-weight: 600; vertical-align: top;">New Time:</td>
                           <td style="padding-bottom: 12px; font-size: 15px; color: #10b981; font-weight: 700; vertical-align: top;">
                             ✅ ${new Date(newStartTime).toLocaleString('en-AU', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                         <tr>
@@ -368,8 +375,13 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
                 <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
                   If you have any questions, please contact us at <a href="mailto:${process.env.EMAIL_SERVER_USER}" style="color: #10b981; text-decoration: none; font-weight: 600;">${process.env.EMAIL_SERVER_USER}</a>.
                 </p>
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  <a href="${baseUrl}/privacy" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Privacy Policy</a>
+                  <span style="color: #cbd5e1;">|</span>
+                  <a href="${baseUrl}/terms" style="color: #10b981; text-decoration: none; font-weight: 600; margin: 0 8px;">Terms & Conditions</a>
+                </p>
                 <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
-                  © ${new Date().getFullYear()} Dr. Kamran Akram. All rights reserved.
+                  © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -382,7 +394,7 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
   const mailOptions = {
     from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
     to: userEmail,
-    subject: '📅 Appointment Rescheduled - Dr. Kamran Akram',
+    subject: '📅 Appointment Rescheduled - Dr. Muhammad Kamran',
     html: htmlContent,
   };
 
@@ -404,7 +416,7 @@ export async function sendAdminRescheduleNotification(data: RescheduleEmailData)
             <tr>
               <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
                 <span style="font-size: 24px; font-weight: 800; color: #8b5cf6; letter-spacing: -0.5px; display: block;">Booking Rescheduled</span>
-                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Kamran Akram Admin</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Muhammad Kamran Admin</span>
               </td>
             </tr>
             
@@ -435,27 +447,27 @@ export async function sendAdminRescheduleNotification(data: RescheduleEmailData)
                           <td style="padding-bottom: 8px; font-size: 14px; color: #64748b; vertical-align: top;">Previous Time:</td>
                           <td style="padding-bottom: 8px; font-size: 14px; color: #ef4444; text-decoration: line-through; vertical-align: top;">
                             ${new Date(oldStartTime).toLocaleString('en-AU', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })}
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })}
                           </td>
                         </tr>
                         <tr>
                           <td style="font-size: 14px; color: #64748b; vertical-align: top;">New Time:</td>
                           <td style="font-size: 14px; color: #10b981; font-weight: bold; vertical-align: top;">
                             ${new Date(newStartTime).toLocaleString('en-AU', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              timeZone: 'Australia/Sydney',
-                            })} (AEST)
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Australia/Sydney',
+  })} (AEST)
                           </td>
                         </tr>
                       </table>

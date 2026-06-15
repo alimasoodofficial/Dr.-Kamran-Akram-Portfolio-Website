@@ -4,17 +4,17 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  Download, 
-  BookOpen, 
-  Calendar, 
-  FileText, 
-  CheckCircle, 
-  Mail, 
-  Star, 
-  Share2, 
-  Sparkles, 
+import {
+  ArrowLeft,
+  Download,
+  BookOpen,
+  Calendar,
+  FileText,
+  CheckCircle,
+  Mail,
+  Star,
+  Share2,
+  Sparkles,
   Globe,
   Award,
   Bookmark,
@@ -58,7 +58,7 @@ const generateBookMeta = (id: string, title: string) => {
   const reviews = 12 + (Math.abs(hash) % 45);
   const pageCount = 60 + (Math.abs(hash) % 150);
   const size = (1.5 + (Math.abs(hash) % 8) * 0.4).toFixed(1); // 1.5MB to 4.7MB
-  
+
   const lowerTitle = title.toLowerCase();
   let category = "Guide";
   if (lowerTitle.includes("micro") || lowerTitle.includes("bio") || lowerTitle.includes("science")) {
@@ -70,7 +70,7 @@ const generateBookMeta = (id: string, title: string) => {
   } else if (lowerTitle.includes("research") || lowerTitle.includes("acad") || lowerTitle.includes("publish")) {
     category = "Academic";
   }
-  
+
   return { rating, reviews, pageCount, size, category };
 };
 
@@ -96,16 +96,16 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
 
   const meta = generateBookMeta(ebook.id, ebook.title);
-  
+
   const basePrice = ebook.price !== undefined && ebook.price !== null ? Number(ebook.price) : 9.99;
-  
+
   const now = new Date();
-  const hasActiveDiscount = 
-    ebook.discount_price !== undefined && 
-    ebook.discount_price !== null && 
-    Number(ebook.discount_price) > 0 && 
+  const hasActiveDiscount =
+    ebook.discount_price !== undefined &&
+    ebook.discount_price !== null &&
+    Number(ebook.discount_price) > 0 &&
     (!ebook.discount_expires_at || new Date(ebook.discount_expires_at) > now);
-    
+
   let activePrice = hasActiveDiscount ? Number(ebook.discount_price) : basePrice;
 
   if (appliedPromo) {
@@ -119,22 +119,22 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
   const handleApplyPromo = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-    
+
     setValidatingPromo(true);
     setPromoError("");
-    
+
     try {
       const res = await fetch("/api/promo-codes/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: promoCode }),
       });
-      
+
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || "Invalid promo code");
       }
-      
+
       setAppliedPromo({
         code: data.code,
         percent: data.discountPercent,
@@ -211,7 +211,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
       if (!res.ok) throw new Error(data.error || "Failed to construct session");
 
       toast.success("Redirecting to secure payment portal...", { id: toastId });
-      
+
       // Redirect to Stripe hosted checkout page
       if (data.url) {
         window.location.href = data.url;
@@ -260,16 +260,16 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
     }
   };
 
-  const formattedDate = ebook.created_at 
+  const formattedDate = ebook.created_at
     ? new Date(ebook.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long" })
     : "Recently Published";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
-      
+
       {/* 🔙 Navigation & Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <Link 
+        <Link
           href="/ebooks"
           className="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-500 font-bold transition-colors group"
         >
@@ -278,7 +278,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
         </Link>
 
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={handleShare}
             className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
             title="Share Ebook"
@@ -290,7 +290,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
       {/* 📦 Product Information Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        
+
         {/* Left Side: 3D Book & Info Shelf */}
         <div className="lg:col-span-4 flex flex-col items-center gap-8">
           <div className="relative group p-4 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 shadow-inner flex justify-center items-center w-full max-w-[340px] md:max-w-none aspect-[4/5]">
@@ -315,15 +315,15 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
           {/* Author Badge */}
           <div className="w-full bg-white dark:bg-slate-900/60 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-emerald-500/30">
-              <Image 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" 
-                alt="Dr. Kamran Akram"
+              <Image
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop"
+                alt="Dr. Muhammad Kamran"
                 fill
                 className="object-cover"
               />
             </div>
             <div>
-              <h4 className="font-bold text-slate-800 dark:text-white">Dr. Kamran Akram</h4>
+              <h4 className="font-bold text-slate-800 dark:text-white">Dr. Muhammad Kamran</h4>
               <p className="text-xs text-slate-400">Author & Chief Editor</p>
             </div>
           </div>
@@ -332,14 +332,13 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
         {/* Right Side: E-Commerce Detail Board */}
         <div className="lg:col-span-8 space-y-8">
           <div className="space-y-4">
-            
+
             {/* Badges Bar */}
             <div className="flex flex-wrap items-center gap-3">
-              <span className={`px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full flex items-center gap-1.5 border ${
-                isPaid 
-                  ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30" 
+              <span className={`px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full flex items-center gap-1.5 border ${isPaid
+                  ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30"
                   : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-              }`}>
+                }`}>
                 <Sparkles className="w-3.5 h-3.5 animate-bounce" />
                 {isPaid ? "Premium Resource" : "Free Resource"}
               </span>
@@ -410,7 +409,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Page Count</p>
               <p className="font-extrabold text-slate-800 dark:text-white text-lg">{meta.pageCount} Pages</p>
             </div>
-            
+
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <FileText className="w-6 h-6 text-emerald-500 mx-auto" />
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Format</p>
@@ -419,7 +418,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               </p>
             </div>
 
-            
+
 
             <div className="col-span-2 sm:col-span-1 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <Users className="w-6 h-6 text-emerald-500 mx-auto" />
@@ -438,16 +437,16 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                 {!isPaid && isDownloadable
                   ? "Download this technical publication directly as a PDF file for offline reading."
                   : !isPaid
-                  ? "Get free lifetime access to read this publication in our interactive 3D flipbook reader."
-                  : isDownloadable
-                  ? "Purchase lifetime access to read this technical publication in our 3D flipbook reader and download the PDF edition."
-                  : "Purchase lifetime access to read this technical publication in our secure 3D flipbook reader."}
+                    ? "Get free lifetime access to read this publication in our interactive 3D flipbook reader."
+                    : isDownloadable
+                      ? "Purchase lifetime access to read this technical publication in our 3D flipbook reader and download the PDF edition."
+                      : "Purchase lifetime access to read this technical publication in our secure 3D flipbook reader."}
               </p>
             </div>
 
             <div className="flex flex-col gap-3 w-full md:w-auto">
               {!isPaid && isDownloadable ? (
-                <button 
+                <button
                   onClick={handleDownload}
                   disabled={downloading}
                   className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-102 transition-all cursor-pointer select-none disabled:opacity-50"
@@ -456,7 +455,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                   <span>{downloading ? "Downloading..." : "Download Free PDF"}</span>
                 </button>
               ) : (
-                <button 
+                <button
                   onClick={() => setPurchaseModalOpen(true)}
                   className="w-full md:w-auto flex text-md items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-102 transition-all cursor-pointer select-none"
                 >
@@ -464,8 +463,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                   <span>{isPaid ? "Buy Now" : "Get Free Access"}</span>
                 </button>
               )}
-              <Link 
-                href="/ebooks/library" 
+              <Link
+                href="/ebooks/library"
                 className="w-full md:w-auto flex items-center justify-center gap-2  text-white bg-emerald-500 hover:bg-emerald-500/80 font-bold px-8 py-3.5 rounded-2xl transition-all hover:scale-102 text-center text-md select-none"
               >
                 <BookOpen className="w-4 h-4" />
@@ -515,7 +514,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                     </div>
                   </form>
                 ) : (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="p-4 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center gap-3 text-sm font-bold"
@@ -550,15 +549,15 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             {relatedEbooks.map((book) => {
               const bookMeta = generateBookMeta(book.id, book.title);
               const relatedBasePrice = book.price !== undefined && book.price !== null ? Number(book.price) : 9.99;
-              const relatedHasActiveDiscount = 
-                book.discount_price !== undefined && 
-                book.discount_price !== null && 
-                Number(book.discount_price) > 0 && 
+              const relatedHasActiveDiscount =
+                book.discount_price !== undefined &&
+                book.discount_price !== null &&
+                Number(book.discount_price) > 0 &&
                 (!book.discount_expires_at || new Date(book.discount_expires_at) > now);
               const relatedActivePrice = relatedHasActiveDiscount ? Number(book.discount_price) : relatedBasePrice;
               const relatedPaid = relatedActivePrice > 0;
               return (
-                <div 
+                <div
                   key={book.id}
                   className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
@@ -599,7 +598,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                         </h4>
                       </Link>
 
-                      
+
                     </div>
 
                     <div className="mt-5 space-y-4">
@@ -641,9 +640,9 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
       <AnimatePresence>
         {purchaseModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            
+
             {/* Backdrop */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -658,8 +657,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-2xl z-10"
             >
-              
-              <button 
+
+              <button
                 onClick={() => setPurchaseModalOpen(false)}
                 className="absolute top-4 right-4 p-2 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-800 border border-slate-200/40 dark:border-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
@@ -667,7 +666,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               </button>
 
               <form onSubmit={handleStripeCheckout} className="space-y-6">
-                
+
                 <div className="space-y-2 text-center">
                   <div className="p-3 bg-amber-500/10 text-amber-500 rounded-2xl w-fit mx-auto border border-amber-500/20">
                     <Lock className="w-6 h-6 animate-pulse" />
@@ -680,7 +679,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                 <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800/40 flex items-center gap-4">
                   <div className="w-12 h-16 bg-slate-100 dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-200/30 flex-shrink-0 relative">
                     {ebook.cover_url && (
-                      <Image 
+                      <Image
                         src={ebook.cover_url}
                         alt={ebook.title}
                         fill
@@ -690,7 +689,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                   </div>
                   <div className="flex-1">
                     <h4 className="font-bold text-xs text-slate-900 dark:text-white line-clamp-1 leading-tight">{ebook.title}</h4>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Author: Dr. Kamran Akram</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Author: Dr. Muhammad Kamran</p>
                     <p className="text-xs font-extrabold text-emerald-500 mt-1">${Number(displayPrice).toFixed(2)} USD</p>
                   </div>
                 </div>
@@ -699,8 +698,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                   <label className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400">Your Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       required
                       placeholder="alex@example.com"
                       value={purchasingEmail}
@@ -714,8 +713,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400">Promo Code (Optional)</label>
                   <div className="flex gap-2">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Enter promo code"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
@@ -734,8 +733,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                   {appliedPromo && (
                     <p className="text-[11px] font-bold text-emerald-500 flex items-center gap-1">
                       <span>✓ Applied code {appliedPromo.code} - {appliedPromo.percent}% OFF!</span>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => { setPromoCode(""); setAppliedPromo(null); }}
                         className="text-rose-500 underline ml-auto text-[10px] cursor-pointer"
                       >
