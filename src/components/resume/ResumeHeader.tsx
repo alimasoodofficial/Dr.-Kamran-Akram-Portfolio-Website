@@ -1,11 +1,27 @@
 "use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Printer, Linkedin, Youtube, Facebook } from "lucide-react";
+import { Mail, MapPin, Printer, Linkedin, Youtube, Facebook, Download } from "lucide-react";
+import { getCVUrl } from "@/app/actions/resume";
 
 export default function ResumeHeader() {
-  const handlePrint = () => {
-    if (typeof window !== "undefined") {
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadCVUrl() {
+      const url = await getCVUrl();
+      if (url) {
+        setCvUrl(url);
+      }
+    }
+    loadCVUrl();
+  }, []);
+
+  const handleAction = () => {
+    if (cvUrl) {
+      window.open(cvUrl, "_blank");
+    } else if (typeof window !== "undefined") {
       window.print();
     }
   };
@@ -127,11 +143,11 @@ export default function ResumeHeader() {
             {/* Print / Download PDF */}
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={handlePrint}
+              onClick={handleAction}
               className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/20 cursor-pointer font-body"
             >
-              <Printer className="w-4 h-4" />
-              Print / Save CV
+              {cvUrl ? <Download className="w-4 h-4" /> : <Printer className="w-4 h-4" />}
+              {cvUrl ? "Download CV" : "Print / Save CV"}
             </motion.button>
           </div>
         </div>

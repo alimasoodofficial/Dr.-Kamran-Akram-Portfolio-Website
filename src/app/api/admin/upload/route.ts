@@ -18,9 +18,9 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Dynamic prefixing depending on file type (PDF vs Image/Video)
     const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-    const prefix = isPdf ? "ebook" : "gallery";
+    const isPublicAsset = form.get("publicAsset") === "true";
+    const prefix = isPdf && !isPublicAsset ? "ebook" : "media";
     
     // Sanitize filename: replace spaces/special chars with hyphens
     const cleanOrigName = file.name
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       .replace(/-+/g, "-");
     const fileName = `${prefix}-${Date.now()}-${cleanOrigName}`;
 
-    const bucketName = isPdf ? "ebooks-vault" : "website images & videos";
+    const bucketName = (isPdf && !isPublicAsset) ? "ebooks-vault" : "website images & videos";
     const contentType = file.type || (isPdf ? "application/pdf" : "application/octet-stream");
     const { data, error } = await supabaseService.storage.from(bucketName).upload(fileName, buffer, {
       cacheControl: "3600",
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    if (isPdf) {
+    if (isPdf && !isPublicAsset) {
       // PDF files are private, so we return the storage path inside the ebooks-vault bucket.
       return NextResponse.json({ 
         url: fileName, 

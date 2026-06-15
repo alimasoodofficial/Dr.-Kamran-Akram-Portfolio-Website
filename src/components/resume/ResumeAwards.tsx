@@ -1,99 +1,94 @@
 "use client";
-import React from "react";
-
-const awards = [
-  {
-    title: "Innovation for the red meat industry HDR Award",
-    description: null,
-    icon: "fa-award",
-    color:
-      "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 dark:text-yellow-500",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-  {
-    title: "Animal Production Research Open Category Award",
-    description: null,
-    icon: "fa-trophy",
-    color:
-      "text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-500",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-  {
-    title: "3MT FINALIST 2021",
-    description:
-      "Queensland Alliance for Agriculture and Food Innovation 3MT Final",
-    icon: "fa-microphone",
-    color:
-      "text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-  {
-    title: "First Aid support Certificate",
-    description:
-      "A Statement of Attainment is issued by a Registered Training Organisation when an individual has completed one or more accredited units.",
-    icon: "fa-heart-pulse",
-    color: "text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-500",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-  {
-    title: "Young Science Ambassador Award",
-    description:
-      "In recognition of dedication and commitment to STEM education",
-    icon: "fa-flask",
-    color:
-      "text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-500",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-  {
-    title: "UQ Student Representative",
-    description:
-      "In recognition of my participation in the UQ Student Reps Bootcamp",
-    icon: "fa-user-graduate",
-    color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-500",
-    link: "#", // User said "Click here" but didn't provide URL
-  },
-];
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { ExternalLink, FileText } from "lucide-react";
+import { getAwards } from "@/app/actions/resume";
 
 export default function ResumeAwards() {
+  const [awards, setAwards] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAwards = async () => {
+      try {
+        const data = await getAwards();
+        setAwards(data);
+      } catch (error) {
+        console.error("Failed to fetch awards", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAwards();
+  }, []);
+
   return (
-    <section id="awards">
-      <h2 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
-        Awards & Certifications
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {awards.map((award, index) => (
-          <a
-            key={index}
-            href={award.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-slate-50   dark:bg-gradient-to-br from-teal-900 to-slate-950 p-6 rounded-xl    shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col group cursor-pointer"
-          >
-            <div className="flex flex-col items-center justify-center gap-4 ">
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-xl ${award.color}`}
-              >
-                <i className={`fa-solid ${award.icon}`}></i>
-              </div>
-              <div className="flex-1">
-                <h4 className="font-bold text-center text-sm text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
-                  {award.title}
-                </h4>
+    <section id="awards" className="mb-20">
+      <div className="flex items-center gap-3 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+          <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+        </div>
+        <h2 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">
+          Awards & Certifications
+        </h2>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : awards.length === 0 ? (
+        <p className="text-slate-500">No awards details available yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {awards.map((award, index) => (
+            <div
+              key={award.id || index}
+              className="group relative bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-500 hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-1 flex flex-col h-full overflow-hidden"
+            >
+              {/* Background glow on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-teal-500/0 group-hover:from-emerald-500/5 group-hover:to-teal-500/5 transition-colors duration-500 z-0"></div>
+
+              <div className="relative z-10 flex flex-col h-full">
+                {/* Image Container */}
+                <div className="w-full h-32 mb-6 relative rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 p-4 flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={award.image || "/images/logos/uaf.png"}
+                    alt={award.title}
+                    fill
+                    className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                  />
+                  
+                  {/* Hover Overlay Button inside Image Container */}
+                  <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                     <a 
+                       href={award.link || "#"}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-sm font-semibold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                     >
+                       <ExternalLink className="w-4 h-4" />
+                       View Certificate
+                     </a>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex flex-col text-center">
+                  <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    {award.title}
+                  </h4>
+                  
+                  {award.description && (
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: award.description || '' }}>
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-            {award.description && (
-              <p className="text-xs text-center text-slate-500 dark:text-slate-400 leading-relaxed">
-                {award.description}
-              </p>
-            )}
-            {/* <div className="mt-auto pt-3">
-              <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold group-hover:underline">
-                View Certificate →
-              </span>
-            </div> */}
-          </a>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
