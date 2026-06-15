@@ -129,7 +129,7 @@ const AchievementCard: React.FC<Achievement> = ({
       </div>
 
       {/* Label */}
-      <h3 className="text-lg text-white md:text-xl font-bold uppercase tracking-widest opacity-90">
+      <h3 className="text-lg !text-white md:text-xl font-bold uppercase tracking-widest opacity-90">
         {label}
       </h3>
 

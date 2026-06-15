@@ -83,14 +83,14 @@ export default async function HomePage() {
             <div className="green-glass p-10 rounded-2xl">
               <ScrollRevealText
                 text={aboutText}
-                className="text-sm md:text-2xl text-justify hyphen-auto"
+                className="text-md md:text-2xl text-justify hyphen-auto"
               />
             </div>
           </div>
 
           {/* 🖼️ Right Side: Visual Content */}
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm md:max-w-none">
-            <div className="w-full  flex justify-center items-center">
+            <div className="w-full  flex justify-center items-center pr-10">
               <CursorReveal />
             </div>
           </div>
@@ -127,7 +127,7 @@ export default async function HomePage() {
         {/* <ImageBackground /> */}
       </section>
 
-      <section className="py-10">
+      {/* <section className="py-10">
         <div>
           <h2 className="font-heading text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6">
             <GradientText
@@ -148,57 +148,10 @@ export default async function HomePage() {
             scrollSpeed={4}
           />
         </div>
-      </section>
+      </section> */}
 
       {/* 🚀 Projects Overview Section */}
-      <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t green-border rounded-3xl shadow-sm border border-slate-200/50 dark:border-green-800/80">
-        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
-          {/* Left Side: Content */}
-          <div className="flex-1 text-center md:text-left ">
-            <h2 className="font-heading text-4xl md:text-6xl mb-6 green-text-main">
-              Innovative <br />
-              <GradientText  colors={["#10b981", "#34d399", "#86efac"]} animationSpeed={6}>
-                Projects
-              </GradientText>
-            </h2>
-            <p className="font-body text-lg md:text-xl text-[var(--muted-foreground)] mb-8 max-w-xl">
-              From sophisticated data visualization dashboards to sustainable architectural concepts, 
-              my work bridge the gap between complex information and intuitive human experiences.
-            </p>
-            <Button href="/projects" className="text-white px-8 py-3 rounded-2xl">
-              View All Projects
-            </Button>
-          </div>
-
-          {/* Right Side: Staggered Image Frame */}
-          <div className="flex-1 relative h-[400px] w-full max-w-lg mx-auto md:mx-0">
-            <div className="absolute top-0 left-0 w-3/4 h-3/4 rounded-2xl overflow-hidden shadow-xl z-30 transition-transform hover:scale-105 duration-500">
-              <Image 
-                src="/home/alimasood/.gemini/antigravity/brain/2c2fdd53-92a3-4909-b040-07ba0fb963f7/project_showcase_1_1776601538276.png" 
-                alt="Project Showcase 1" 
-                fill 
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute bottom-10 right-0 w-3/4 h-3/4 rounded-2xl overflow-hidden shadow-xl z-20 transition-transform hover:scale-105 duration-500 border-4 border-[var(--background)]">
-              <Image 
-                src="/home/alimasood/.gemini/antigravity/brain/2c2fdd53-92a3-4909-b040-07ba0fb963f7/project_showcase_2_1776601553671.png" 
-                alt="Project Showcase 2" 
-                fill 
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 rounded-2xl overflow-hidden shadow-2xl z-10 opacity-50 blur-sm pointer-events-none">
-              <Image 
-                src="/home/alimasood/.gemini/antigravity/brain/2c2fdd53-92a3-4909-b040-07ba0fb963f7/project_showcase_3_1776601567817.png" 
-                alt="Project Showcase 3" 
-                fill 
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* 📧 Newsletter Section */}
       <section className="py-20 px-6 md:px-12">
@@ -239,32 +192,32 @@ export default async function HomePage() {
       <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto mb-20">
         <div className="text-center mb-16">
           <h2 className="font-heading text-4xl md:text-7xl mb-4">
-            Let's Build <GradientText colors={["#10b981", "#34d399", "#86efac"]} animationSpeed={6}>Together</GradientText>
+            Let's Build <GradientText colors={["#10b981", "#34d399", "#86efac"]} animationSpeed={6}>Your Future</GradientText>
           </h2>
           <p className="font-body text-lg text-[var(--muted-foreground)] max-w-2xl mx-auto">
-            I help startups and enterprises leverage data to tell compelling stories and build products that users love.
+            I provide tailored mentorship to help you navigate academia, build a powerful personal brand, and establish a successful career in Australia.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              title: "Data Strategy",
-              desc: "Turning raw numbers into actionable growth strategies for your business.",
+              title: "Academic Strategy",
+              desc: "Tailored guidance for securing PhD/Master's admissions, finding supervisors, and scholarships.",
+              icon: "fa-graduation-cap"
+            },
+            {
+              title: "Career & Brand Building",
+              desc: "Actionable insights to optimize your profile, build a strong portfolio, and become job-ready.",
               icon: "fa-chart-line"
             },
             {
-              title: "Product UX Audit",
-              desc: "A deep dive into your product's flow to find friction and optimize conversion.",
-              icon: "fa-user-check"
-            },
-            {
-              title: "Tech Mentorship",
-              desc: "Personalized guidance for founders building their first engineering teams.",
-              icon: "fa-rocket"
+              title: "Relocation Mentorship",
+              desc: "Step-by-step guidance on moving to Australia, from budgeting and finding jobs to settling in.",
+              icon: "fa-plane-arrival"
             }
           ].map((item, index) => (
-            <div key={index} className="green-card p-8 group hover:-translate-y-2 transition-all duration-300">
+            <div key={index} className="bg-slate-100 dark:bg-slate-950 rounded-2xl p-8 group hover:-translate-y-2 transition-all duration-300">
               <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mb-6 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
                 <i className={`fa-solid ${item.icon} text-2xl`}></i>
               </div>
