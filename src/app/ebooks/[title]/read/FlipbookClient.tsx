@@ -462,7 +462,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   };
 
   // Navigation handlers
-  const maxSpreadIndex = numPages - 1;
+  const maxSpreadIndex = numPages;
 
   const handleNext = () => {
     if (bookRef.current) {
@@ -673,10 +673,10 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
               className="shadow-2xl mx-auto"
               useMouseEvents={zoomLevel === 1}
             >
-              {Array.from({ length: numPages }, (_, index) => {
+              {Array.from({ length: numPages + 1 }, (_, index) => {
                 const pageNum = index + 1;
                 const isCover = pageNum === 1;
-                const isBackCover = pageNum === numPages;
+                const isBackCover = pageNum === numPages + 1;
                 const isLeftPage = pageNum % 2 === 0;
 
                 return (
@@ -687,18 +687,10 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                   >
                     {isCover ? (
                       /* Cover Page */
-                      <div className="w-full h-full relative overflow-hidden bg-slate-900 shadow-2xl border-y border-r border-slate-950">
-                        {ebook.cover_url ? (
-                          <img
-                            src={ebook.cover_url}
-                            alt={ebook.title}
-                            className="w-full h-full object-cover pointer-events-none"
-                          />
-                        ) : (
-                          <canvas id="page-canvas-1" className="w-full h-full object-contain pointer-events-none" />
-                        )}
-                        <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-black/45 via-black/15 to-transparent z-10 pointer-events-none" />
-                        <div className="absolute left-4 top-0 bottom-0 w-[1px] bg-white/10 z-10 pointer-events-none" />
+                      <div className="w-full h-full relative overflow-hidden bg-slate-900 shadow-2xl border-y border-r border-slate-950 flex items-center justify-center">
+                        <canvas id="page-canvas-1" className="w-full h-full object-contain pointer-events-none z-10" />
+                        <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-black/45 via-black/15 to-transparent z-20 pointer-events-none" />
+                        <div className="absolute left-4 top-0 bottom-0 w-[1px] bg-white/10 z-20 pointer-events-none" />
                       </div>
                     ) : isBackCover ? (
                       /* Back Cover backing */
@@ -819,11 +811,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
             <div
               className="bg-emerald-500 h-full rounded-full transition-all duration-300"
-              style={{ width: `${(currentPage / maxSpreadIndex) * 100}%` }}
+              style={{ width: `${(Math.min(currentPage, numPages - 1) / (numPages - 1)) * 100}%` }}
             />
           </div>
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">
-            Page {currentPage + 1} of {numPages}
+            {currentPage >= numPages ? "Back Cover" : `Page ${currentPage + 1} of ${numPages}`}
           </span>
         </div>
 

@@ -10,7 +10,8 @@ import {
   AlertTriangle,
   Globe,
   ArrowRight,
-  FileText
+  FileText,
+  Mail
 } from "lucide-react";
 
 export default function TermsConditionsPage() {
@@ -25,6 +26,7 @@ export default function TermsConditionsPage() {
     { id: "intellectual-property", title: "5. Intellectual Property", icon: BookOpen },
     { id: "limitation", title: "6. Limitation of Liability", icon: AlertTriangle },
     { id: "governing-law", title: "7. Governing Law", icon: Globe },
+    { id: "marketing-communications", title: "8. Marketing & Publications", icon: Mail },
   ];
 
   // Update active section on scroll
@@ -291,6 +293,21 @@ export default function TermsConditionsPage() {
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-body">
                 These Terms & Conditions are governed by and construed in accordance with the laws of the State of Queensland, Australia.
                 Any disputes relating to these services shall be subject to the exclusive jurisdiction of the courts of Queensland.
+              </p>
+            </section>
+
+            {/* Section 8: Marketing & Publications */}
+            <section id="marketing-communications" className="glassy p-8 space-y-4 scroll-mt-32">
+              <div className="flex items-center gap-3 border-b border-slate-200/60 dark:border-slate-800/60 pb-3">
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950/50 text-primary">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-bold font-heading text-slate-900 dark:text-white">
+                  8. Marketing & Publications
+                </h2>
+              </div>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-body">
+                By providing your email or other contact information during a consultation booking, eBook purchase, resource download, or contact form submission, you consent to receive marketing messages, promotional offers, newsletters, updates about new publications, and other related services from Dr. Muhammad Kamran. You may opt out of these communications at any time by clicking the &ldquo;unsubscribe&rdquo; link in any email received, or by contacting us directly at <a href="mailto:bookingsimkamran@gmail.com" className="text-primary hover:underline font-semibold">bookingsimkamran@gmail.com</a>.
               </p>
             </section>
           </div>

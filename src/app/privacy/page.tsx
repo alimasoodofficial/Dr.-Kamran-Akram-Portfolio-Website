@@ -227,7 +227,7 @@ export default function PrivacyPolicyPage() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  <span>To deliver career updates, resources, and newsletters if you have opted in.</span>
+                  <span>To deliver career updates, promotional offers, newsletters, and updates about new publications or services.</span>
                 </li>
               </ul>
             </section>
