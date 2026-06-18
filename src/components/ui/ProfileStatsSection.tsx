@@ -36,8 +36,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({
                 src={imageSrc}
                 alt={imageAlt}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 400px, 33vw"
-                className="object-cover"
+                className="object-cover object-left"
                 priority // Loads image quickly for above-the-fold content
               />
             </div>

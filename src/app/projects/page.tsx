@@ -17,10 +17,10 @@ export default function ProjectsEntryPage() {
     "A multilingual agricultural scientist and data analyst dedicated to clear, impactful science communication and extension across agriculture and animal sciences. With experience as an MLA Red Meat Industry Ambassador and Young Science Ambassador, focused on translating complex research into practical knowledge for farmers, students, and communities. Skilled in research, data analysis, and public speaking, with a passion for empowering others through education and outreach. Committed to fostering innovation and sustainability in agriculture through effective communication and collaboration.";
 
   const statsData: StatItem[] = [
-    { number: "100+", label: "Clients Globally" },
-    { number: "20+", label: "Strategic Projects" },
-    { number: "6+", label: "Global Ventures" },
-    { number: "15+", label: "Agri-Tech Solutions" },
+    { number: "15+", label: "Clients Globally" },
+    { number: "12+", label: "Strategic Projects" },
+    { number: "5+", label: "Global Ventures" },
+    { number: "4+", label: "Agri-Tech Solutions" },
   ];
 
   return (
@@ -36,7 +36,7 @@ export default function ProjectsEntryPage() {
       {/* 2. Academic Profile Section */}
       <div className="container mx-auto px-6 py-20">
           <ProfileStatsSection
-            imageSrc="https://imkamran.com/wp-content/uploads/2023/09/kamran-dvm.jpeg"
+            imageSrc="https://rqrnzfuvgmnjkjqaahve.supabase.co/storage/v1/object/public/website%20images%20&%20videos/gallery-1770970058055-90109221_4252689171423173_5485921251409002496_n.webp"
             imageAlt="Portrait of Dr. Kamran"
             eyebrowText="Project Excellence"
             title="Strategic Leadership & Multi-Domain Ventures"

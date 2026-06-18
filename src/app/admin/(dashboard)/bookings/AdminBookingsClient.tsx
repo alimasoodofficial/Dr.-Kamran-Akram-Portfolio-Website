@@ -136,7 +136,8 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
       const matchesSearch = 
         booking.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         booking.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (booking.message && booking.message.toLowerCase().includes(searchQuery.toLowerCase()));
+        (booking.message && booking.message.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (booking.cv_url && booking.cv_url.toLowerCase().includes(searchQuery.toLowerCase()));
 
       const matchesStatus = filterStatus === "all" || booking.status === filterStatus;
       
@@ -887,14 +888,38 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                               </Badge>
                             </td>
                             {/* Message / Notes */}
-                            <td className="p-6 max-w-xs">
-                              {booking.message ? (
-                                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed" title={booking.message}>
-                                  "{booking.message}"
-                                </p>
-                              ) : (
-                                <span className="text-xs text-slate-300 dark:text-slate-600 italic">No message</span>
-                              )}
+                            <td className="p-6 max-w-xs space-y-1">
+                              {(() => {
+                                const msg = booking.message || "";
+                                let cvLink = booking.cv_url || null;
+                                if (!cvLink) {
+                                  const cvMatch = msg.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+                                  if (cvMatch) cvLink = cvMatch[1];
+                                }
+                                const cleanMessage = msg.replace(/\[Uploaded CV\]:\s*https?:\/\/[^\s]+/, "").trim();
+
+                                return (
+                                  <>
+                                    {cleanMessage ? (
+                                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed" title={cleanMessage}>
+                                        "{cleanMessage}"
+                                      </p>
+                                    ) : !cvLink ? (
+                                      <span className="text-xs text-slate-300 dark:text-slate-600 italic">No message</span>
+                                    ) : null}
+                                    {cvLink && (
+                                      <a
+                                        href={cvLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                                      >
+                                        <Download className="w-3 h-3" /> View CV
+                                      </a>
+                                    )}
+                                  </>
+                                );
+                              })()}
                             </td>
                             {/* Actions */}
                             <td className="p-6 text-right">
@@ -978,12 +1003,41 @@ export default function AdminBookingsClient({ initialBookings, initialAvailabili
                           </div>
                         </div>
 
-                        {booking.message && (
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700/80">
-                            <span className="block text-[8px] font-black uppercase tracking-wider text-slate-400 mb-1">Message</span>
-                            <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed font-medium">"{booking.message}"</p>
-                          </div>
-                        )}
+                        {(booking.message || booking.cv_url) && (() => {
+                          const msg = booking.message || "";
+                          let cvLink = booking.cv_url || null;
+                          if (!cvLink) {
+                            const cvMatch = msg.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+                            if (cvMatch) cvLink = cvMatch[1];
+                          }
+                          const cleanMessage = msg.replace(/\[Uploaded CV\]:\s*https?:\/\/[^\s]+/, "").trim();
+
+                          if (!cleanMessage && !cvLink) return null;
+
+                          return (
+                            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700/80 space-y-2">
+                              {cleanMessage && (
+                                <>
+                                  <span className="block text-[8px] font-black uppercase tracking-wider text-slate-400">Message</span>
+                                  <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed font-medium">"{cleanMessage}"</p>
+                                </>
+                              )}
+                              {cvLink && (
+                                <div className={cleanMessage ? "pt-2 border-t border-slate-150 dark:border-slate-700" : ""}>
+                                  <span className="block text-[8px] font-black uppercase tracking-wider text-slate-400 mb-1">CV Attachment</span>
+                                  <a
+                                    href={cvLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                                  >
+                                    <Download className="w-3 h-3" /> View CV
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
 
                         <div className="flex justify-end gap-2 pt-2">
                           <DropdownMenu>

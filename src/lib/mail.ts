@@ -599,6 +599,7 @@ export async function sendAdminMeetingNotification({
   duration,
   platform,
   meetingLink,
+  notes,
 }: {
   customerName: string;
   customerEmail: string;
@@ -607,8 +608,14 @@ export async function sendAdminMeetingNotification({
   duration: number;
   platform: string;
   meetingLink: string;
+  notes?: string;
 }) {
   const adminEmail = process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com';
+  
+  const cvMatch = notes?.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+  const cvLink = cvMatch ? cvMatch[1] : null;
+  const cleanMessage = notes ? notes.replace(/\[Uploaded CV\]:\s*https?:\/\/[^\s]+/, "").trim() : "";
+
   const mailOptions = {
     from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
     to: adminEmail,
@@ -661,6 +668,12 @@ export async function sendAdminMeetingNotification({
                             <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Platform:</td>
                             <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${platform}</td>
                           </tr>
+                          ${cleanMessage ? `
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Client Message:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">"${cleanMessage}"</td>
+                          </tr>
+                          ` : ''}
                         </table>
                       </td>
                     </tr>
@@ -676,6 +689,12 @@ export async function sendAdminMeetingNotification({
                             <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Meeting Link:</td>
                             <td style="padding-bottom: 6px; font-size: 14px; vertical-align: top;"><a href="${meetingLink}" style="color: #10b981; text-decoration: none; font-weight: 600;">Join Meeting</a></td>
                           </tr>
+                          ${cvLink ? `
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">CV Attachment:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; vertical-align: top;"><a href="${cvLink}" style="color: #10b981; text-decoration: none; font-weight: 600;">View Attached CV</a></td>
+                          </tr>
+                          ` : ''}
                           <tr>
                             <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Dashboard Link:</td>
                             <td style="padding-bottom: 6px; font-size: 14px; vertical-align: top;"><a href="${baseUrl}/admin/bookings" style="color: #3b82f6; text-decoration: none; font-weight: 600;">View Admin Bookings</a></td>
@@ -708,7 +727,7 @@ export async function sendAdminMeetingNotification({
         </tr>
       </table>
     `,
-    text: `New Consultation Booked!\n\nClient Name: ${customerName}\nClient Email: ${customerEmail}\nDate: ${date}\nTime: ${time}\nDuration: ${duration} minutes\nPlatform: ${platform}\nMeeting Link: ${meetingLink}\n\nView Admin Dashboard Bookings: ${baseUrl}/admin/bookings\nVisit Website: ${baseUrl}`,
+    text: `New Consultation Booked!\n\nClient Name: ${customerName}\nClient Email: ${customerEmail}\nDate: ${date}\nTime: ${time}\nDuration: ${duration} minutes\nPlatform: ${platform}\nMeeting Link: ${meetingLink}${cleanMessage ? `\nClient Message: "${cleanMessage}"` : ''}${cvLink ? `\nCV Link: ${cvLink}` : ''}\n\nView Admin Dashboard Bookings: ${baseUrl}/admin/bookings\nVisit Website: ${baseUrl}`,
   };
 
   try {
