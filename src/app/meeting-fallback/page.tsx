@@ -13,7 +13,7 @@ export default function MeetingFallbackPage() {
     <>
       <Banner
         title="Meeting Link Error"
-        description="There is some problem with the meeting link. Please contact the support team at hi@imkamran.com."
+        description="There is some problem with the meeting link. Please contact the support team at bookingsimkamran@gmail.com"
         showLottie={true}
         showImage={false}
         lottieSrc="/lotties/meeting.lottie"

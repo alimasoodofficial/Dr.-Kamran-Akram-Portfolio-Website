@@ -245,8 +245,8 @@ export default function StatusClient() {
         </div>
 
         {/* Email note */}
-        <div className="p-5 bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-          💡 A calendar invitation and confirmation email with these details have been sent to <span className="text-slate-900 dark:text-white font-bold">{booking.email}</span>.
+        <div className="p-5 bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center text-xs text-slate-600 dark:text-slate-50 font-medium leading-relaxed">
+          💡 A calendar invitation and confirmation email with these details have been sent to <span className="text-slate-900 dark:text-white font-bold">{booking.email}</span>. Please check your inbox or spam folder.
         </div>
 
         {/* Action Buttons */}

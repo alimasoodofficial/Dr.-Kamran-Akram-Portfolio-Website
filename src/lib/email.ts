@@ -145,6 +145,7 @@ export async function sendUserConfirmation(data: BookingEmailData) {
     to: userEmail,
     subject: '✅ Booking Confirmation - Dr. Muhammad Kamran',
     html: htmlContent,
+    text: `Hi ${userName},\n\nYour booking with Dr. Muhammad Kamran has been successfully confirmed.\n\nStart Time: ${startTime}\nEnd Time: ${endTime}\nNotes: ${notes || 'None'}\n\nThank you!`,
   };
 
   return await transporter.sendMail(mailOptions);
@@ -274,6 +275,7 @@ export async function sendAdminNotification(data: BookingEmailData) {
     to: process.env.ADMIN_EMAIL,
     subject: `🔔 New Booking: ${userName} (${country}) - ${new Date(startTime).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })}`,
     html: htmlContent,
+    text: `New Booking Notification:\n\nClient Name: ${userName}\nEmail: ${userEmail}\nCountry: ${country}\nStart Time: ${startTime}\nEnd Time: ${endTime}\nNotes: ${notes || 'None'}`,
   };
 
   return await transporter.sendMail(mailOptions);
@@ -396,6 +398,7 @@ export async function sendUserRescheduleNotification(data: RescheduleEmailData) 
     to: userEmail,
     subject: '📅 Appointment Rescheduled - Dr. Muhammad Kamran',
     html: htmlContent,
+    text: `Hi ${userName},\n\nYour appointment with Dr. Muhammad Kamran has been rescheduled.\n\nOld Start Time: ${oldStartTime}\nOld End Time: ${oldEndTime}\nNew Start Time: ${newStartTime}\nNew End Time: ${newEndTime}\n\nThank you!`,
   };
 
   return await transporter.sendMail(mailOptions);
@@ -500,6 +503,7 @@ export async function sendAdminRescheduleNotification(data: RescheduleEmailData)
     to: process.env.ADMIN_EMAIL,
     subject: `📅 Rescheduled: ${userName} - ${new Date(newStartTime).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })}`,
     html: htmlContent,
+    text: `Admin Reschedule Alert:\n\nClient Name: ${userName}\nEmail: ${userEmail}\nOld Start Time: ${oldStartTime}\nNew Start Time: ${newStartTime}\nNew End Time: ${newEndTime}`,
   };
 
   return await transporter.sendMail(mailOptions);

@@ -13,14 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import { 
-  Clock, 
-  Video, 
-  Users, 
-  CheckCircle2, 
-  CalendarIcon, 
-  User, 
-  ChevronRight, 
+import {
+  Clock,
+  Video,
+  Users,
+  CheckCircle2,
+  CalendarIcon,
+  User,
+  ChevronRight,
   ArrowLeft,
   Mail,
   Timer
@@ -80,7 +80,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
     acceptedTerms: false,
   });
 
-  const [errors, setErrors] = useState<{fullName?: string, email?: string, acceptedTerms?: string}>({});
+  const [errors, setErrors] = useState<{ fullName?: string, email?: string, acceptedTerms?: string }>({});
 
   useEffect(() => {
     if (selectedPlan) {
@@ -88,7 +88,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
         const cleanedNotes = prev.notes.startsWith("Selected Package:")
           ? prev.notes.split("\n").slice(1).join("\n")
           : prev.notes;
-        
+
         return {
           ...prev,
           duration: selectedPlan.duration as 15 | 30 | 60,
@@ -103,7 +103,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
       const fetchSlots = async () => {
         setIsLoadingSlots(true);
         const slots = await getTimeSlots(format(selectedDate, "yyyy-MM-dd"), formData.duration);
-        
+
         const now = new Date();
         const filtered = slots.map(slot => {
           if (isSameDay(selectedDate, now)) {
@@ -127,7 +127,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
   }, [selectedDate, formData.duration]);
 
   const handleNextStep = () => {
-    const newErrors: {fullName?: string, email?: string, acceptedTerms?: string} = {};
+    const newErrors: { fullName?: string, email?: string, acceptedTerms?: string } = {};
     if (!formData.fullName) {
       newErrors.fullName = "Please provide your full name.";
     }
@@ -240,7 +240,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
   if (step === "success") {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="text-center p-12 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl h-full min-h-[500px] flex flex-col items-center justify-center"
@@ -250,11 +250,11 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
         </div>
         <h3 className="text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Meeting Scheduled!</h3>
         <p className="text-slate-500 dark:text-slate-400 mb-10 text-lg max-w-md mx-auto font-medium">
-          Check your email (<span className="text-slate-900 dark:text-white font-bold">{formData.email}</span>) for the 
+          Check your email (<span className="text-slate-900 dark:text-white font-bold">{formData.email}</span>) for the
           <span className="text-primary font-bold"> {formData.platform}</span> invitation link and calendar details.
         </p>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="rounded-2xl px-12 h-16 border-2 font-black uppercase tracking-[0.2em] text-xs hover:bg-primary hover:text-white transition-all dark:text-white dark:hover:bg-primary"
           onClick={() => {
             setStep("info");
@@ -288,7 +288,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                 <p className="text-emerald-100 mb-8 font-medium leading-relaxed opacity-80">
                   Start by telling us who you are and how you'd like to meet. We'll find the perfect slot for you in the next step.
                 </p>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-white/10 rounded-2xl">
@@ -314,7 +314,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     </div>
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">For Queries</p>
-                      <p className="font-bold"><a href="mailto:hi@kamran.com">hi@kamran.com</a></p>
+                      <p className="font-bold"><a href="mailto:bookingsimkamran@gmail.com">bookingsimkamran@gmail.com</a></p>
                     </div>
                   </div>
                 </div>
@@ -327,11 +327,11 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                   <User className="text-primary" /> Basic Information
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Full Name *</label>
-                    <Input 
+                    <Input
                       className={cn(
                         "h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white",
                         errors.fullName && "border-red-500 focus:ring-red-500 focus:border-red-500"
@@ -339,15 +339,15 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                       placeholder="Jane Smith"
                       value={formData.fullName}
                       onChange={(e) => {
-                        setFormData({...formData, fullName: e.target.value});
-                        if (errors.fullName) setErrors({...errors, fullName: undefined});
+                        setFormData({ ...formData, fullName: e.target.value });
+                        if (errors.fullName) setErrors({ ...errors, fullName: undefined });
                       }}
                     />
                     {errors.fullName && <p className="text-red-500 text-xs font-bold ml-1">{errors.fullName}</p>}
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Work Email *</label>
-                    <Input 
+                    <Input
                       type="email"
                       className={cn(
                         "h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white",
@@ -356,8 +356,8 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                       placeholder="jane@company.com"
                       value={formData.email}
                       onChange={(e) => {
-                        setFormData({...formData, email: e.target.value});
-                        if (errors.email) setErrors({...errors, email: undefined});
+                        setFormData({ ...formData, email: e.target.value });
+                        if (errors.email) setErrors({ ...errors, email: undefined });
                       }}
                     />
                     {errors.email && <p className="text-red-500 text-xs font-bold ml-1">{errors.email}</p>}
@@ -367,7 +367,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                 <div className="grid grid-cols-1 gap-8 mb-8">
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Preferred Platform *</label>
-                    <Select value={formData.platform} onValueChange={(v: string) => setFormData({...formData, platform: v as any})}>
+                    <Select value={formData.platform} onValueChange={(v: string) => setFormData({ ...formData, platform: v as any })}>
                       <SelectTrigger className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
@@ -391,24 +391,24 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
                 <div className="space-y-3 mb-10">
                   <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Notes (Optional)</label>
-                  <Textarea 
+                  <Textarea
                     className="rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all min-h-[120px] pt-4 dark:text-white"
                     placeholder="Briefly describe your enquiry..."
                     value={formData.notes}
-                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-3 mb-10">
                   <div className="flex items-start gap-3">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       id="terms"
                       className="mt-1 w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary"
                       checked={formData.acceptedTerms}
                       onChange={(e) => {
-                        setFormData({...formData, acceptedTerms: e.target.checked});
-                        if (errors.acceptedTerms) setErrors({...errors, acceptedTerms: undefined});
+                        setFormData({ ...formData, acceptedTerms: e.target.checked });
+                        if (errors.acceptedTerms) setErrors({ ...errors, acceptedTerms: undefined });
                       }}
                     />
                     <label htmlFor="terms" className="text-sm text-slate-600 dark:text-slate-300 leading-tight">
@@ -418,7 +418,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   {errors.acceptedTerms && <p className="text-red-500 text-xs font-bold ml-1">{errors.acceptedTerms}</p>}
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleNextStep}
                   className="w-full h-16 rounded-[1.25rem] bg-primary hover:bg-[#064e3b] text-white font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl shadow-primary/20"
                 >
@@ -437,7 +437,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
           >
             {/* Header / Back */}
             <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
-              <button 
+              <button
                 onClick={() => setStep("info")}
                 className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest hover:text-primary transition-colors"
               >
@@ -445,10 +445,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
               </button>
               <div className="flex items-center gap-6">
                 <div className="hidden md:flex items-center gap-2 text-xs font-bold text-slate-500">
-                   <Mail className="w-4 h-4 text-primary" /> {formData.email}
+                  <Mail className="w-4 h-4 text-primary" /> {formData.email}
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                   <Timer className="w-4 h-4 text-primary" /> {formData.duration} mins
+                  <Timer className="w-4 h-4 text-primary" /> {formData.duration} mins
                 </div>
               </div>
             </div>
@@ -533,17 +533,17 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
                         {availableSlots.length === 0 && (
                           <div className="text-center py-20 bg-slate-50 dark:bg-slate-800 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700">
-                             <p className="text-sm font-bold text-slate-400">No availability found for this day.</p>
+                            <p className="text-sm font-bold text-slate-400">No availability found for this day.</p>
                           </div>
                         )}
 
                         <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
-                          <Button 
+                          <Button
                             onClick={handleBooking}
                             disabled={isSubmitting || !selectedDate || !selectedTime}
                             className={cn(
                               "w-full h-16 rounded-[1.25rem] font-black uppercase tracking-[0.2em] text-sm transition-all duration-500 shadow-xl",
-                              (!selectedDate || !selectedTime) 
+                              (!selectedDate || !selectedTime)
                                 ? "bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed"
                                 : "bg-primary hover:bg-[#064e3b] text-white shadow-primary/20"
                             )}

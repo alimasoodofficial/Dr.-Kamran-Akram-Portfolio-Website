@@ -1,4 +1,10 @@
 // googleapis is dynamically imported inside createGoogleMeet to prevent compile-time bottleneck
+import dns from "node:dns";
+
+// Prefer IPv4 to avoid Node.js fetch hanging on unreachable IPv6 addresses
+if (dns && typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 /**
  * This utility handles meeting link generation for Zoom and Google Meet.
@@ -9,6 +15,30 @@ const GOOGLE_REDIRECT_URI =
   process.env.GOOGLE_REDIRECT_URI && process.env.GOOGLE_REDIRECT_URI !== 'your_google_redirect_uri'
     ? process.env.GOOGLE_REDIRECT_URI
     : 'http://localhost:3000';
+
+/**
+ * Helper to perform fetch with a timeout
+ */
+async function fetchWithTimeout(url: string, options: RequestInit & { timeout?: number }) {
+  const { timeout = 8000, ...fetchOptions } = options;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...fetchOptions,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === "AbortError") {
+      throw new Error(`Request to ${url} timed out after ${timeout}ms`);
+    }
+    throw error;
+  }
+}
 
 /**
  * Gets a Zoom Access Token using Server-to-Server OAuth
@@ -23,13 +53,14 @@ async function getZoomAccessToken() {
   }
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`,
     {
       method: 'POST',
       headers: {
         Authorization: `Basic ${auth}`,
       },
+      timeout: 8000,
     }
   );
 
@@ -47,7 +78,7 @@ async function getZoomAccessToken() {
 async function createZoomMeeting(details: { topic: string; startTime: string; duration: number }) {
   const token = await getZoomAccessToken();
 
-  const response = await fetch('https://api.zoom.us/v2/users/me/meetings', {
+  const response = await fetchWithTimeout('https://api.zoom.us/v2/users/me/meetings', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -66,6 +97,7 @@ async function createZoomMeeting(details: { topic: string; startTime: string; du
         mute_upon_entry: true,
       },
     }),
+    timeout: 8000,
   });
 
   const data = await response.json();

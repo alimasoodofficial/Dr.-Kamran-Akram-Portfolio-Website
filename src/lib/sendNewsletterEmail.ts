@@ -95,6 +95,9 @@ export async function sendNewsletterEmails(
                 <p style="margin: 0 0 12px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
                   You are receiving this email because you subscribed to updates from Dr. Muhammad Kamran.
                 </p>
+                <p style="margin: 0 0 16px 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                  If you no longer wish to receive these emails, you can <a href="${baseUrl}/unsubscribe" style="color: #10b981; text-decoration: none; font-weight: 600;">unsubscribe here</a>.
+                </p>
                 <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
                   © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
                 </p>
@@ -114,8 +117,11 @@ export async function sendNewsletterEmails(
       bcc: emails, // Use BCC to hide other subscribers' emails
       subject: newsletter.title,
       html: htmlTemplate,
-      text: `${newsletter.title}\n\n${newsletter.subtitle || ""
-        }\n\n${plainTextPreview}\n\nRead more at: ${readMoreLink}`,
+      text: `${newsletter.title}\n\n${newsletter.subtitle || ""}\n\n${plainTextPreview}\n\nRead more at: ${readMoreLink}\n\nUnsubscribe: ${baseUrl}/unsubscribe`,
+      headers: {
+        "List-Unsubscribe": `<${baseUrl}/unsubscribe>`,
+        "Precedence": "bulk"
+      }
     });
     console.log(`Newsletter emails sent to ${emails.length} subscribers.`);
   } catch (error) {

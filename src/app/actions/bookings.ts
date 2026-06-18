@@ -3,7 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { verifyAdminSession } from "@/lib/adminAuth";
-import { sendMeetingInvitation, sendBookingChangeNotification } from "@/lib/mail";
+import { sendMeetingInvitation, sendBookingChangeNotification, sendAdminMeetingNotification } from "@/lib/mail";
 import { sendUserRescheduleNotification, sendAdminRescheduleNotification } from "@/lib/email";
 import { generateMeetingLink } from "@/lib/meetings";
 
@@ -148,6 +148,17 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
   await sendMeetingInvitation({
     to: data.email,
     name: data.full_name,
+    date: data.date,
+    time: data.time_slot,
+    duration: data.duration,
+    platform: data.platform,
+    meetingLink: meetingLink
+  });
+  
+  // Send Admin Notification Email
+  await sendAdminMeetingNotification({
+    customerName: data.full_name,
+    customerEmail: data.email,
     date: data.date,
     time: data.time_slot,
     duration: data.duration,

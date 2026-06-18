@@ -115,6 +115,7 @@ export async function sendMeetingInvitation({
         </tr>
       </table>
     `,
+    text: `Hi ${name},\n\nYour consultation booking with Dr. Muhammad Kamran has been successfully confirmed!\n\nAppointment Details:\n- Date: ${date}\n- Time: ${time} (AEST/AEDT)\n- Duration: ${duration} minutes\n- Platform: ${platform}\n- Join Meeting Link: ${meetingLink}\n\nIf you need to reschedule or have any questions, please reply directly to this email.\n\nThank you!`,
   };
 
   try {
@@ -220,6 +221,7 @@ export async function sendEbookPurchaseConfirmation({
         </tr>
       </table>
     `,
+    text: `Thank you for your purchase!\n\nYour eBook "${ebookTitle}" is ready for download.\n\nDownload Link:\n${downloadUrl}\n\nRead Online Flipbook Link:\n${flipbookUrl}\n\nThank you for your support!\n\nDr. Muhammad Kamran`,
   };
 
   try {
@@ -331,6 +333,7 @@ export async function sendEbookAdminNotification({
         </tr>
       </table>
     `,
+    text: `New E-Book Sale Notification:\n\nCustomer: ${customerName}\nEmail: ${customerEmail}\nItem: ${ebookTitle}\nAmount Paid: $${pricePaid.toFixed(2)} USD\nPromo Code Used: ${promocodeUsed || 'None'}\n\nAutomated Alert from your Storefront.`,
   };
 
   try {
@@ -402,6 +405,7 @@ export async function sendEbookLibraryVerificationCode({
         </tr>
       </table>
     `,
+    text: `Your eBook Library verification code is: ${code}\n\nUse this code to verify your access. It expires in 10 minutes. If you did not request this, you can safely ignore this message.`,
   };
 
   try {
@@ -575,6 +579,7 @@ export async function sendBookingChangeNotification({
         </tr>
       </table>
     `,
+    text: `Hi ${name},\n\n${messageText}\n\nAppointment Details:\n- Date: ${details.date}\n- Time: ${details.time} (AEST/AEDT)\n- Duration: ${details.duration} minutes\n- Platform: ${details.platform}${details.meetingLink ? `\n- Join Meeting Link: ${details.meetingLink}` : ''}\n\nIf you have any questions or need to make further adjustments, please reply directly to this email.\n\nThank you!`,
   };
 
   try {
@@ -585,6 +590,136 @@ export async function sendBookingChangeNotification({
     return { success: false, error };
   }
 }
+
+export async function sendAdminMeetingNotification({
+  customerName,
+  customerEmail,
+  date,
+  time,
+  duration,
+  platform,
+  meetingLink,
+}: {
+  customerName: string;
+  customerEmail: string;
+  date: string;
+  time: string;
+  duration: number;
+  platform: string;
+  meetingLink: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'alimasood.work@gmail.com';
+  const mailOptions = {
+    from: `"${process.env.EMAIL_FROM || 'Dr Muhammad Kamran'}" <${process.env.EMAIL_SERVER_USER}>`,
+    to: adminEmail,
+    subject: `🚨 New Consultation Booking: ${customerName}`,
+    html: `
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f5; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); overflow: hidden;">
+              <!-- Header -->
+              <tr>
+                <td align="center" style="padding: 32px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 24px; font-weight: 800; color: #3b82f6; letter-spacing: -0.5px; display: block;">New Booking Alert</span>
+                  <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; display: block; margin-top: 6px;">Dr. Muhammad Kamran Admin</span>
+                </td>
+              </tr>
+              
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 32px;">
+                  <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">🎉 New Consultation Booked!</h2>
+                  
+                  <!-- Details Box: Booking Summary -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 20px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Booking Summary</h4>
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Customer Name:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${customerName}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Customer Email:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;"><a href="mailto:${customerEmail}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">${customerEmail}</a></td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Date:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${date}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Time:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${time}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Duration:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${duration} minutes</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; vertical-align: top;">Platform:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #0f172a; font-weight: 600; vertical-align: top;">${platform}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Links Box -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Important Links</h4>
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Meeting Link:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; vertical-align: top;"><a href="${meetingLink}" style="color: #10b981; text-decoration: none; font-weight: 600;">Join Meeting</a></td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom: 6px; font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Dashboard Link:</td>
+                            <td style="padding-bottom: 6px; font-size: 14px; vertical-align: top;"><a href="${baseUrl}/admin/bookings" style="color: #3b82f6; text-decoration: none; font-weight: 600;">View Admin Bookings</a></td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #64748b; width: 120px; vertical-align: top;">Website Link:</td>
+                            <td style="font-size: 14px; vertical-align: top;"><a href="${baseUrl}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Visit Website</a></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="margin: 30px 0 0 0; font-size: 12px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                    This is an automated notification from your booking system.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 32px; background-color: #fafbfb; border-top: 1px solid #f1f5f9; text-align: center;">
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1;">
+                    © ${new Date().getFullYear()} Dr. Muhammad Kamran. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `,
+    text: `New Consultation Booked!\n\nClient Name: ${customerName}\nClient Email: ${customerEmail}\nDate: ${date}\nTime: ${time}\nDuration: ${duration} minutes\nPlatform: ${platform}\nMeeting Link: ${meetingLink}\n\nView Admin Dashboard Bookings: ${baseUrl}/admin/bookings\nVisit Website: ${baseUrl}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending admin meeting notification email:', error);
+    return { success: false, error };
+  }
+}
+
 
 
 

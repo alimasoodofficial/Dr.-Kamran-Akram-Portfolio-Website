@@ -95,3 +95,13 @@ export async function deleteSubscriberAction(id: string) {
   revalidatePath("/admin/newsletter");
   return { success: true };
 }
+
+export async function unsubscribeByEmailAction(email: string) {
+  const supabase = getSupabaseService();
+  const { error } = await supabase.from("subscribers").delete().eq("email", email);
+  if (error) {
+    console.error("[unsubscribeByEmailAction] Supabase error:", error.message);
+    return { success: false, error: error.message };
+  }
+  return { success: true };
+}
