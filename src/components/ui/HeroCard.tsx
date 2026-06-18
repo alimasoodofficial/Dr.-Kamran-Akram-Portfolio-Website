@@ -103,7 +103,7 @@ export const ImageCard = ({
     className={`${heightClass} bg-cover bg-center flex flex-col justify-end text-white`}
     // Using inline style for dynamic background images
     style={{
-      backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}), url('${bgImage}')`,
+      backgroundImage: `linear-gradient(${overlayColor}), url('${bgImage}')`,
     }}
   >
       <Link href="/free-resources/articles" className="text-white">
@@ -182,13 +182,15 @@ export const SpecializationCard = ({
   const linkHref = buttonLink || "/free-resources/articles";
   return (
     <CardWrapper
-      className="h-[460px] bg-cover bg-center flex flex-col justify-end text-white"
+      className="h-[460px] bg-cover bg-center flex flex-col justify-end text-white group"
       style={{
-        backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}), url('${bgImage || "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"}')`,
+        backgroundImage: bgImage 
+          ? `linear-gradient(${overlayColor}), url('${bgImage}')`
+          : `linear-gradient(${overlayColor})`,
       }}
     >
       <Link href={linkHref} className="text-white">
-        <div className="relative z-10 text-white">
+        <div className="relative z-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
           <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
             {category}
           </span>

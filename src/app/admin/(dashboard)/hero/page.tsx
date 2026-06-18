@@ -12,7 +12,7 @@ const SQL_INSTRUCTIONS = `CREATE TABLE IF NOT EXISTS hero_settings (
     id VARCHAR(50) PRIMARY KEY,
     card_type VARCHAR(20) NOT NULL DEFAULT 'image',
     category VARCHAR(255) DEFAULT 'Specialization',
-    title TEXT DEFAULT 'Building Meaningful Ideas Across Science, Agriculture & Innovation',
+    title TEXT DEFAULT '',
     image_url TEXT,
     bg_color VARCHAR(100) DEFAULT 'bento-card-green',
     button_text VARCHAR(100),
@@ -27,7 +27,7 @@ VALUES (
     'specialization',
     'image',
     'Specialization',
-    'Building Meaningful Ideas Across Science, Agriculture & Innovation',
+    '',
     'https://images.unsplash.com/photo-1710322928695-c7fb49886cb1',
     'bento-card-green',
     '',
@@ -52,9 +52,9 @@ WITH CHECK (true);`;
 
 export default function AdminHeroSettings() {
   const [cardType, setCardType] = useState("image");
-  const [category, setCategory] = useState("Specialization");
-  const [title, setTitle] = useState("Building Meaningful Ideas Across Science, Agriculture & Innovation");
-  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1710322928695-c7fb49886cb1");
+  const [category, setCategory] = useState("");
+  const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [bgColor, setBgColor] = useState("bento-card-green");
   const [buttonText, setButtonText] = useState("");
   const [buttonLink, setButtonLink] = useState("");
@@ -489,12 +489,14 @@ export default function AdminHeroSettings() {
                   ) : (
                     // Image Card Preview
                     <div
-                      className="rounded-3xl p-6 relative overflow-hidden h-[460px] flex flex-col justify-end text-white shadow-2xl transition-all duration-300 bg-cover bg-center"
+                      className="rounded-3xl p-6 relative overflow-hidden h-[460px] flex flex-col justify-end text-white shadow-2xl transition-all duration-300 bg-cover bg-center group"
                       style={{
-                        backgroundImage: `linear-gradient(rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%), url('${previewUrl || imageUrl || "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1"}')`,
+                        backgroundImage: (previewUrl || imageUrl)
+                          ? `linear-gradient(rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%), url('${previewUrl || imageUrl}')`
+                          : `linear-gradient(rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%)`,
                       }}
                     >
-                      <div className="relative z-10 text-white">
+                      <div className="relative z-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
                         <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
                           {category}
                         </span>
@@ -512,7 +514,7 @@ export default function AdminHeroSettings() {
                 </div>
               </div>
               <p className="text-xs text-slate-400 mt-2 text-center">
-                This is how the card will look in the Hero section bento grid.
+                This is how the card will look in the Hero section bento grid (hover to see text).
               </p>
             </div>
           </div>

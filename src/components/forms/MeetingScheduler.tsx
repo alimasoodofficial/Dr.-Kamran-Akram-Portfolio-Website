@@ -77,7 +77,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
     platform: "Zoom" as "Zoom" | "Google Meet",
     duration: 30 as 15 | 30 | 60,
     notes: "",
+    acceptedTerms: false,
   });
+
+  const [errors, setErrors] = useState<{fullName?: string, email?: string, acceptedTerms?: string}>({});
 
   useEffect(() => {
     if (selectedPlan) {
@@ -124,20 +127,28 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
   }, [selectedDate, formData.duration]);
 
   const handleNextStep = () => {
-    if (!formData.fullName || !formData.email) {
-      toast({
-        title: "Required Fields",
-        description: "Please provide your name and email.",
-        variant: "destructive"
-      });
-      return;
+    const newErrors: {fullName?: string, email?: string, acceptedTerms?: string} = {};
+    if (!formData.fullName) {
+      newErrors.fullName = "Please provide your full name.";
+    }
+    if (!formData.email) {
+      newErrors.email = "Please provide your email address.";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Please enter a valid email address.";
+      }
+    }
+    if (!formData.acceptedTerms) {
+      newErrors.acceptedTerms = "You must accept the Terms and Conditions and Privacy Policy to continue.";
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
       toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
+        title: "Required Fields",
+        description: "Please correct the errors before proceeding.",
         variant: "destructive"
       });
       return;
@@ -249,7 +260,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
             setStep("info");
             setSelectedDate(undefined);
             setSelectedTime(null);
-            setFormData({ fullName: "", email: "", platform: "Zoom", duration: 30, notes: "" });
+            setFormData({ fullName: "", email: "", platform: "Zoom", duration: 30, notes: "", acceptedTerms: false });
           }}
         >
           Schedule another meeting
@@ -321,21 +332,35 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Full Name *</label>
                     <Input 
-                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                      className={cn(
+                        "h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white",
+                        errors.fullName && "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      )}
                       placeholder="Jane Smith"
                       value={formData.fullName}
-                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                      onChange={(e) => {
+                        setFormData({...formData, fullName: e.target.value});
+                        if (errors.fullName) setErrors({...errors, fullName: undefined});
+                      }}
                     />
+                    {errors.fullName && <p className="text-red-500 text-xs font-bold ml-1">{errors.fullName}</p>}
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Work Email *</label>
                     <Input 
                       type="email"
-                      className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white"
+                      className={cn(
+                        "h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:ring-primary transition-all dark:text-white",
+                        errors.email && "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      )}
                       placeholder="jane@company.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => {
+                        setFormData({...formData, email: e.target.value});
+                        if (errors.email) setErrors({...errors, email: undefined});
+                      }}
                     />
+                    {errors.email && <p className="text-red-500 text-xs font-bold ml-1">{errors.email}</p>}
                   </div>
                 </div>
 
@@ -372,6 +397,25 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     value={formData.notes}
                     onChange={(e) => setFormData({...formData, notes: e.target.value})}
                   />
+                </div>
+
+                <div className="space-y-3 mb-10">
+                  <div className="flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="terms"
+                      className="mt-1 w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary"
+                      checked={formData.acceptedTerms}
+                      onChange={(e) => {
+                        setFormData({...formData, acceptedTerms: e.target.checked});
+                        if (errors.acceptedTerms) setErrors({...errors, acceptedTerms: undefined});
+                      }}
+                    />
+                    <label htmlFor="terms" className="text-sm text-slate-600 dark:text-slate-300 leading-tight">
+                      I accept the <a href="/terms" target="_blank" className="text-primary hover:underline font-bold">Terms and Conditions</a> and <a href="/privacy" target="_blank" className="text-primary hover:underline font-bold">Privacy Policy</a>.
+                    </label>
+                  </div>
+                  {errors.acceptedTerms && <p className="text-red-500 text-xs font-bold ml-1">{errors.acceptedTerms}</p>}
                 </div>
 
                 <Button 

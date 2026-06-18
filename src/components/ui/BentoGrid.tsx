@@ -5,12 +5,12 @@ export default async function BentoGrid() {
   // Default values to display if database check fails or table doesn't exist yet
   let specializationData = {
     cardType: "image",
-    category: "Specialization",
-    title: "Building Meaningful Ideas Across Science, Agriculture & Innovation",
-    bgImage: "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1",
+    category: "",
+    title: "",
+    bgImage: "",
     bgColor: "bento-card-green",
     buttonText: "",
-    buttonLink: "/free-resources/articles",
+    buttonLink: "",
   };
 
   try {
@@ -24,9 +24,9 @@ export default async function BentoGrid() {
     if (!error && data) {
       specializationData = {
         cardType: data.card_type || "image",
-        category: data.category || "Specialization",
+        category: data.category || "",
         title: data.title || "",
-        bgImage: data.image_url || "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1",
+        bgImage: data.image_url || "",
         bgColor: data.bg_color || "bento-card-green",
         buttonText: data.button_text || "",
         buttonLink: data.button_link || "",

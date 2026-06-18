@@ -2,14 +2,15 @@
 import { NextResponse } from "next/server";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
+import { revalidatePath } from "next/cache";
 
 // Default settings for Specialization card
 const DEFAULT_SPECIALIZATION = {
   id: "specialization",
   card_type: "image",
-  category: "Specialization",
-  title: "Building Meaningful Ideas Across Science, Agriculture & Innovation",
-  image_url: "https://images.unsplash.com/photo-1710322928695-c7fb49886cb1",
+  category: "",
+  title: "",
+  image_url: "",
   bg_color: "bento-card-green",
   button_text: "",
   button_link: "",
@@ -84,6 +85,9 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
+
+    // Revalidate the home page so the new hero settings show up immediately
+    revalidatePath("/");
 
     return NextResponse.json(data);
   } catch (err: any) {
