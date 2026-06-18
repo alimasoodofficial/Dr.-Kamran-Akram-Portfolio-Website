@@ -34,10 +34,10 @@ export default function ResumeHeader() {
       <div className="green-glass p-8 md:p-10 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 relative overflow-hidden">
         {/* Glow overlay */}
         <div className="absolute -right-16 -top-16 w-40 h-40 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
-        
+
         {/* Profile Image & Quick Badges */}
         <div className="flex flex-col items-center gap-4 shrink-0">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ export default function ResumeHeader() {
         {/* Text Details & Contacts */}
         <div className="flex-1 text-center md:text-left space-y-4">
           <div className="space-y-2">
-            <motion.h1 
+            <motion.h1
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -79,8 +79,8 @@ export default function ResumeHeader() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-sm text-slate-600 dark:text-slate-400 font-body">
             <div className="flex items-center justify-center md:justify-start gap-2.5">
               <Mail className="w-4 h-4 text-emerald-500 shrink-0" />
-              <a href="mailto:hi@imkamran.com" className="hover:text-emerald-500 transition-colors">
-                hi@imkamran.com
+              <a href="mailto:bookingsimkamran@gmail.com" className="hover:text-emerald-500 transition-colors">
+                bookingsimkamran@gmail.com
               </a>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-2.5">

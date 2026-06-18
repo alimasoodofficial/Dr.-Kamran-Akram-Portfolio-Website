@@ -18,6 +18,7 @@ export default function EditEbook({ params }: PageProps) {
   const [author, setAuthor] = useState("Dr. Muhammad Kamran");
   const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
+  const [pageCount, setPageCount] = useState("0");
   const [pdfStoragePath, setPdfStoragePath] = useState<string | null>(null);
   const [price, setPrice] = useState("9.99");
   const [discountPrice, setDiscountPrice] = useState("");
@@ -64,6 +65,7 @@ export default function EditEbook({ params }: PageProps) {
         setAuthor(data.author || "Dr. Muhammad Kamran");
         setDescription(data.description || "");
         setFileUrl(data.file_url || "");
+        setPageCount(data.page_count !== null && data.page_count !== undefined ? String(data.page_count) : "0");
         setPdfStoragePath(data.pdf_storage_path || null);
         setImageUrl(data.cover_url || "");
         setPreviewUrl(data.cover_url || null);
@@ -183,6 +185,7 @@ export default function EditEbook({ params }: PageProps) {
           discount_price: discountPrice ? parseFloat(discountPrice) : null,
           discount_expires_at: discountExpiresAt ? new Date(discountExpiresAt).toISOString() : null,
           is_downloadable: isDownloadable,
+          page_count: pageCount ? parseInt(pageCount, 10) : 0,
         })
         .eq("id", id);
 
@@ -292,6 +295,21 @@ export default function EditEbook({ params }: PageProps) {
                   className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
                   required
                   placeholder="Dr. Muhammad Kamran"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Page Count
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={pageCount}
+                  onChange={(e) => setPageCount(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold"
+                  required
+                  placeholder="0"
                 />
               </div>
 

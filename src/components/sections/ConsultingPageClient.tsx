@@ -31,13 +31,7 @@ export default function ConsultingPageClient({ availability, blockedDates }: Pro
   return (
     <>
       <section className="py-10 bg-slate-50 dark:bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Choose Your <span className="text-primary">Plan</span></h2>
-            <p className="text-slate-500 font-medium">Select the duration that fits your needs.</p>
-          </div>
           <PricingPlanDemo onSelectPlan={handleSelectPlan} />
-        </div>
       </section>
 
       <AnimatePresence>

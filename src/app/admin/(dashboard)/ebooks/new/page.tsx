@@ -13,6 +13,7 @@ export default function NewEbook() {
     const [author, setAuthor] = useState("Dr. Muhammad Kamran");
     const [description, setDescription] = useState("");
     const [fileUrl, setFileUrl] = useState("");
+    const [pageCount, setPageCount] = useState("0");
     const [price, setPrice] = useState("9.99");
     const [discountPrice, setDiscountPrice] = useState("");
     const [discountExpiresAt, setDiscountExpiresAt] = useState("");
@@ -127,7 +128,8 @@ export default function NewEbook() {
                 discount_price: discountPrice ? parseFloat(discountPrice) : null,
                 discount_expires_at: discountExpiresAt ? new Date(discountExpiresAt).toISOString() : null,
                 is_published: true,
-                is_downloadable: isDownloadable
+                is_downloadable: isDownloadable,
+                page_count: pageCount ? parseInt(pageCount, 10) : 0
             });
 
             if (error) throw error;
@@ -206,6 +208,11 @@ export default function NewEbook() {
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">Author</label>
                                 <input value={author} onChange={e => setAuthor(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold" required placeholder="Dr. Muhammad Kamran" />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Page Count</label>
+                                <input type="number" min="0" value={pageCount} onChange={e => setPageCount(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold" required placeholder="0" />
                             </div>
 
                             <div>

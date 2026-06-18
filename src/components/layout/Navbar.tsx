@@ -164,7 +164,7 @@ export default function Navbar() {
                     href={item.href}
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all group/item"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0">
+                    <div className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-blue-500 to-indigo-600"} rounded-lg flex items-center justify-center shadow-lg group-hover/item:scale-110 transition-transform flex-shrink-0`}>
                       {item.icon.startsWith("/") ? (
                         <img
                           src={item.icon}
@@ -379,7 +379,7 @@ export default function Navbar() {
                     onClick={() => setIsOpen(false)}
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
+                    <div className={`w-12 h-12 ${item.bgColor || "bg-gradient-to-br from-blue-500 to-indigo-600"} rounded-lg flex items-center justify-center shadow-lg flex-shrink-0`}>
                       {item.icon.startsWith("/") ? (
                         <img
                           src={item.icon}

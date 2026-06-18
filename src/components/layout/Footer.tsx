@@ -48,7 +48,7 @@ export default function Footer() {
             students, and communities.
           </p>
 
-          
+
         </div>
 
         {/* --- Column 2: Quick Links (Span 2 columns) --- */}
@@ -81,7 +81,7 @@ export default function Footer() {
             {[
               { name: "Consulting", path: "/consulting" },
               { name: "eBooks", path: "/ebooks" },
-              { name: "Contact Me", path: "mailto:hi@imkamran.com" },
+              { name: "Contact Me", path: "mailto:bookingsimkamran@gmail.com" },
             ].map((item) => (
               <li key={item.name}>
                 {item.path.startsWith("mailto") ? (
@@ -112,10 +112,10 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <span className="text-primary text-lg">✉</span>
               <a
-                href="mailto:hi@imkamran.com"
+                href="mailto:bookingsimkamran@gmail.com"
                 className="hover:text-primary transition-colors"
               >
-                hi@imkamran.com
+                bookingsimkamran@gmail.com
               </a>
             </div>
 

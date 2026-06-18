@@ -115,11 +115,10 @@ export default function TermsConditionsPage() {
                           setActiveSection(sec.id);
                         }
                       }}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-3 border ${
-                        activeSection === sec.id
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-3 border ${activeSection === sec.id
                           ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/80 dark:border-emerald-800/50 text-emerald-800 dark:text-emerald-300 font-semibold"
                           : "border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 hover:text-slate-900 dark:hover:text-white"
-                      }`}
+                        }`}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeSection === sec.id ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-700"}`} />
                       {sec.title}
@@ -134,7 +133,7 @@ export default function TermsConditionsPage() {
                   Need clarification on any of our terms or cancellation policies?
                 </p>
                 <a
-                  href="mailto:hi@imkamran.com"
+                  href="mailto:bookingsimkamran@gmail.com"
                   className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
                 >
                   Contact Support <ArrowRight className="w-4 h-4" />

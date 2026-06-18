@@ -32,13 +32,14 @@ export default async function GalleryPage() {
       row.image_url && row.image_url.trim() ? row.image_url : DEFAULT_IMAGE,
   }));
 
+  const sphereImages = items.slice(0, 10).map((item: any) => item.image_url);
+
   return (
     <main className="overflow-x-hidden min-h-screen">
       <Banner
         title="Captured Moments"
         description="A visual diary of my journey. This gallery features the people, places, and perspectives that catch my eye and keep me inspired."
         showLottie={false}
-        lottieSrc="/lotties/gallery.lottie"
         showBreadcrumb={true}
         showImage={false}
         animationSpeed={10}
@@ -46,11 +47,8 @@ export default async function GalleryPage() {
       />
       <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8  pb-20">
 
-        <section className="">
-          <HangingGallery images={myPhotos} />
-        </section>
       <section className="flex justify-center pb-10">
-        <ImageSphere />
+        <ImageSphere initialImages={sphereImages} />
       </section>
 
         <section>
