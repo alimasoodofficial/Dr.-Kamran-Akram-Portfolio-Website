@@ -65,9 +65,9 @@ const PricingCard = ({ tier, onSelect }: { tier: PricingTier; onSelect?: () => v
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`relative flex flex-col p-8 rounded-[2.5rem] w-full max-w-[320px] transition-all duration-300 shadow-xl shadow-teal-500/10 hover:shadow-2xl hover:shadow-teal-500/30 ${
+      className={`relative flex flex-col p-6  rounded-[2rem] sm:rounded-[2.5rem] w-full max-w-[320px] transition-all duration-300 shadow-xl shadow-teal-500/10 hover:shadow-2xl hover:shadow-teal-500/30 ${
         tier.popular
-          ? "bg-[#134e4a] text-white border-4 border-teal-500/50 scale-105 z-10"
+          ? "bg-[#134e4a] text-white border-4 border-teal-500/50 md:scale-105 z-10"
           : "bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
       }`}
     >
@@ -160,7 +160,7 @@ export function PricingPlanDemo({ onSelectPlan }: PricingPlanDemoProps) {
 
   return (
     <div className="py-20 px-4">
-      <div className="max-w-7xl mx-auto text-center mb-16 px-4 md:px-0">
+      <div className="text-center mb-16 px-4 md:px-0">
         <div className="inline-block bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 px-4 py-2 rounded-xl text-sm font-black tracking-wide mb-6">
            Consultation Packages
         </div>
@@ -172,7 +172,7 @@ export function PricingPlanDemo({ onSelectPlan }: PricingPlanDemoProps) {
         </p>
       </div>
 
-      <div className="flex justify-center gap-6 md:gap-6 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center w-full max-w-7xl mx-auto ">
         {pricingData.map((tier, index) => (
           <PricingCard 
             key={index} 

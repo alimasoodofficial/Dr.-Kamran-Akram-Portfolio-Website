@@ -32,6 +32,7 @@ type Ebook = {
   discount_price?: number;
   discount_expires_at?: string;
   is_downloadable?: boolean;
+  page_count?: number;
 };
 
 type EbooksStoreClientProps = {
@@ -77,6 +78,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
       return {
         ...book,
         ...meta,
+        pageCount: book.page_count !== null && book.page_count !== undefined ? book.page_count : meta.pageCount
       };
     });
   }, [initialEbooks]);
@@ -197,11 +199,12 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                 <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                   {featuredEbook.category}
                 </span>
-                <div className="flex items-center text-amber-500 text-sm gap-1">
+                {/* Commented out reviews for now */}
+                {/* <div className="flex items-center text-amber-500 text-sm gap-1">
                   <Star className="w-4 h-4 fill-amber-500" />
                   <span className="font-bold text-slate-800 dark:text-white">{featuredEbook.rating}</span>
                   <span className="text-slate-400">({featuredEbook.reviews} reviews)</span>
-                </div>
+                </div> */}
               </div>
 
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight font-heading">
@@ -345,7 +348,8 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                           <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
                             {book.category}
                           </span>
-                          <div className="flex items-center text-amber-400 text-xs gap-1">
+                          {/* Commented out reviews for now */}
+                          {/* <div className="flex items-center text-amber-400 text-xs gap-1">
                             <div className="flex">
                               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -354,7 +358,7 @@ export default function EbooksStoreClient({ initialEbooks }: EbooksStoreClientPr
                               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                             </div>
                             <span className="text-slate-400 dark:text-slate-500 ml-1">({book.reviews})</span>
-                          </div>
+                          </div> */}
                         </div>
 
                         {/* Title */}

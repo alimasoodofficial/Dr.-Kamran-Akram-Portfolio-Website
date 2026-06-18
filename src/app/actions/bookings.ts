@@ -14,6 +14,7 @@ export interface Booking {
   phone: string;
   service: string;
   message: string;
+  cv_url?: string;
   date: string;
   time_slot: string;
   platform: "Zoom" | "Google Meet" | "Meeting";
@@ -37,6 +38,15 @@ const mapDbToBooking = (dbRow: any): Booking => {
       clientMessage = lines.slice(1).join("\n");
     }
   }
+
+  // Parse CV from dbRow.cv_url or fallback to notes/message regex
+  let cvUrl = dbRow.cv_url || "";
+  if (!cvUrl && dbRow.notes) {
+    const cvMatch = dbRow.notes.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+    if (cvMatch) {
+      cvUrl = cvMatch[1];
+    }
+  }
   
   return {
     id: dbRow.id,
@@ -45,6 +55,7 @@ const mapDbToBooking = (dbRow: any): Booking => {
     phone: "",
     service: "",
     message: clientMessage,
+    cv_url: cvUrl || "",
     date: startTime ? `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}` : "",
     time_slot: startTime ? `${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}` : "",
     platform: dbRow.meeting_platform || "Zoom",
@@ -117,6 +128,14 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
   }
 
   // Save to DB
+  let cvUrl = data.cv_url || "";
+  if (!cvUrl && data.message) {
+    const cvMatch = data.message.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+    if (cvMatch) {
+      cvUrl = cvMatch[1];
+    }
+  }
+
   const { data: booking, error } = await supabase
     .from("bookings")
     .insert([{ 
@@ -128,7 +147,8 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
       meeting_link: meetingLink,
       status: "confirmed",
       notes: data.message,
-      message: data.stripe_session_id || null
+      message: data.stripe_session_id || null,
+      cv_url: cvUrl || null
     }])
     .select()
     .single();
@@ -163,7 +183,8 @@ export async function createBooking(data: Omit<Booking, "id" | "status" | "creat
     time: data.time_slot,
     duration: data.duration,
     platform: data.platform,
-    meetingLink: meetingLink
+    meetingLink: meetingLink,
+    notes: data.message
   });
   
   return { 
@@ -344,7 +365,18 @@ export async function updateBooking(id: string, data: Partial<Omit<Booking, "id"
   const updatePayload: any = {};
   if (data.full_name) updatePayload.user_name = data.full_name;
   if (data.email) updatePayload.user_email = data.email;
-  if (data.message !== undefined) updatePayload.notes = data.message;
+  if (data.message !== undefined) {
+    updatePayload.notes = data.message;
+    let cvUrl = "";
+    const cvMatch = data.message.match(/\[Uploaded CV\]:\s*(https?:\/\/[^\s]+)/);
+    if (cvMatch) {
+      cvUrl = cvMatch[1];
+    }
+    updatePayload.cv_url = cvUrl || null;
+  }
+  if (data.cv_url !== undefined) {
+    updatePayload.cv_url = data.cv_url || null;
+  }
   if (data.status) updatePayload.status = data.status;
   if (data.platform) updatePayload.meeting_platform = data.platform;
   if (data.duration) updatePayload.duration = data.duration;

@@ -19,6 +19,11 @@ export default function EditArticle({ params }: PageProps) {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
+  const [publishedDate, setPublishedDate] = useState("");
+  const [buttonLink, setButtonLink] = useState("");
+  const [journalName, setJournalName] = useState("");
+  const [bookTitle, setBookTitle] = useState("");
+  const [tags, setTags] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -49,11 +54,16 @@ export default function EditArticle({ params }: PageProps) {
 
       if (error) throw error;
       if (data) {
-        setTitle(data.title);
+        setTitle(data.title || "");
         setSummary(data.summary || "");
         setContent(data.content || "");
         setCategory(data.category || "");
         setAuthor(data.author || "");
+        setPublishedDate(data.published_date || "");
+        setButtonLink(data.button_link || "");
+        setJournalName(data.journal_name || "");
+        setBookTitle(data.book_title || "");
+        setTags(data.tags || "");
         setImageUrl(data.image_url || "");
         setPreviewUrl(data.image_url || null);
       }
@@ -108,6 +118,11 @@ export default function EditArticle({ params }: PageProps) {
           category,
           author,
           image_url: finalImageUrl,
+          published_date: publishedDate,
+          button_link: buttonLink,
+          journal_name: journalName,
+          book_title: bookTitle,
+          tags
         })
         .eq("id", id);
 
@@ -165,13 +180,13 @@ export default function EditArticle({ params }: PageProps) {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Summary
+                  Summary / Abstract
                 </label>
                 <textarea
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   className="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
-                  placeholder="Brief summary..."
+                  placeholder="Brief summary or paper abstract..."
                 />
               </div>
 
@@ -184,20 +199,81 @@ export default function EditArticle({ params }: PageProps) {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
-                    placeholder="Technology, Life, etc."
+                    placeholder="e.g., Book chapter, Journal article"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Author
+                    Authors (comma separated)
                   </label>
                   <input
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
                     className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
-                    placeholder="Author Name"
+                    placeholder="e.g., Dr Muhammad Kamran, et al."
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Book Title (For Book Chapters)
+                </label>
+                <input
+                  value={bookTitle}
+                  onChange={(e) => setBookTitle(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+                  placeholder="e.g., Advances and Challenges in Hazardous Waste Management"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Journal / Publisher
+                  </label>
+                  <input
+                    value={journalName}
+                    onChange={(e) => setJournalName(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+                    placeholder="e.g., IntechOpen"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Published Date
+                  </label>
+                  <input
+                    value={publishedDate}
+                    onChange={(e) => setPublishedDate(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+                    placeholder="e.g., Jan 15, 2024"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Button Link (URL)
+                </label>
+                <input
+                  value={buttonLink}
+                  onChange={(e) => setButtonLink(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+                  placeholder="e.g., https://orcid.org/..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Tags / Keywords (comma separated)
+                </label>
+                <input
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+                  placeholder="e.g., Air pollution, Policy, Pakistan"
+                />
               </div>
             </div>
 

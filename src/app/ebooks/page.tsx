@@ -19,6 +19,7 @@ type Ebook = {
   discount_price?: number;
   discount_expires_at?: string;
   is_downloadable?: boolean;
+  page_count?: number;
 };
 
 async function getPublishedEbooks(): Promise<Ebook[]> {

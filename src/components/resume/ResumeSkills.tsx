@@ -11,8 +11,6 @@ const skillCategories = [
     skills: [
       { name: "R & Biostatistics", level: 95 },
       { name: "Python (Data Analysis)", level: 85 },
-      { name: "SQL & Databases", level: 80 },
-      { name: "SAS & SPSS", level: 85 },
       { name: "Data Storytelling & Viz", level: 90 },
       { name: "Bioinformatics", level: 80 }
     ]

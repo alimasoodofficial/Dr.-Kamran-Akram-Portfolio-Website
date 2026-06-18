@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import SketchbookCard from "@/components/ui/SketchbookCard";
+import ResearchArticleCard from "@/components/ui/ResearchArticleCard";
 import { supabaseClient } from "@/lib/supabaseClient";
 
 const ArticlesSection: React.FC = () => {
-  const [activeBookId, setActiveBookId] = useState<string | number | null>(
-    null,
-  );
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,62 +29,35 @@ const ArticlesSection: React.FC = () => {
     fetchArticles();
   }, []);
 
-  // 1. Close book on Scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (activeBookId !== null) {
-        setActiveBookId(null);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeBookId]);
-
-  // 2. Close book on Click Outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setActiveBookId(null);
-    };
-    window.addEventListener("click", handleClickOutside);
-    return () => window.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  const handleBookToggle = (id: string | number) => {
-    setActiveBookId((prev) => (prev === id ? null : id));
-  };
-
-  const handleRead = (title: string) => {
-    console.log(`Reading: ${title}`);
-  };
-
   if (loading) {
     return (
       <div className="py-20 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <section>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-20 justify-items-center items-center md:w-11/12 lg:w-9/12 mx-auto py-16 px-2">
+    <section className="py-16 px-4">
+      <div className="flex flex-col gap-8 max-w-5xl mx-auto font-sans">
         {articles.map((article) => (
-          <SketchbookCard
+          <ResearchArticleCard
             key={article.id}
             id={article.id}
-            isOpen={activeBookId === article.id}
-            onToggle={handleBookToggle}
-            onRead={() => handleRead(article.title)}
             title={article.title}
             category={article.category}
             summary={article.summary}
-            imageUrl={article.image_url}
             author={article.author}
-            issueNumber={article.issue_number || "1"}
+            published_date={article.published_date}
+            button_link={article.button_link}
+            journal_name={article.journal_name}
+            book_title={article.book_title}
+            tags={article.tags}
+            image_url={article.image_url}
           />
         ))}
         {articles.length === 0 && (
-          <div className="col-span-full py-20 text-center text-slate-500 w-full">
+          <div className="text-center py-20 text-slate-500 dark:text-zinc-500 w-full bg-slate-50 dark:bg-zinc-900/10 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800">
             No articles published yet.
           </div>
         )}

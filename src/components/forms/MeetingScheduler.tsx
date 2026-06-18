@@ -23,7 +23,10 @@ import {
   ChevronRight,
   ArrowLeft,
   Mail,
-  Timer
+  Timer,
+  Upload,
+  FileText,
+  X
 } from "lucide-react";
 import { AvailabilitySlot, BlockedDate, getTimeSlots } from "@/app/actions/availability";
 import { createBooking, Booking } from "@/app/actions/bookings";
@@ -81,6 +84,77 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
   });
 
   const [errors, setErrors] = useState<{ fullName?: string, email?: string, acceptedTerms?: string }>({});
+
+  const [cvUrl, setCvUrl] = useState("");
+  const [cvFileName, setCvFileName] = useState("");
+  const [isUploadingCv, setIsUploadingCv] = useState(false);
+
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      toast({
+        title: "Invalid File Type",
+        description: "Only PDF files are allowed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "CV file must be smaller than 10MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingCv(true);
+    setCvFileName(file.name);
+    
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+
+      const res = await fetch("/api/consulting/upload-cv", {
+        method: "POST",
+        body: fd,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to upload CV");
+      }
+
+      setCvUrl(data.url);
+      toast({
+        title: "CV Uploaded",
+        description: "Your CV has been attached successfully.",
+      });
+    } catch (err: any) {
+      console.error(err);
+      setCvFileName("");
+      setCvUrl("");
+      toast({
+        title: "Upload Failed",
+        description: err.message || "Failed to upload CV.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingCv(false);
+    }
+  };
+
+  const handleRemoveCv = () => {
+    setCvUrl("");
+    setCvFileName("");
+    toast({
+      title: "CV Removed",
+      description: "Your attached CV has been removed.",
+    });
+  };
 
   useEffect(() => {
     if (selectedPlan) {
@@ -182,12 +256,16 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
     setIsSubmitting(true);
     try {
+      const finalNotes = cvUrl 
+        ? `${formData.notes}\n\n[Uploaded CV]: ${cvUrl}`.trim()
+        : formData.notes;
+
       if (packageName === "Quick Chat") {
         const result = await createBooking({
           full_name: formData.fullName,
           email: formData.email,
           phone: "",
-          message: formData.notes,
+          message: finalNotes,
           date: format(selectedDate, "yyyy-MM-dd"),
           time_slot: selectedTime,
           platform: formData.platform,
@@ -211,7 +289,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
           email: formData.email,
           platform: formData.platform,
           duration: formData.duration,
-          notes: formData.notes,
+          notes: finalNotes,
           date: format(selectedDate, "yyyy-MM-dd"),
           time_slot: selectedTime,
           packageName,
@@ -261,6 +339,8 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
             setSelectedDate(undefined);
             setSelectedTime(null);
             setFormData({ fullName: "", email: "", platform: "Zoom", duration: 30, notes: "", acceptedTerms: false });
+            setCvUrl("");
+            setCvFileName("");
           }}
         >
           Schedule another meeting
@@ -281,13 +361,15 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
             className="grid grid-cols-1 lg:grid-cols-12 gap-8"
           >
             {/* Sidebar Info */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-[#022c22] text-white rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden h-full">
+            <div className="lg:col-span-4">
+              <div className="bg-[#022c22] text-white rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden lg:sticky lg:top-8 flex flex-col justify-between gap-8 h-fit">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
-                <h3 className="text-3xl text-white! font-black mb-6 relative z-10">Consultation Details</h3>
-                <p className="text-emerald-100 mb-8 font-medium leading-relaxed opacity-80">
-                  Start by telling us who you are and how you'd like to meet. We'll find the perfect slot for you in the next step.
-                </p>
+                <div>
+                  <h3 className="text-3xl text-white! font-black mb-6 relative z-10">Consultation Details</h3>
+                  <p className="text-emerald-100 font-medium leading-relaxed opacity-80">
+                    Start by telling us who you are and how you'd like to meet. We'll find the perfect slot for you in the next step.
+                  </p>
+                </div>
 
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
@@ -314,7 +396,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     </div>
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">For Queries</p>
-                      <p className="font-bold"><a href="mailto:bookingsimkamran@gmail.com">bookingsimkamran@gmail.com</a></p>
+                      <p className="font-bold text-sm"><a href="mailto:bookingsimkamran@gmail.com">bookingsimkamran@gmail.com</a></p>
                     </div>
                   </div>
                 </div>
@@ -399,6 +481,60 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                   />
                 </div>
 
+                {/* CV Upload Option */}
+                <div className="space-y-3 mb-10">
+                  <label className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest ml-1">Upload CV (Optional)</label>
+                  
+                  {!cvUrl && !isUploadingCv ? (
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl cursor-pointer hover:border-primary/50 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-all group">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 text-slate-400 group-hover:text-primary group-hover:scale-110 transition-all mb-2" />
+                        <p className="text-xs font-bold text-slate-650 dark:text-slate-350">
+                          <span className="text-primary font-black">Click to upload</span> or drag and drop
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-medium mt-1">PDF only (Max 10MB)</p>
+                      </div>
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        accept="application/pdf" 
+                        onChange={handleCvUpload} 
+                      />
+                    </label>
+                  ) : (
+                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[1.5rem]">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 rounded-xl">
+                          {isUploadingCv ? (
+                            <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <FileText className="w-5 h-5" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                            {cvFileName || "Uploading..."}
+                          </p>
+                          <p className="text-[10px] text-slate-400 font-medium">
+                            {isUploadingCv ? "Uploading to secure storage..." : "CV Attached Successfully"}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {!isUploadingCv && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveCv}
+                          className="p-2 hover:bg-red-50 dark:hover:bg-red-950/20 text-slate-400 hover:text-red-500 rounded-lg transition-colors"
+                          title="Remove CV"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-3 mb-10">
                   <div className="flex items-start gap-3">
                     <input
@@ -420,9 +556,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
                 <Button
                   onClick={handleNextStep}
+                  disabled={isUploadingCv}
                   className="w-full h-16 rounded-[1.25rem] bg-primary hover:bg-[#064e3b] text-white font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl shadow-primary/20"
                 >
-                  Pick a Time Slot <CalendarIcon className="ml-2 w-5 h-5" />
+                  {isUploadingCv ? "Uploading CV..." : "Pick a Time Slot"} <CalendarIcon className="ml-2 w-5 h-5" />
                 </Button>
               </div>
             </div>
@@ -540,7 +677,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                         <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                           <Button
                             onClick={handleBooking}
-                            disabled={isSubmitting || !selectedDate || !selectedTime}
+                            disabled={isSubmitting || isUploadingCv || !selectedDate || !selectedTime}
                             className={cn(
                               "w-full h-16 rounded-[1.25rem] font-black uppercase tracking-[0.2em] text-sm transition-all duration-500 shadow-xl",
                               (!selectedDate || !selectedTime)

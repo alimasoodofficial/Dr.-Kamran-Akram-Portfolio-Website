@@ -41,6 +41,7 @@ type Ebook = {
   discount_price?: number;
   discount_expires_at?: string;
   is_downloadable?: boolean;
+  page_count?: number;
 };
 
 type EbookDetailsClientProps = {
@@ -96,6 +97,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
 
 
   const meta = generateBookMeta(ebook.id, ebook.title);
+  const pageCount = ebook.page_count !== null && ebook.page_count !== undefined ? ebook.page_count : meta.pageCount;
 
   const basePrice = ebook.price !== undefined && ebook.price !== null ? Number(ebook.price) : 9.99;
 
@@ -345,11 +347,12 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
               <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                 {meta.category}
               </span>
-              <div className="flex items-center text-amber-500 text-sm gap-1">
+              {/* Commented out reviews for now */}
+              {/* <div className="flex items-center text-amber-500 text-sm gap-1">
                 <Star className="w-4 h-4 fill-amber-500" />
                 <span className="font-bold text-slate-800 dark:text-white">{meta.rating}</span>
                 <span className="text-slate-400">({meta.reviews} reviews)</span>
-              </div>
+              </div> */}
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight font-heading">
@@ -407,7 +410,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
               <BookOpen className="w-6 h-6 text-emerald-500 mx-auto" />
               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Page Count</p>
-              <p className="font-extrabold text-slate-800 dark:text-white text-lg">{meta.pageCount} Pages</p>
+              <p className="font-extrabold text-slate-800 dark:text-white text-lg">{pageCount} Pages</p>
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 text-center space-y-1">
@@ -581,7 +584,8 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                         <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
                           {bookMeta.category}
                         </span>
-                        <div className="flex items-center text-amber-400 text-[10px] gap-0.5">
+                        {/* Commented out reviews for now */}
+                        {/* <div className="flex items-center text-amber-400 text-[10px] gap-0.5">
                           <div className="flex">
                             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -589,7 +593,7 @@ export default function EbookDetailsClient({ ebook, relatedEbooks }: EbookDetail
                             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
 
                       <Link href={`/ebooks/${slugify(book.title)}`}>

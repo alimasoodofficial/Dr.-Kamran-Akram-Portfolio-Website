@@ -292,6 +292,8 @@ const ProjectSection = ({ project }: { project: any }) => (
               <a
                 key={idx}
                 href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`group inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 ${link.type === "website" ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50" : "bg-white dark:bg-emerald-950/30 text-foreground border border-emerald-500/20 hover:bg-emerald-500/5 backdrop-blur-sm"}`}
               >
                 {link.type === "linkedin" ? (

@@ -10,7 +10,8 @@ import {
   AlertTriangle,
   Globe,
   ArrowRight,
-  FileText
+  FileText,
+  Mail
 } from "lucide-react";
 
 export default function TermsConditionsPage() {
@@ -25,6 +26,7 @@ export default function TermsConditionsPage() {
     { id: "intellectual-property", title: "5. Intellectual Property", icon: BookOpen },
     { id: "limitation", title: "6. Limitation of Liability", icon: AlertTriangle },
     { id: "governing-law", title: "7. Governing Law", icon: Globe },
+    { id: "marketing-communications", title: "8. Marketing & Publications", icon: Mail },
   ];
 
   // Update active section on scroll
@@ -115,11 +117,10 @@ export default function TermsConditionsPage() {
                           setActiveSection(sec.id);
                         }
                       }}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-3 border ${
-                        activeSection === sec.id
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-3 border ${activeSection === sec.id
                           ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200/80 dark:border-emerald-800/50 text-emerald-800 dark:text-emerald-300 font-semibold"
                           : "border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 hover:text-slate-900 dark:hover:text-white"
-                      }`}
+                        }`}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeSection === sec.id ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-700"}`} />
                       {sec.title}
@@ -134,7 +135,7 @@ export default function TermsConditionsPage() {
                   Need clarification on any of our terms or cancellation policies?
                 </p>
                 <a
-                  href="mailto:hi@imkamran.com"
+                  href="mailto:bookingsimkamran@gmail.com"
                   className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
                 >
                   Contact Support <ArrowRight className="w-4 h-4" />
@@ -292,6 +293,21 @@ export default function TermsConditionsPage() {
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-body">
                 These Terms & Conditions are governed by and construed in accordance with the laws of the State of Queensland, Australia.
                 Any disputes relating to these services shall be subject to the exclusive jurisdiction of the courts of Queensland.
+              </p>
+            </section>
+
+            {/* Section 8: Marketing & Publications */}
+            <section id="marketing-communications" className="glassy p-8 space-y-4 scroll-mt-32">
+              <div className="flex items-center gap-3 border-b border-slate-200/60 dark:border-slate-800/60 pb-3">
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950/50 text-primary">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-bold font-heading text-slate-900 dark:text-white">
+                  8. Marketing & Publications
+                </h2>
+              </div>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-body">
+                By providing your email or other contact information during a consultation booking, eBook purchase, resource download, or contact form submission, you consent to receive marketing messages, promotional offers, newsletters, updates about new publications, and other related services from Dr. Muhammad Kamran. You may opt out of these communications at any time by clicking the &ldquo;unsubscribe&rdquo; link in any email received, or by contacting us directly at <a href="mailto:bookingsimkamran@gmail.com" className="text-primary hover:underline font-semibold">bookingsimkamran@gmail.com</a>.
               </p>
             </section>
           </div>
