@@ -70,11 +70,11 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   useEffect(() => {
     controls.start({
       scale: zoomLevel,
-      x: zoomLevel === 1 ? 0 : undefined,
-      y: zoomLevel === 1 ? 0 : undefined,
+      x: (zoomLevel === 1 || isMobile) ? 0 : undefined,
+      y: (zoomLevel === 1 || isMobile) ? 0 : undefined,
       transition: { type: "spring", stiffness: 300, damping: 30 }
     });
-  }, [zoomLevel, controls]);
+  }, [zoomLevel, isMobile, controls]);
 
   // 1. Detect screen size (Responsive layout)
   useEffect(() => {
@@ -613,8 +613,53 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
       {/* 📖 The Flipbook Core viewport */}
       <div
         ref={flipbookRef}
-        className={`w-full max-w-[1280px] flex flex-col items-center justify-center relative overflow-hidden select-none bg-[#0c1520] rounded-3xl py-6 px-0 md:p-8 md:px-20 transition-all duration-300 border border-slate-900 shadow-2xl ${fullScreen ? "h-screen rounded-none p-0 bg-[#060b11]" : "min-h-[560px]"}`}
+        className={`w-full max-w-[1280px] flex flex-col relative select-none transition-all duration-300 ${
+          fullScreen 
+            ? "h-screen rounded-none p-4 md:p-8 bg-[#060b11] overflow-auto" 
+            : "min-h-[560px] overflow-visible bg-transparent border-none shadow-none"
+        }`}
       >
+
+        {/* Fullscreen Overlay Header */}
+        {fullScreen && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center justify-between gap-4 w-[calc(100%-2rem)] max-w-xl bg-white/95 dark:bg-slate-900/95 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-md">
+            {/* Exit Fullscreen */}
+            <button
+              onClick={toggleFullScreen}
+              className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+              title="Exit Fullscreen"
+            >
+              <Maximize2 className="w-4 h-4 rotate-180" />
+              <span className="hidden sm:inline">Exit Fullscreen</span>
+            </button>
+
+            {/* Page Progress Indicator */}
+            <div className="text-xs font-bold text-slate-600 dark:text-slate-350">
+              {currentPage >= numPages ? "Back Cover" : `Page ${currentPage + 1} / ${numPages}`}
+            </div>
+
+            {/* Right side controls */}
+            <div className="flex items-center gap-2">
+              {/* Sound Toggle */}
+              <button
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors cursor-pointer"
+                title={soundEnabled ? "Mute Flip Sound" : "Enable Flip Sound"}
+              >
+                {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+
+              {/* Zoom Option */}
+              <button
+                onClick={() => setZoomLevel(prev => prev === 1 ? 1.5 : prev === 1.5 ? 2.0 : 1)}
+                className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 transition-colors text-xs font-bold cursor-pointer min-w-[65px] text-center"
+                title="Zoom Page"
+              >
+                {zoomLevel === 1 ? "100%" : zoomLevel === 1.5 ? "150%" : "200%"}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Navigation Overlays */}
         <button
@@ -635,18 +680,24 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
         {/* Loading Spinner */}
         {pdfLoading && (
-          <div className="absolute inset-0 bg-[#0c1520]/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3">
+          <div className="absolute inset-0 bg-white/10 dark:bg-slate-950/10 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Loading PDF document...</p>
+            <p className="text-xs text-slate-450 font-semibold uppercase tracking-wider">Loading PDF document...</p>
           </div>
         )}
 
         {/* 📚 Book Body Wrapper */}
         {pdfDoc && numPages > 0 && (
           <motion.div
-            className={`w-full flex justify-center items-center relative ${zoomLevel > 1 ? "cursor-grab active:cursor-grabbing select-none touch-none" : ""}`}
+            className={`flex justify-center items-center relative m-auto ${
+              zoomLevel > 1 && !isMobile ? "cursor-grab active:cursor-grabbing select-none" : ""
+            }`}
+            style={{
+              width: zoomLevel > 1 ? `${zoomLevel * 100}%` : "100%",
+              height: zoomLevel > 1 ? `${zoomLevel * 100}%` : "auto",
+            }}
             animate={controls}
-            drag={zoomLevel > 1}
+            drag={zoomLevel > 1 && !isMobile}
             dragConstraints={{
               left: -800 * (zoomLevel - 1),
               right: 800 * (zoomLevel - 1),
@@ -777,7 +828,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         )}
 
         {/* Mobile-only navigation buttons below the book */}
-        <div className="flex md:hidden items-center justify-center gap-6 mt-6 pb-2 z-20">
+        <div className={`flex md:hidden items-center justify-center gap-6 z-20 ${fullScreen ? "absolute bottom-6 left-1/2 -translate-x-1/2" : "mt-6 pb-2"}`}>
           <button
             onClick={handlePrev}
             disabled={currentPage === 0}

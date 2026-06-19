@@ -103,7 +103,7 @@ export default function StatusClient() {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
-        <div className="p-10 max-w-md w-full bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/60 dark:border-emerald-500/20 rounded-[2.5rem] text-center shadow-xl dark:shadow-2xl space-y-6">
+        <div className="p-6 sm:p-10 max-w-md w-full bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/60 dark:border-emerald-500/20 rounded-[2.5rem] text-center shadow-xl dark:shadow-2xl space-y-6">
           <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto" />
           <div className="space-y-3">
             <h3 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Confirming Booking</h3>
@@ -120,7 +120,7 @@ export default function StatusClient() {
   if (error || !booking) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 py-16">
-        <div className="p-10 max-w-xl w-full bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/60 dark:border-red-500/20 rounded-[2.5rem] text-center shadow-xl dark:shadow-2xl space-y-8">
+        <div className="p-6 sm:p-10 max-w-xl w-full bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/60 dark:border-red-500/20 rounded-[2.5rem] text-center shadow-xl dark:shadow-2xl space-y-8">
           <div className="w-20 h-20 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-red-500/5">
             <XCircle className="w-12 h-12" />
           </div>
@@ -134,16 +134,16 @@ export default function StatusClient() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
             <Link
               href="/consulting"
-              className="flex-1 h-14 bg-primary hover:bg-[#064e3b] dark:hover:bg-emerald-500 text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg shadow-primary/20"
+              className="w-full sm:w-auto sm:min-w-[200px] sm:px-8 h-14 bg-primary hover:bg-[#064e3b] dark:hover:bg-emerald-500 text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg shadow-primary/20"
             >
               Try Booking Again
             </Link>
             <Link
               href="/"
-              className="flex-1 h-14 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 transition-all duration-300"
+              className="w-full sm:w-auto sm:min-w-[200px] sm:px-8 h-14 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 transition-all duration-300"
             >
               Go to Home Page
             </Link>
@@ -168,7 +168,7 @@ export default function StatusClient() {
   // Success View
   return (
     <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-16">
-      <div className="p-8 md:p-12 max-w-2xl w-full bg-white/80 dark:bg-slate-900/30 backdrop-blur-xl border border-emerald-500/15 dark:border-emerald-500/10 rounded-[3rem] shadow-xl dark:shadow-2xl space-y-8 relative overflow-hidden">
+      <div className="p-6 md:p-12 max-w-2xl w-full bg-white/80 dark:bg-slate-900/30 backdrop-blur-xl border border-emerald-500/15 dark:border-emerald-500/10 rounded-[3rem] shadow-xl dark:shadow-2xl space-y-8 relative overflow-hidden">
         {/* Glow decoration */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-[80px] rounded-full"></div>
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-500/5 blur-[80px] rounded-full"></div>
@@ -250,20 +250,20 @@ export default function StatusClient() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center">
           {booking.meetingLink && (
             <a
               href={booking.meetingLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 h-14 bg-gradient-to-r from-emerald-600 to-primary hover:from-emerald-500 hover:to-primary/95 text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-primary/10"
+              className="w-full sm:w-auto sm:min-w-[200px] sm:px-8 h-14 bg-gradient-to-r from-emerald-600 to-primary hover:from-emerald-500 hover:to-primary/95 text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-primary/10"
             >
               Join Meeting <ExternalLink className="w-4 h-4" />
             </a>
           )}
           <Link
             href="/"
-            className="flex-1 h-14 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 transition-all duration-300"
+            className="w-full sm:w-auto sm:min-w-[200px] sm:px-8 h-14 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4" /> Return to Home
           </Link>

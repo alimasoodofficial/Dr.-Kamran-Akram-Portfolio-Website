@@ -1,20 +1,7 @@
-// /app/api/admin/hero/route.ts
 import { NextResponse } from "next/server";
 import { getSupabaseService } from "@/lib/supabaseService";
 import { validateAdminRequest } from "@/lib/adminAuth";
 import { revalidatePath } from "next/cache";
-
-// Default settings for Specialization card
-const DEFAULT_SPECIALIZATION = {
-  id: "specialization",
-  card_type: "image",
-  category: "",
-  title: "",
-  image_url: "",
-  bg_color: "bento-card-green",
-  button_text: "",
-  button_link: "",
-};
 
 export async function GET(request: Request) {
   const validation = await validateAdminRequest(request);
@@ -25,11 +12,9 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
       .from("hero_settings")
       .select("*")
-      .eq("id", "specialization")
-      .maybeSingle();
+      .neq("id", "resume_cv");
 
     if (error) {
-      // If table doesn't exist, we return a 404/database error details so the client can show instructions
       if (error.code === "42P01") {
         return NextResponse.json(
           { error: "Table 'hero_settings' does not exist in the database.", code: "TABLE_NOT_FOUND" },
@@ -39,12 +24,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // If no record found, return default
-    if (!data) {
-      return NextResponse.json(DEFAULT_SPECIALIZATION);
-    }
-
-    return NextResponse.json(data);
+    return NextResponse.json(data || []);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -55,18 +35,24 @@ export async function POST(req: Request) {
   if (!validation.ok) return validation.response;
 
   try {
-    const body = await req.json(); // expect { card_type, category, title, image_url, bg_color, button_text, button_link }
+    const body = await req.json();
+    const { id, card_type, category, title, image_url, bg_color, button_text, button_link } = body;
+    
+    if (!id) {
+      return NextResponse.json({ error: "Missing card id" }, { status: 400 });
+    }
+
     const supabase = getSupabaseService();
 
     const payload = {
-      id: "specialization",
-      card_type: body.card_type || "image",
-      category: body.category || "Specialization",
-      title: body.title || "",
-      image_url: body.image_url || null,
-      bg_color: body.bg_color || "bento-card-green",
-      button_text: body.button_text || "",
-      button_link: body.button_link || "",
+      id,
+      card_type: card_type || "text",
+      category: category !== undefined ? category : "",
+      title: title !== undefined ? title : "",
+      image_url: image_url || null,
+      bg_color: bg_color || "bento-card-green",
+      button_text: button_text !== undefined ? button_text : "",
+      button_link: button_link !== undefined ? button_link : "",
       updated_at: new Date().toISOString(),
     };
 

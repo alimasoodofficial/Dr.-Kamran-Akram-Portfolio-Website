@@ -174,11 +174,11 @@ export default async function HomePage() {
             <h3 className="font-heading text-2xl md:text-4xl mb-4">
               {latestNewsletter ? latestNewsletter.title : "How Data Storytelling is Redefining Sustainability in 2026"}
             </h3>
-            <p className="font-body text-lg text-[var(--muted-foreground)] mb-8 line-clamp-2 md:line-clamp-none">
+            <p className="font-body text-lg text-[var(--muted-foreground)] mb-8 line-clamp-3">
               {latestNewsletter?.subtitle ? latestNewsletter.subtitle : "In this issue, we explore the intersection of environmental data and human empathy. How can we make numbers feel like stories that inspire real action?"}
             </p>
             <Button href={latestNewsletter ? `/newsletter/${latestNewsletter.id}` : "/newsletter"} className="text-white px-8 py-3 rounded-2xl">
-              Read Latest Issue
+              Read More
             </Button>
           </div>
           
