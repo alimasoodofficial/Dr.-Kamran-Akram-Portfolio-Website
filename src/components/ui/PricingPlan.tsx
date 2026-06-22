@@ -53,7 +53,11 @@ const pricingData: PricingTier[] = [
     price: "$450",
     unit: "/month",
     icon: <GraduationCap className="w-6 h-6 text-teal-600" />,
-    features: ["5x 1-hour sessions", "Unlimited email Q&A", "Final Roadmap"],
+    features: [
+      "Unlimited email Q&A",
+      "Final Roadmap",
+      "Book first hour (we will discuss next hours and roadmap in your first meeting)"
+    ],
     buttonText: "Select Plan",
   },
 ];

@@ -12,14 +12,14 @@ const CardWrapper = ({
   style?: React.CSSProperties;
 }) => (
   <div
-    className={`rounded-3xl  p-6 relative overflow-hidden transition-transform duration-300 hover:-translate-y-2 ${className}`}
+    className={`rounded-3xl p-6 relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl border border-white/5 dark:border-white/10 group ${className}`}
     style={style}
   >
     {children}
   </div>
 );
 
-// --- 1. Standard Stat/Info Card (e.g., Society Relief) ---
+// --- 1. Standard Stat/Info Card (e.g., Society Relief / eBooks) ---
 interface InfoCardProps {
   title: string;
   subtitle: string;
@@ -41,34 +41,94 @@ export const InfoCard = ({
   href,
   bgImage,
 }: InfoCardProps) => {
-  const showGradient = !bgClass.includes("no-gradient");
   const cleanBgClass = bgClass.replace("no-gradient-", "");
+  
+  if (bgImage) {
+    return (
+      <CardWrapper
+        className={`${cleanBgClass} ${textColor} min-h-[340px] flex flex-col justify-end`}
+      >
+        <img
+          src={bgImage}
+          alt={subtitle || title}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          style={{ zIndex: 0 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to top, rgba(1, 15, 12, 0.95) 0%, rgba(1, 15, 12, 0.5) 60%, rgba(1, 15, 12, 0) 100%)",
+            zIndex: 1,
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col mb-2">
+          {title && (
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-emerald-355 text-emerald-300 bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit mb-3 block">
+              {title}
+            </span>
+          )}
+          {subtitle && (
+            <h3 className="text-xl md:text-2xl font-bold font-heading leading-tight mb-2 !text-white">
+              {subtitle}
+            </h3>
+          )}
+          {desc && (
+            <p className="text-xs md:text-sm leading-relaxed !text-white/80 mt-1 font-body">
+              {desc}
+            </p>
+          )}
+        </div>
+
+        {href && (
+          <div className="relative z-10 mt-2">
+            <Link
+              href={href}
+              className="inline-flex items-center justify-between w-full bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 hover:border-white/20 transition-all backdrop-blur-md p-3 px-5 rounded-xl font-semibold text-xs !text-white group/btn shadow-sm"
+            >
+              <span className="flex items-center gap-2">
+                <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
+                {btnText || "Learn More"}
+              </span>
+            </Link>
+          </div>
+        )}
+      </CardWrapper>
+    );
+  }
+
   return (
     <CardWrapper
-      className={`${cleanBgClass} ${textColor} min-h-[320px] flex flex-col justify-between bg-cover bg-center`}
-      style={
-        bgImage
-          ? {
-              backgroundImage: showGradient
-                ? `linear-gradient(rgba(1, 28, 22, 0.75) 0%, rgba(5, 150, 105, 0.5) 100%), url('${bgImage}')`
-                : `url('${bgImage}')`,
-            }
-          : undefined
-      }
+      className={`${cleanBgClass} ${textColor} min-h-[340px] flex flex-col justify-between`}
     >
-      <div className="flex flex-col justify-between text-white">
-        {title && <h3 className="text-lg md:text-4xl font-bold mb-2 !text-white">{title}</h3>}
-        {subtitle && <h3 className="text-2xl font-heading mb-3 !text-white">{subtitle}</h3>}
-        {desc && <p className="text-sm md:text-lg leading-relaxed text-white/90">{desc}</p>}
+      <div className="flex flex-col z-10">
+        {title && (
+          <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-emerald-300 bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit mb-4">
+            {title}
+          </span>
+        )}
+        {subtitle && (
+          <h3 className="text-xl md:text-2xl font-bold font-heading leading-tight mb-2 !text-white">
+            {subtitle}
+          </h3>
+        )}
+        {desc && (
+          <p className="text-xs md:text-sm leading-relaxed !text-white/80 mt-1 font-body">
+            {desc}
+          </p>
+        )}
       </div>
+
       {href && (
-        <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
+        <div className="z-10 mt-auto">
           <Link
             href={href}
-            className="text-white w-full h-full flex items-center"
+            className="inline-flex items-center justify-between w-full bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 hover:border-white/20 transition-all backdrop-blur-md p-3 px-5 rounded-xl font-semibold text-xs !text-white group/btn shadow-sm"
           >
-            <i className="fa-solid fa-arrow-right px-2"></i>
-            {btnText || "Learn More"}
+            <span className="flex items-center gap-2">
+              <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
+              {btnText || "Learn More"}
+            </span>
           </Link>
         </div>
       )}
@@ -92,37 +152,75 @@ export const StripCard = ({
   buttonLink?: string;
   bgImage?: string;
 }) => {
-  const showGradient = !bgClass.includes("no-gradient");
   const cleanBgClass = bgClass.replace("no-gradient-", "");
+
+  if (bgImage) {
+    return (
+      <CardWrapper
+        className={`${cleanBgClass} min-h-[140px] flex flex-col justify-end p-6`}
+      >
+        <img
+          src={bgImage}
+          alt={text}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          style={{ zIndex: 0 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to top, rgba(1, 15, 12, 0.95) 0%, rgba(1, 15, 12, 0.5) 60%, rgba(1, 15, 12, 0) 100%)",
+            zIndex: 1,
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col mb-2">
+          <h3 className="text-lg font-bold !text-white leading-snug">{text}</h3>
+          {desc && (
+            <p className="text-xs md:text-sm !text-white/80 mt-1.5 font-body leading-relaxed">
+              {desc}
+            </p>
+          )}
+        </div>
+        {buttonLink && buttonText && (
+          <div className="relative z-10 mt-2">
+            <Link
+              href={buttonLink}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 transition-all backdrop-blur-md py-2 px-4 rounded-xl font-semibold text-xs !text-white group/btn"
+            >
+              <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
+              {buttonText}
+            </Link>
+          </div>
+        )}
+      </CardWrapper>
+    );
+  }
+
   return (
     <CardWrapper
-      className={`${cleanBgClass} min-h-[120px] flex flex-col justify-center text-white p-6 bg-cover bg-center`}
-      style={
-        bgImage
-          ? {
-              backgroundImage: showGradient
-                ? `linear-gradient(rgba(1, 28, 22, 0.75) 0%, rgba(5, 150, 105, 0.5) 100%), url('${bgImage}')`
-                : `url('${bgImage}')`,
-            }
-          : undefined
-      }
+      className={`${cleanBgClass} min-h-[140px] flex items-center justify-between p-6`}
     >
-      <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold !text-white leading-tight">{text}</h3>
-        {desc && (
-          <p className="text-sm text-white/90 text-left font-light leading-relaxed">
-            {desc}
-          </p>
+      <div className="flex-1 flex flex-col justify-between h-full z-10">
+        <div>
+          <h3 className="text-lg font-bold !text-white leading-snug">{text}</h3>
+          {desc && (
+            <p className="text-xs md:text-sm !text-white/80 mt-1.5 font-body leading-relaxed max-w-[90%]">
+              {desc}
+            </p>
+          )}
+        </div>
+        {buttonLink && buttonText && (
+          <div className="mt-4 w-fit">
+            <Link
+              href={buttonLink}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 transition-all backdrop-blur-md py-2 px-4 rounded-xl font-semibold text-xs !text-white group/btn"
+            >
+              <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
+              {buttonText}
+            </Link>
+          </div>
         )}
       </div>
-      {buttonLink && (
-        <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
-          <Link href={buttonLink} className="text-white w-full h-full flex items-center">
-            <i className="fa-solid fa-arrow-right px-2"></i>
-            {buttonText || "Learn More"}
-          </Link>
-        </div>
-      )}
     </CardWrapper>
   );
 };
@@ -133,7 +231,7 @@ export const ImageCard = ({
   title,
   bgImage,
   bgClass = "bento-card-green",
-  heightClass = "h-[240px]",
+  heightClass = "min-h-[260px]",
   buttonText,
   buttonLink,
 }: { 
@@ -147,31 +245,45 @@ export const ImageCard = ({
 }) => {
   const showGradient = !bgClass.includes("no-gradient");
   const cleanBgClass = bgClass.replace("no-gradient-", "");
-  const overlayGradient = "rgba(1, 28, 22, 0.75) 0%, rgba(5, 150, 105, 0.5) 100%";
 
   return (
     <CardWrapper
-      className={`${cleanBgClass} !bg-cover !bg-no-repeat bg-center flex flex-col justify-end text-white`}
-      style={{
-        backgroundImage: bgImage
-          ? showGradient
-            ? `linear-gradient(${overlayGradient}), url('${bgImage}')`
-            : `url('${bgImage}')`
-          : undefined,
-      }}
+      className={`${cleanBgClass} ${heightClass} flex flex-col justify-end`}
     >
-      <div className="relative z-10 text-white mb-2">
+      {bgImage && (
+        <img
+          src={bgImage}
+          alt={category || title}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          style={{ zIndex: 0 }}
+        />
+      )}
+      {bgImage && showGradient && (
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to top, rgba(1, 15, 12, 0.95) 0%, rgba(1, 15, 12, 0.5) 60%, rgba(1, 15, 12, 0) 100%)",
+            zIndex: 1,
+          }}
+        />
+      )}
+      
+      <div className="relative z-10 mb-2">
         {category && (
-          <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
+          <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-emerald-355 text-emerald-300 bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit mb-3 block">
             {category}
           </span>
         )}
-        {title && <h3 className="text-sm md:text-md font-medium leading-tight !text-white font-body mt-2">{title}</h3>}
+        {title && (
+          <p className="text-xs md:text-sm leading-relaxed !text-white/95 font-body font-normal">
+            {title}
+          </p>
+        )}
       </div>
       {buttonLink && (
-        <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-2 relative z-10">
-          <Link href={buttonLink} className="text-white w-full h-full flex items-center font-body">
-            <i className="fa-solid fa-arrow-right px-2"></i>
+        <div className="relative z-10 mt-2">
+          <Link href={buttonLink} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 transition-all backdrop-blur-md py-2 px-4 rounded-xl font-semibold text-xs !text-white group/btn">
+            <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
             {buttonText || "Learn More"}
           </Link>
         </div>
@@ -200,26 +312,43 @@ export const CenterStatCard = ({
   const cleanBgClass = bgClass.replace("no-gradient-", "");
   return (
     <CardWrapper
-      className={`${cleanBgClass} flex flex-col justify-center items-center text-center text-white bg-cover bg-center`}
-      style={
-        bgImage
-          ? {
-              backgroundImage: showGradient
-                ? `linear-gradient(rgba(1, 28, 22, 0.75) 0%, rgba(5, 150, 105, 0.5) 100%), url('${bgImage}')`
-                : `url('${bgImage}')`,
-            }
-          : undefined
-      }
+      className={`${cleanBgClass} min-h-[200px] flex flex-col justify-center items-center text-center`}
     >
-      <h3 className="text-4xl font-bold mb-1 !text-white">{title}</h3>
-      {subtitle && <p className="font-medium mb-6 text-white/90">{subtitle}</p>}
-      {buttonLink && (
-        <div className="bg-white/10 hover:bg-white/20 transition-colors w-full py-3 rounded-full font-semibold text-sm flex justify-center items-center gap-2 cursor-pointer">
-          <Link href={buttonLink} className="text-white w-full h-full flex justify-center items-center">
-            {buttonText || "Learn More"}
-          </Link>
-        </div>
+      {bgImage && (
+        <img
+          src={bgImage}
+          alt={subtitle || title}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          style={{ zIndex: 0 }}
+        />
       )}
+      {bgImage && showGradient && (
+        <div
+          className="absolute inset-0 bg-black/50"
+          style={{ zIndex: 1 }}
+        />
+      )}
+
+      <div className="relative z-10 flex flex-col items-center">
+        <span className="text-5xl md:text-6xl font-black font-heading tracking-tight !text-white mb-1 drop-shadow-md">
+          {title}
+        </span>
+        {subtitle && (
+          <p className="text-xs md:text-sm font-semibold tracking-wider text-emerald-400 uppercase mb-4 font-body">
+            {subtitle}
+          </p>
+        )}
+        {buttonLink && buttonText && (
+          <div className="w-full">
+            <Link
+              href={buttonLink}
+              className="inline-flex items-center justify-center bg-white text-slate-955 text-slate-955 text-slate-950 hover:bg-slate-100 hover:scale-[1.02] duration-200 active:scale-95 font-bold text-xs py-2.5 px-6 rounded-xl transition-all shadow-md"
+            >
+              {buttonText}
+            </Link>
+          </div>
+        )}
+      </div>
     </CardWrapper>
   );
 };
@@ -242,28 +371,28 @@ export const SpecializationCard = ({
   buttonText?: string;
   buttonLink?: string;
 }) => {
-  const overlayColor = "rgba(1, 28, 22, 0.85) 0%, rgba(6, 78, 59, 0.6) 35%, rgba(16, 185, 129, 0.4) 100%";
-
   if (cardType === "text") {
     const bgClass = bgColor || "bento-card-green";
     const cleanBgClass = bgClass.replace("no-gradient-", "");
     return (
       <CardWrapper
-        className={`${cleanBgClass}   flex flex-col justify-between text-white`}
+        className={`${cleanBgClass} flex flex-col justify-between min-h-[460px]`}
       >
-        <div className="flex flex-col text-white">
-          <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
-            {category}
-          </span>
-          <h3 className="text-sm md:text-md font-medium leading-snug !text-white mt-4 font-body">
+        <div className="flex flex-col">
+          {category && (
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-emerald-355 text-emerald-300 bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit mb-4">
+              {category}
+            </span>
+          )}
+          <h3 className="text-xl md:text-2xl font-bold leading-tight !text-white font-heading mt-2">
             {title}
           </h3>
         </div>
         
         {buttonLink && (
-          <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-4">
-            <Link href={buttonLink} className="text-white w-full h-full flex items-center font-body">
-              <i className="fa-solid fa-arrow-right px-2"></i>
+          <div className="mt-auto">
+            <Link href={buttonLink} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 transition-all backdrop-blur-md py-2 px-4 rounded-xl font-semibold text-xs !text-white group/btn">
+              <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
               {buttonText || "Learn More"}
             </Link>
           </div>
@@ -277,43 +406,41 @@ export const SpecializationCard = ({
   const cleanBgColor = bgColor ? bgColor.replace("no-gradient-", "") : "bento-card-green";
   return (
     <CardWrapper
-      className={`${cleanBgColor} h-[460px] flex flex-col justify-end text-white`}
+      className={`${cleanBgColor} h-[460px] flex flex-col justify-end`}
     >
-      {/* Image rendered via <img> with object-contain — no scaling/cropping */}
       {bgImage && (
         <img
           src={bgImage}
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain"
+          alt={title || category}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
           style={{ zIndex: 0 }}
         />
       )}
-      {/* Overlay */}
       {bgImage && showGradient && (
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(${overlayColor})`,
+            background: "linear-gradient(to top, rgba(1, 15, 12, 0.95) 0%, rgba(1, 15, 12, 0.6) 45%, rgba(1, 15, 12, 0) 100%)",
             zIndex: 1,
           }}
         />
       )}
-      <div className="relative z-10 text-white mb-2">
+      <div className="relative z-10 mb-2">
         {category && (
-          <span className="block text-2xl font-bold mb-1 opacity-90 text-white font-heading">
+          <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-emerald-355 text-emerald-300 bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit mb-3 block">
             {category}
           </span>
         )}
         {title && (
-          <h3 className="text-sm md:text-md font-medium leading-tight !text-white font-body mt-4 font-normal">
+          <h3 className="text-xl md:text-2xl font-bold leading-tight !text-white font-heading mt-2">
             {title}
           </h3>
         )}
       </div>
       {buttonLink && (
-        <div className="bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm p-3 rounded-full flex justify-between items-center px-5 font-semibold text-sm cursor-pointer mt-2 relative z-10">
-          <Link href={buttonLink} className="text-white w-full h-full flex items-center font-body">
-            <i className="fa-solid fa-arrow-right px-2"></i>
+        <div className="relative z-10 mt-2">
+          <Link href={buttonLink} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 transition-all backdrop-blur-md py-2 px-4 rounded-xl font-semibold text-xs !text-white group/btn">
+            <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/btn:translate-x-1"></i>
             {buttonText || "Learn More"}
           </Link>
         </div>
@@ -321,4 +448,3 @@ export const SpecializationCard = ({
     </CardWrapper>
   );
 };
-

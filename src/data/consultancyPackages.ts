@@ -75,7 +75,8 @@ export const packages = [
       "Five 1-hour sessions (over 4–5 weeks)",
       "Review of up to three documents (CV, proposal, LinkedIn)",
       "Ongoing Q&A by email between sessions",
-      "Final roadmap + checklist to guide you forward"
+      "Final roadmap + checklist to guide you forward",
+      "Book first hour (we will discuss next hours and roadmap in your first meeting)"
     ],
     calendly: "https://calendly.com/dataexperts360/mentorship",
   },
