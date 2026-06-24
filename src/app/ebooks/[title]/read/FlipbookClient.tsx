@@ -57,6 +57,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [screenWidth, setScreenWidth] = useState<number>(360);
+  const [screenHeight, setScreenHeight] = useState<number>(800);
 
   // References for react-pageflip and rendering tracking
   const bookRef = useRef<any>(null);
@@ -81,11 +82,56 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
     const checkSize = () => {
       setIsMobile(window.innerWidth < 768);
       setScreenWidth(window.innerWidth);
+      setScreenHeight(window.innerHeight);
     };
     checkSize();
     window.addEventListener("resize", checkSize);
     return () => window.removeEventListener("resize", checkSize);
   }, []);
+
+  // Dynamically calculate page dimensions to prevent overflowing the viewport height and width
+  const getBookDimensions = () => {
+    if (isMobile) {
+      const availableWidth = screenWidth - 32;
+      const computedHeight = fullScreen ? (screenHeight - 160) : (screenHeight - 280);
+      const maxHeight = Math.max(350, computedHeight);
+      
+      let width = availableWidth;
+      let height = width / pageAspectRatio;
+      
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * pageAspectRatio;
+      }
+      return { pageWidth: Math.round(width), pageHeight: Math.round(height) };
+    } else {
+      // Desktop / Tablet double-page layout
+      const computedHeight = fullScreen ? (screenHeight - 180) : (screenHeight - 340);
+      const maxHeight = Math.max(350, computedHeight);
+      
+      // We want to reserve space on the sides for desktop arrow buttons (approx 240px total for buttons and padding)
+      const availableWidth = screenWidth - 240;
+      const maxSinglePageWidth = availableWidth / 2;
+      
+      let height = maxHeight;
+      let width = height * pageAspectRatio;
+      
+      if (width > maxSinglePageWidth) {
+        width = maxSinglePageWidth;
+        height = width / pageAspectRatio;
+      }
+      
+      // Upper bounds
+      if (width > 460) {
+        width = 460;
+        height = width / pageAspectRatio;
+      }
+      
+      return { pageWidth: Math.round(width), pageHeight: Math.round(height) };
+    }
+  };
+
+  const { pageWidth, pageHeight } = getBookDimensions();
 
   // 2. Client-Side DOM Protections (Anti-Scraping / Printing)
   useEffect(() => {
@@ -564,7 +610,7 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
 
   // Render Main Flipbook Viewer (Authorized)
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] gap-6 p-4">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] gap-6 p-4 overflow-hidden w-full">
 
       {/* 🧭 Control Panel Top */}
       <div className="w-full max-w-5xl flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
@@ -615,8 +661,8 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
         ref={flipbookRef}
         className={`w-full max-w-[1280px] flex flex-col relative select-none transition-all duration-300 ${
           fullScreen 
-            ? "h-screen rounded-none p-4 md:p-8 bg-[#060b11] overflow-auto" 
-            : "min-h-[560px] overflow-visible bg-transparent border-none shadow-none"
+            ? "h-screen rounded-none p-4 md:p-8 bg-[#060b11] overflow-hidden" 
+            : "min-h-[560px] overflow-hidden bg-transparent border-none shadow-none"
         }`}
       >
 
@@ -661,23 +707,6 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
           </div>
         )}
 
-        {/* Navigation Overlays */}
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 0}
-          className="absolute left-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden md:block"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-
-        <button
-          onClick={handleNext}
-          disabled={currentPage >= maxSpreadIndex}
-          className="absolute right-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden md:block"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-
         {/* Loading Spinner */}
         {pdfLoading && (
           <div className="absolute inset-0 bg-white/10 dark:bg-slate-950/10 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3">
@@ -707,23 +736,48 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
             dragElastic={0.15}
             dragMomentum={true}
           >
-            <BookFlip
-              width={isMobile ? screenWidth : 400}
-              height={isMobile ? Math.round(screenWidth / pageAspectRatio) : Math.round(400 / pageAspectRatio)}
-              size="stretch"
-              minWidth={320}
-              maxWidth={800}
-              minHeight={400}
-              maxHeight={1100}
-              maxShadowOpacity={0.4}
-              drawShadow={true}
-              showCover={true}
-              mobileScrollSupport={true}
-              ref={bookRef}
-              onFlip={onFlip}
-              className="shadow-2xl mx-auto"
-              useMouseEvents={zoomLevel === 1}
+            {/* Relative wrapper with exact width/height of the book so side arrows can position relative to the book edges */}
+            <div
+              className="relative flex items-center justify-center"
+              style={{
+                width: isMobile ? pageWidth : (pageWidth * 2),
+                height: pageHeight
+              }}
             >
+              {/* Desktop/Tablet Navigation Arrows - Positioned relative to the book edges with a nice gap */}
+              <button
+                onClick={handlePrev}
+                disabled={currentPage === 0}
+                className="absolute -left-20 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden lg:block"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              <button
+                onClick={handleNext}
+                disabled={currentPage >= maxSpreadIndex}
+                className="absolute -right-20 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full shadow-lg border border-slate-800 hover:scale-105 disabled:opacity-20 disabled:scale-100 disabled:hover:scale-100 transition-all cursor-pointer backdrop-blur-sm hidden lg:block"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              <BookFlip
+                width={pageWidth}
+                height={pageHeight}
+                size="stretch"
+                minWidth={320}
+                maxWidth={800}
+                minHeight={400}
+                maxHeight={1100}
+                maxShadowOpacity={0.4}
+                drawShadow={true}
+                showCover={true}
+                mobileScrollSupport={true}
+                ref={bookRef}
+                onFlip={onFlip}
+                className="shadow-2xl mx-auto"
+                useMouseEvents={zoomLevel === 1}
+              >
               {Array.from({ length: numPages + 1 }, (_, index) => {
                 const pageNum = index + 1;
                 const isCover = pageNum === 1;
@@ -824,11 +878,12 @@ export default function FlipbookClient({ ebook }: FlipbookClientProps) {
                 );
               })}
             </BookFlip>
+            </div>
           </motion.div>
         )}
 
-        {/* Mobile-only navigation buttons below the book */}
-        <div className={`flex md:hidden items-center justify-center gap-6 z-20 ${fullScreen ? "absolute bottom-6 left-1/2 -translate-x-1/2" : "mt-6 pb-2"}`}>
+        {/* Mobile/Tablet navigation buttons below the book */}
+        <div className={`flex lg:hidden items-center justify-center gap-6 z-20 ${fullScreen ? "absolute bottom-6 left-1/2 -translate-x-1/2" : "mt-6 pb-2"}`}>
           <button
             onClick={handlePrev}
             disabled={currentPage === 0}

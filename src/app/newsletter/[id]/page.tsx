@@ -110,9 +110,10 @@ function formatContentText(text: string): React.ReactNode {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold"
+          className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white text-xs font-bold rounded-lg transition-all align-middle mx-1 shadow-sm hover:shadow"
         >
-          {formatFormatting(label)}
+          <Link2 className="w-3.5 h-3.5 text-white" />
+          <span className="text-white">Read More</span>
         </a>
       );
     }
@@ -279,7 +280,7 @@ export default async function NewsletterDetailPage({
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#010403] pb-32 font-sans">
-      <div className="max-w-4xl mx-auto px-6 pt-12 space-y-8">
+      <div className="max-w-6xl mx-auto px-6 pt-12 space-y-8">
 
         {/* Back link above the article */}
         <div className="flex items-center justify-between">
@@ -288,20 +289,6 @@ export default async function NewsletterDetailPage({
             Back to Newsletter
           </Link>
         </div>
-
-        {/* ── Centered Hero Image ───────────────────────────────────────── */}
-        {newsletter.hero_image_url && (
-          <div className="relative w-full h-[250px] md:h-[400px]  mx-auto ">
-            <Image
-              src={newsletter.hero_image_url}
-              alt={newsletter.title}
-              fill
-              priority
-              className="object-contain "
-              quality={95}
-            />
-          </div>
-        )}
 
         {/* ── Heading and Content Card (beneath the image) ───────────────── */}
         <div className="bg-white dark:bg-[#040d0a] rounded-[2.5rem] p-4 md:p-16 lg:p-20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] border border-slate-200/60 dark:border-[#0d2a22] space-y-12">
@@ -322,6 +309,20 @@ export default async function NewsletterDetailPage({
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-[1.15] tracking-tighter">
               {newsletter.title}
             </h1>
+
+            {/* ── Centered Hero Image between Title and Subtitle ───────────────────────────── */}
+            {newsletter.hero_image_url && (
+              <div className="relative w-full h-[250px] md:h-[450px] mx-auto rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#040d0a]">
+                <Image
+                  src={newsletter.hero_image_url}
+                  alt={newsletter.title}
+                  fill
+                  priority
+                  className="object-contain"
+                  quality={95}
+                />
+              </div>
+            )}
 
             {newsletter.subtitle && (
               <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l-4 border-emerald-500 pl-6">
