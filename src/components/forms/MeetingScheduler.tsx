@@ -158,17 +158,10 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
   useEffect(() => {
     if (selectedPlan) {
-      setFormData(prev => {
-        const cleanedNotes = prev.notes.startsWith("Selected Package:")
-          ? prev.notes.split("\n").slice(1).join("\n")
-          : prev.notes;
-
-        return {
-          ...prev,
-          duration: selectedPlan.duration as 15 | 30 | 60,
-          notes: `Selected Package: ${selectedPlan.name}\n${cleanedNotes}`.trim()
-        };
-      });
+      setFormData(prev => ({
+        ...prev,
+        duration: selectedPlan.duration as 15 | 30 | 60,
+      }));
     }
   }, [selectedPlan]);
 
@@ -256,9 +249,13 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
 
     setIsSubmitting(true);
     try {
-      const finalNotes = cvUrl 
-        ? `${formData.notes}\n\n[Uploaded CV]: ${cvUrl}`.trim()
-        : formData.notes;
+      let finalNotes = formData.notes;
+      if (selectedPlan) {
+        finalNotes = `Selected Package: ${selectedPlan.name}\n${finalNotes}`.trim();
+      }
+      if (cvUrl) {
+        finalNotes = `${finalNotes}\n\n[Uploaded CV]: ${cvUrl}`.trim();
+      }
 
       if (packageName === "Quick Chat") {
         const result = await createBooking({
@@ -378,7 +375,7 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                     </div>
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-emerald-200 opacity-70">Duration</p>
-                      <p className="font-bold">Flexible 15/30/60 Mins</p>
+                      <p className="font-bold"> (15 / 30 / 60 Mins)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -409,6 +406,19 @@ export function MeetingScheduler({ availability, blockedDates, selectedPlan }: M
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                   <User className="text-primary" /> Basic Information
                 </h3>
+
+                {selectedPlan && (
+                  <div className="mb-8 p-6 bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[1.5rem] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Selected Package</p>
+                      <h4 className="text-xl font-bold text-slate-950 dark:text-white">{selectedPlan.name}</h4>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 text-primary dark:text-emerald-300 rounded-xl text-sm font-bold w-fit">
+                      <Timer className="w-4.5 h-4.5" />
+                      <span>{selectedPlan.duration} Minutes Session</span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div className="space-y-3">

@@ -48,22 +48,23 @@ const MailIcon = () => (
 // ---------------------------------------------------------------------------
 // Submit button – reads pending state from the nearest <form>
 // ---------------------------------------------------------------------------
-function SubmitButton() {
+function SubmitButton({ className = "h-[42px] rounded-md text-xs py-2.5" }: { className?: string }) {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
       disabled={pending}
-      className="
-        flex items-center justify-center w-full h-[42px] px-[18px] py-2.5
+      className={`
+        flex items-center justify-center w-full px-[18px]
         bg-gradient-to-b from-emerald-500 to-teal-800
         hover:from-emerald-600 hover:to-teal-900
-        rounded-md border-0 text-white font-semibold text-xs
+        border-0 text-white font-semibold
         shadow-md shadow-emerald-500/10 dark:shadow-none
         active:scale-[0.98] transition-all duration-150
         disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100
-      "
+        ${className}
+      `}
     >
       {pending ? (
         <span className="flex items-center gap-2">
@@ -96,11 +97,67 @@ function SubmitButton() {
   );
 }
 
+interface SubscribeFormProps {
+  layout?: "card" | "inline";
+}
+
 // ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
-const SubscribeForm = () => {
+const SubscribeForm = ({ layout = "card" }: SubscribeFormProps) => {
   const [state, formAction] = useActionState(subscribeAction, null);
+
+  if (layout === "inline") {
+    return (
+      <div className="w-full flex justify-center transition-all duration-300">
+        <form action={formAction} className="w-full max-w-2xl flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input
+            name="fullName"
+            type="text"
+            placeholder="Your name (optional)"
+            className="
+              flex-1 h-[48px] px-4 rounded-2xl
+              border border-slate-200 dark:border-[#0d2a22]
+              bg-white/80 dark:bg-emerald-950/20 text-slate-800 dark:text-emerald-50
+              outline-none text-base
+              transition-all duration-300
+              focus:border-transparent focus:ring-2 focus:ring-emerald-500
+            "
+          />
+          <input
+            id="subscribe-email"
+            name="email"
+            type="email"
+            required
+            placeholder="Email address"
+            className="
+              flex-1 h-[48px] px-4 rounded-2xl
+              border border-slate-200 dark:border-[#0d2a22]
+              bg-white/80 dark:bg-emerald-950/20 text-slate-800 dark:text-emerald-50
+              outline-none text-base
+              transition-all duration-300
+              focus:border-transparent focus:ring-2 focus:ring-emerald-500
+            "
+          />
+          <div className="sm:w-auto w-full min-w-[130px] flex items-stretch">
+            <SubmitButton className="h-[48px] rounded-2xl text-sm py-3" />
+          </div>
+        </form>
+
+        {/* Feedback messages */}
+        {state?.error && (
+          <p className="w-full text-red-500 text-sm font-medium mt-3 text-center">
+            ⚠️ {state.error}
+          </p>
+        )}
+        {state?.success && (
+          <p className="w-full text-green-600 dark:text-green-400 text-sm font-medium mt-3 text-center">
+            {state.message}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full max-w-sm bg-white dark:bg-[#040d0a] border border-slate-200/80 dark:border-[#0d2a22] rounded-2xl shadow-xl dark:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-all duration-300">

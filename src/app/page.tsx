@@ -8,6 +8,7 @@ import LogoLoopDetails from "@/components/sections/LogoLoopDetails";
 import ScrollRevealText from "@/components/ui/ScrollRevealText";
 import HelpCardsHome from "@/components/ui/HelpCardsHome";
 import ImageBackground from "@/components/ui/ImageBgContainer";
+import SubscribeForm from "@/components/forms/SubscribeForm";
 import {
   TrueFocus,
   SlantedGrid,
@@ -180,6 +181,10 @@ export default async function HomePage() {
             <Button href={latestNewsletter ? `/newsletter/${latestNewsletter.id}` : "/newsletter"} className="text-white px-8 py-3 rounded-2xl">
               Read More
             </Button>
+          </div>
+          
+          <div className="mb-10">
+            <SubscribeForm layout="inline" />
           </div>
           
           <p className="text-sm text-[var(--muted-foreground)]">

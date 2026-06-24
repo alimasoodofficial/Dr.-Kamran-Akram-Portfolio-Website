@@ -100,7 +100,7 @@ export default function CheckoutSuccessClient({ initialData }: CheckoutSuccessCl
             </div>
 
             <p className="text-slate-500 text-sm leading-relaxed">
-              We have completed your transaction and generated your personalized access tokens. You now have lifetime access to read and download this technical guide.
+              We have completed your transaction and generated your personalized access tokens. You now have lifetime access to read this ebook.
             </p>
 
             {/* Receipt Summary Grid */}

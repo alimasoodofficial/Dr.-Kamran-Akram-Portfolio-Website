@@ -48,6 +48,7 @@ function HelpCardsHome() {
           />
           <Cards
             title="Website Newsletter"
+            description="Stay updated with the latest insights, exclusive content, research deep-dives, and technology trends."
             iconClassName="fa-solid fa-envelope"
             link="/newsletter"
             className=""
