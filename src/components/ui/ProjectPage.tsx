@@ -252,12 +252,12 @@ const ProjectSection = ({ project }: { project: any }) => (
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <div className="group relative rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-500/10 h-80 md:h-[450px] border border-emerald-500/20">
+          <div className="group relative overflow-hidden h-80 md:h-[450px]">
             <Image
               src={project.image}
               alt={project.title}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-contain  transition-transform duration-700 group-hover:scale-110"
               placeholder="blur"
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
             />
