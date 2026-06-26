@@ -4,10 +4,10 @@ import LogoCarousel from "@/components/ui/LogoCarousel";
 export default function LogoLoopDetails() {
   return (
     <div>
-      <div className="text-center mb-12 px-6">
+      <div className="text-center  mt-12">
         <h2 className="text-3xl font-heading md:text-5xl font-black text-slate-900 dark:text-slate-100">
           Places That{" "}
-          <span className="text-emerald-500 dark:text-emerald-300">Shaped</span> My
+          <span className="text-emerald-500 dark:text-emerald-300"><br className="md:hidden"/>Shaped</span> My
           Journey
         </h2>
       </div>

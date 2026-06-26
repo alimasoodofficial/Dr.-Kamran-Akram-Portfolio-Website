@@ -157,8 +157,8 @@ export default async function HomePage() {
       {/* 📧 Newsletter Section */}
       <section className="py-20 px-6 md:px-12">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-heading text-4xl md:text-5xl mb-6">
-            The Creative Pulse
+          <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6">
+            The <span className="text-emerald-500 dark:text-emerald-300">Creative </span>Pulse
           </h2>
           <p className="font-body text-lg text-[var(--muted-foreground)] mb-12">
             Weekly insights on data storytelling, creative productivity, and technical mastery.
@@ -196,10 +196,10 @@ export default async function HomePage() {
       {/* 🤝 Consulting Overview Section */}
       <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto mb-20">
         <div className="text-center mb-16">
-          <h2 className="font-heading text-4xl md:text-7xl mb-4">
-            Let's Build <GradientText colors={["#10b981", "#34d399", "#86efac"]} animationSpeed={6}>Your Future</GradientText>
+          <h2 className="font-heading text-4xl md:text-5xl mb-4 font-bold">
+            Let's <span className="text-emerald-500 dark:text-emerald-300">Build</span> Your Future
           </h2>
-          <p className="font-body text-lg text-[var(--muted-foreground)] max-w-2xl mx-auto">
+          <p className="font-body text-lg  max-w-2xl mx-auto">
             I provide tailored mentorship to help you navigate academia, build a powerful personal brand, and establish a successful career in Australia.
           </p>
         </div>
