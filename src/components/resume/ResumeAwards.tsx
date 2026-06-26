@@ -52,7 +52,7 @@ export default function ResumeAwards() {
 
               <div className="relative z-10 flex flex-col h-full">
                 {/* Image Container */}
-                <div className="w-full h-32 mb-6 relative rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 p-4 flex items-center justify-center overflow-hidden">
+                <div className="w-full h-32 mb-6 relative rounded-xl bg-slate-50  border border-slate-100 dark:border-slate-700/50 p-4 flex items-center justify-center overflow-hidden">
                   <Image
                     src={award.image || "/images/logos/uaf.png"}
                     alt={award.title}
